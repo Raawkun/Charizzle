@@ -21,17 +21,19 @@ class Listener(commands.Cog):
         # You can add your custom logic here.
         if message.author == self.client.user:
             return  # Ignore messages sent by the bot itself.
-
+        if message.author.bot:
+            return
+            
         # Example: Respond to a specific message content
         channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
         if message.channel.id in channel_ids:
-            if message.content.lower() == "no":
-                await message.channel.send("Yes.")
+            #if message.content.lower() == "no":
+                #await message.channel.send("Yes.")
 
-            elif message.content.lower() == "yes":
-                await message.channel.send("No.")
+            #elif message.content.lower() == "yes":
+                #await message.channel.send("No.")
 
-            elif message.content.lower() == "stfu":
+            if message.content.lower() == "stfu":
                 await message.channel.send("No u.")
 
             elif message.content.lower() == "lol":
@@ -44,7 +46,11 @@ class Listener(commands.Cog):
                 await message.add_reaction(emoji2)
                 await message.channel.send("Worst starter fr.")
 
-            elif message.content.lower() == "charmander":
+            elif re.search(r'\bcharmander\b', message.content, re.IGNORECASE):
+                emoji = '👍'
+                emoji2 = self.client.get_emoji(1083883459883315200)
+                await message.add_reaction(emoji)
+                await message.add_reaction(emoji2)
                 await message.channel.send("Wow! What a great Pokémon starter!")
 
         
