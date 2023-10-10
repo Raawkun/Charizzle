@@ -14,7 +14,7 @@ class Coms(commands.Cog):
 
     @commands.command()
     async def vers(self, ctx):
-        vers1 = str("1.0.0.1")
+        vers1 = str("1.0.0.2")
         await ctx.send(vers1)
 
     @commands.command()
