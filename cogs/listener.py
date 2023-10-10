@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 import asyncio
+import re
 
 class Listener(commands.Cog):
 
@@ -36,7 +37,7 @@ class Listener(commands.Cog):
             elif message.content.lower() == "lol":
                 await message.channel.send("Rofl.")
         
-            elif message.content.lower() == "squirtle":
+            elif re.search(r'\bsquirtle\b', message.content, re.IGNORECASE):
                 emoji = '👎'
                 emoji2 = self.client.get_emoji(1083883409404854322)
                 await message.add_reaction(emoji)
