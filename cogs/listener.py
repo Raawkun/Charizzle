@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import asyncio
 import re
+import main
 
 class Listener(commands.Cog):
 
@@ -53,6 +54,21 @@ class Listener(commands.Cog):
                 await message.add_reaction(emoji2)
                 await message.channel.send("Wow! What a great Pokémon starter!")
 
+        channel_ids = [1079815106277425243]
+        if message.channel.id in channel_ids:
+            async def on_raw_reaction_add(payload):
+                message_id = payload.message_id
+                channel_id = payload.channel_id
+                user_id = payload.user_id
+
+                if payload.emoji.name == "🎨":
+                    channel = await main.client.fetch_channel(channel_id)
+                    message = await channel.fetch_message(message_id)
+
+                    if message.embeds:
+                        for embed in message.embeds:
+                            color_hex = embed.color
+                            await channel.send(f"The color is {color_hex}")
 
         
 
