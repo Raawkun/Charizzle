@@ -34,6 +34,14 @@ class Coms(commands.Cog):
         await ctx.send(f"I'm alive!!! {ctx.author.name}")
 
     @commands.slash_command(
+            name="toggle";
+            description="Toggle bot actions."
+    )
+    if disnake.message.author.id == 
+    
+
+
+    @commands.slash_command(
             name="test",
             description="Just getting a badge!!")
     async def _test(self, ctx):

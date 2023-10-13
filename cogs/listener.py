@@ -53,6 +53,7 @@ class Listener(commands.Cog):
                 await message.add_reaction(emoji2)
                 await message.channel.send("Wow! What a great Pokémon starter!")
 
+
         
 
 def setup(client):
