@@ -68,7 +68,7 @@ class Listener(commands.Cog):
                     if message.embeds:
                         for embed in message.embeds:
                             color_hex = embed.color
-                            await channel.send(f"The color is {color_hex}")
+                            await message.channel.send(f"The color is {color_hex}")
 
         
 
