@@ -4,6 +4,7 @@ from disnake.ext import commands
 import asyncio
 from sqlite3 import connect
 from disnake import Option, OptionChoice, OptionType, ApplicationCommandInteraction
+from configparser import SafeConfigParser
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -32,7 +33,6 @@ class Coms(commands.Cog):
         self.db.commit()
         await ctx.send("Done")
 
-#Toggle command from Pr1nce
     @commands.slash_command(
         name="toggle",
         description="Toggle commands",
@@ -45,27 +45,67 @@ class Coms(commands.Cog):
                     OptionChoice("Squirtle", "squirtle"),
                     OptionChoice("Charmander", "charmander"),
                     OptionChoice("Annoy", "annoy"),
+                    OptionChoice("Lol", "lol"),
                 ],
                 required=True
             ),   
         ],)
     async def _toggle(self, ctx, switch = None):
-        await ctx.response.defer()
-        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {ctx.author.id}')
-        database = database.fetchall()
-        for row in database:
-            if switch == "squirtle" and row[2] == 0:
-                self.db.execute(f'UPDATE Toggle SET Switch1 = 1 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled on")
-            elif switch == "squirtle" and row[2] == 1:
-                self.db.execute(f'UPDATE Toggle SET Switch1 = 0 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled off")
-            elif switch == "annoy" and row[3] == 0:
-                self.db.execute(f'UPDATE Toggle SET Switch3 = 1 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled on")
+        await ctx.respomse.defer()
+        parser = SafeConfigParser()
+        parser.read('settings.ini')
+        if switch == "squirtle":
+            if parser.get('squirtle') == 1:
+                parser.set('squirtle', 0)
+            else: parser.set('squirtle', 1)
+        elif switch == "charmander":
+            if parser.get('charmander') == 1:
+                parser.set('charmander', 0)
+            else: parser.set('charmander', 1)
+        elif switch == "annoy":
+            if parser.get('annoy') == 1:
+                parser.set('annoy', 0)
+            else: parser.set('annoy', 1)
+        elif switch == "lol":
+            if parser.get('lol') == 1:
+                parser.set('lol', 0)
+            else: parser.set('lol', 1)
+    
+
+#Toggle command from Pr1nce
+#    @commands.slash_command(
+#        name="toggle",
+#        description="Toggle commands",
+#        options=[
+#            Option(
+#                name="switch",
+#                description="Choose a switch to toggle",
+#                type=3,
+#                choices=[
+#                    OptionChoice("Squirtle", "squirtle"),
+#                    OptionChoice("Charmander", "charmander"),
+#                    OptionChoice("Annoy", "annoy"),
+#                ],
+#                required=True
+#            ),   
+#        ],)
+#    async def _toggle(self, ctx, switch = None):
+#        await ctx.response.defer()
+#        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {ctx.author.id}')
+#        database = database.fetchall()
+#        for row in database:
+#            if switch == "squirtle" and row[2] == 0:
+#                self.db.execute(f'UPDATE Toggle SET Switch1 = 1 WHERE User_ID = {ctx.author.id}')
+#                self.db.commit()
+#                await ctx.send("Toggled on")
+#            elif switch == "squirtle" and row[2] == 1:
+#                self.db.execute(f'UPDATE Toggle SET Switch1 = 0 WHERE User_ID = {ctx.author.id}')
+#                self.db.commit()
+#                await ctx.send("Toggled off")
+#            elif switch == "annoy" and row[3] == 0:
+#                self.db.execute(f'UPDATE Toggle SET Switch3 = 1 WHERE User_ID = {ctx.author.id}')
+#                self.db.commit()
+#                await ctx.send("Toggled on")
 
     @commands.command()
     async def add(self, ctx, left: int, right: int):
@@ -92,6 +132,14 @@ class Coms(commands.Cog):
     @commands.command()
     async def test(self, ctx):
         await ctx.send(f"I'm alive!!! {ctx.author.name}")
+
+    @commands.command()
+    async def annoy(self, ctx, input_id, try_amount):
+        annoy_id = int(input_id)
+        amounts = try_amount
+        SafeConfigParser.set('client_id', annoy_id)
+        SafeConfigParser.set('attempts', amounts)
+        await ctx.send(f"Changed the ID!")
 
     
 
