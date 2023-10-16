@@ -3,14 +3,18 @@ import disnake
 from disnake.ext import commands
 import asyncio
 from sqlite3 import connect
-from disnake import Option, OptionChoice, OptionType, ApplicationCommandInteraction
-from configparser import SafeConfigParser
+from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
+import json
 
 # Zeichen zum Kopieren: [ ] { }
 
 class Coms(commands.Cog):
 
-    SafeConfigParser.read('settings.ini')
+    enabled = " is enabled."
+    disabled = " is disabled."
+
+    with open("config.json", "r") as config_file:
+        config = json.load(config_file)
 
     def __init__(self, client):
         self.client = client
@@ -34,45 +38,6 @@ class Coms(commands.Cog):
                         ''')
         self.db.commit()
         await ctx.send("Done")
-
-    @commands.slash_command(
-        name="toggle",
-        description="Toggle commands",
-        options=[
-            Option(
-                name="switch",
-                description="Choose a switch to toggle",
-                type=3,
-                choices=[
-                    OptionChoice("Squirtle", "squirtle"),
-                    OptionChoice("Charmander", "charmander"),
-                    OptionChoice("Annoy", "annoy"),
-                    OptionChoice("Lol", "lol"),
-                ],
-                required=True
-            ),   
-        ],)
-    async def _toggle(self, ctx, switch = None):
-        await ctx.respomse.defer()
-        parser = SafeConfigParser()
-        parser.read('settings.ini')
-        if switch == "squirtle":
-            if parser.get('squirtle') == 1:
-                parser.set('squirtle', 0)
-            else: parser.set('squirtle', 1)
-        elif switch == "charmander":
-            if parser.get('charmander') == 1:
-                parser.set('charmander', 0)
-            else: parser.set('charmander', 1)
-        elif switch == "annoy":
-            if parser.get('annoy') == 1:
-                parser.set('annoy', 0)
-            else: parser.set('annoy', 1)
-        elif switch == "lol":
-            if parser.get('lol') == 1:
-                parser.set('lol', 0)
-            else: parser.set('lol', 1)
-    
 
 #Toggle command from Pr1nce
 #    @commands.slash_command(
@@ -110,6 +75,62 @@ class Coms(commands.Cog):
 #                await ctx.send("Toggled on")
 
     @commands.command()
+    async def toggle(ctx, input: str):
+        enabled = " is enabled."
+        disabled = " is disabled."
+
+        with open("config.json", "r") as config_file:
+            config_data = json.load(config_file)
+
+        authorized_users = [837611415070048277]
+        sender = disnake.Message.author
+
+        if authorized_users in disnake.Message.author.get_role:
+            if input == "squirtle":
+                if config_data.get('squirtle') == 1:
+                    config_data['squirtle'] = 0
+                    print("SQUIRTLE"+disabled)
+                    await ctx.message.send(input+disabled)
+                else: 
+                    config_data['squirtle'] = 1
+                    print("SQUIRTLE"+enabled)
+                    await ctx.message.send(input+enabled)
+            elif input == "charmander":
+                if config_data.get('charmander') == 1:
+                    config_data['charmander'] = 0
+                    print("CHARMANDER"+disabled)
+                    await ctx.message.send(input+disabled)
+                else: 
+                    config_data['charmander'] = 1
+                    print("CHARMANDER"+enabled)
+                    await ctx.message.send(input+enabled)
+            elif input == "lol":
+                if config_data.get('lol') == 1:
+                    config_data['lol'] = 0
+                    print("LOL"+disabled)
+                    await ctx.message.send(input+disabled)
+                else: 
+                    config_data['lol'] = 1
+                    print("LOL"+enabled)
+                    await ctx.message.send(input+enabled)
+            elif input == "annoy":
+                if config_data.get('annoy') == 1:
+                    config_data['annoy'] = 0
+                    print("ANNOY"+disabled)
+                    await ctx.message.send(input+disabled)
+                else: 
+                    config_data['annoy'] = 1
+                    print("ANNOY"+enabled)
+                    await ctx.message.send(input+enabled)
+
+            else:
+                await ctx.message.send("Wrong input.")
+
+        else: 
+            await ctx.message.send("You don't have enough power to access this.")
+
+
+    @commands.command()
     async def add(self, ctx, left: int, right: int):
         """Adds two numbers together."""
         await ctx.send(left + right)
@@ -135,13 +156,24 @@ class Coms(commands.Cog):
     async def test(self, ctx):
         await ctx.send(f"I'm alive!!! {ctx.author.name}")
 
+
     @commands.command()
     async def annoy(self, ctx, input_id, try_amount):
-        annoy_id = int(input_id)
-        amounts = try_amount
-        SafeConfigParser.set('client_id', annoy_id)
-        SafeConfigParser.set('attempts', amounts)
-        await ctx.send(f"Changed the ID!")
+            with open("config.json", "r") as config_file:
+                config_data = json.load(config_file)
+            
+            if disnake.message.author.id == [352224989367369729]:
+                if input_id != int:
+                    await ctx.message.send("Please input a user ID.")
+                else: annoy_id = input_id
+                if try_amount != int:
+                    await ctx.message.send("Please input a number")
+                else: amounts = try_amount
+            
+                config_data['client_id'] = annoy_id
+                config_data['attempts'] = amounts
+                await ctx.message.send(f"Changed the ID!")
+            else: await ctx.message.send("Not allowed to use this command.")
 
     
 

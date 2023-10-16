@@ -4,6 +4,9 @@ import os
 import disnake
 from disnake.ext import commands
 from dotenv import dotenv_values
+import json
+
+# Zeichen zum Kopieren: [ ] { }
 
 config = dotenv_values(".env")
 token = config["YOUR_BOT_TOKEN"]
@@ -18,5 +21,6 @@ client = commands.AutoShardedBot(intents = intents, command_prefix = ["<"], relo
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
+
 
 client.loop.run_until_complete(client.start(token))
