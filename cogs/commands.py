@@ -10,6 +10,8 @@ from configparser import SafeConfigParser
 
 class Coms(commands.Cog):
 
+    SafeConfigParser.read('settings.ini')
+
     def __init__(self, client):
         self.client = client
 
