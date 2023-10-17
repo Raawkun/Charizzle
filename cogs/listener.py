@@ -121,9 +121,9 @@ class Listener(commands.Cog):
             if message.author.id == meowbot:
                 announce_channel = self.client.get_channel(receiver_channel)
                 #Legendary Embed HEX #a007f8 160, 7, 248
-                #Shiny Embed HEX #
-                #Event Excl HEX #
-                embedc = ["a007f8"] 
+                #Shiny Embed HEX #fe98cb 254, 152, 203
+                #Event Excl HEX #e9270b 233, 39, 11
+                embedc = ["a007f8", "fe98cb" , "e9270b"]
 
                 if re.search(r'\bfound a wild\b', message.content, re.IGNORECASE):
                     await message.channel.send("Thats a spawn")
@@ -137,6 +137,8 @@ class Listener(commands.Cog):
                             await message.channel.send("purple")
                         await announce_channel.send("We tried to grab the color")
                     else: await message.channel.send("Wrong color")
+                        
+                if re.search(r'\bhatched a\b', message.content, re.IGNORECASE):
 
 
 
