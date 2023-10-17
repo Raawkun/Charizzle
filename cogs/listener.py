@@ -113,7 +113,7 @@ class Listener(commands.Cog):
                             color_hex = embed.color
                             await message.channel.send(f"The color is {color_hex}")
         
-        channel_ids = [827510854467584002] #My personal channel
+        channel_ids = [1163743648744226886] #test-spawns
         receiver_channel = 825958388349272106 #bot-testing channel
         meowbot = 664508672713424926 #id from PokeMeow
         if message.channel.id in channel_ids:
