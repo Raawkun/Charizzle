@@ -123,17 +123,23 @@ class Listener(commands.Cog):
                 #Legendary Embed HEX #a007f8 160, 7, 248
                 #Shiny Embed HEX #fe98cb 254, 152, 203
                 #Event Excl HEX #e9270b 233, 39, 11
+                #SR HEX 
+                #R HEX 
+                #UC HEX 
+                #C HEX 
                 embedc = ["a007f8", "fe98cb" , "e9270b"]
 
-                if re.search(r'\bfound a wild\b', message.content, re.IGNORECASE):
+                if "found a wild" in message.content:
                     await message.channel.send("Thats a spawn")
-                    for embed in message.embeds:
-                        print(embed.color.value)
-                        print(embed.color.to_rgb)
+                    if len(message.embeds)>0):
                         _embed = message.embeds[0]
-                        _color = _embed.color
-                        print(str(_color))
-                        if embed.color.value == embedc:
+                        color = _embed.color
+                        value = color.value
+                        rgb = color.to_rgb
+                        message.channel.send(value)
+                        message.channel.send(rgb)
+                        message.channel.send(str(color))
+                        if embed.color.value in embedc:
                             await message.channel.send("purple")
                         await announce_channel.send("We tried to grab the color")
                     else: await message.channel.send("Wrong color")
