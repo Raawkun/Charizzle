@@ -1,3 +1,3 @@
 from sqlite3 import connect
-connect("database.db")
+connect("pokemon.db")
 quit()

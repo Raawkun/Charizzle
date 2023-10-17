@@ -5,6 +5,7 @@ import asyncio
 from sqlite3 import connect
 from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
 import json
+import sqlite3
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -22,22 +23,22 @@ class Coms(commands.Cog):
 #Database initialization, needed in every file with db
     def __init__(self, client):
         self.client = client
-        self.db = connect("database.db")
+        self.db = connect("pokemon.db")
 
 #Creation of the table in the db
-    @commands.command()
-    async def toggledb(self, ctx):
-        self.db.execute(f'''
-                        CREATE TABLE IF NOT EXISTS Toggle(
-                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
-                            User_ID INTEGER,
-                            Switch1 INTEGER DEFAULT 0,
-                            Switch2 INTEGER DEFAULT 0,
-                            Switch3 INTEGER DEFAULT 0,
-                            )
-                        ''')
-        self.db.commit()
-        await ctx.send("Done")
+#    @commands.command()
+#    async def toggledb(self, ctx):
+#        self.db.execute(f'''
+#                        CREATE TABLE IF NOT EXISTS Toggle(
+#                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
+#                            User_ID INTEGER,
+#                            Switch1 INTEGER DEFAULT 0,
+#                            Switch2 INTEGER DEFAULT 0,
+#                            Switch3 INTEGER DEFAULT 0,
+#                            )
+#                        ''')
+#        self.db.commit()
+#        await ctx.send("Done")
 
 #Toggle command from Pr1nce
 #    @commands.slash_command(
@@ -185,6 +186,30 @@ class Coms(commands.Cog):
             await ctx.response.defer()
             await ctx.send(f"Now I have my badge!!!")
 
+    @commands.command()
+    async def toggledb(self, ctx):
+        self.db.execute(f'''
+                        CREATE TABLE IF NOT EXISTS Toggle(
+                            DexID INTEGER PRIMARY KEY,
+                        Name TEXT,
+                        Type_1 TEXT,
+                        Type_2 TEXT,
+                        Hp INTEGER,
+                        Attack INTEGER,
+                        Defence INTEGER,
+                        Sp_atk INTEGER,
+                        Sp_def INTEGER,
+                        Speed INTEGER,
+                        Legendary BOOLEAN,
+                        Shiny BOOLEAN,
+                        Golden BOOLEAN,
+                        Mega BOOLEAN,
+                        Rarity TEXT,
+                        Img_url TEXT
+                            )
+                        ''')
+        self.db.commit()
+        await ctx.send("Done")
 
 
 def setup(client):

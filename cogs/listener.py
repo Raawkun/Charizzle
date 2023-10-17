@@ -1,9 +1,11 @@
+import sqlite3
 import disnake
 from disnake.ext import commands
 import asyncio
 import re
 import main
 import json
+from sqlite3 import connect
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -15,6 +17,7 @@ class Listener(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.db = connect("pokemon.db")
 
     #events
     @commands.Cog.listener()
@@ -113,7 +116,7 @@ class Listener(commands.Cog):
                             color_hex = embed.color
                             await message.channel.send(f"The color is {color_hex}")
         
-        channel_ids = [1163743648744226886] #test-spawns
+        channel_ids = [1163743648744226886, 827510854467584002] #test-spawns
         receiver_channel = 825958388349272106 #bot-testing channel
         meowbot = 664508672713424926 #id from PokeMeow
         if message.channel.id in channel_ids:
@@ -123,28 +126,81 @@ class Listener(commands.Cog):
                 #Legendary Embed HEX #a007f8 160, 7, 248
                 #Shiny Embed HEX #fe98cb 254, 152, 203
                 #Event Excl HEX #e9270b 233, 39, 11
-                #SR HEX 
-                #R HEX 
-                #UC HEX 
-                #C HEX 
-                embedc = ["a007f8", "fe98cb" , "e9270b"]
+                #SR HEX #f8f407
+                #R HEX  #fb8908
+                #UC HEX #13b4e7
+                #C HEX  #0855fb
+                embedc = ["#0855fb","13b4e7","fb8908","f8f407","#a007f8", "#fe98cb" , "#e9270b"]
 
                 if "found a wild" in message.content:
                     await message.channel.send("Thats a spawn")
-                    if len(message.embeds)>0):
+                    if (len(message.embeds) > 0):
                         _embed = message.embeds[0]
                         color = _embed.color
                         value = color.value
                         rgb = color.to_rgb
-                        message.channel.send(value)
-                        message.channel.send(rgb)
-                        message.channel.send(str(color))
-                        if embed.color.value in embedc:
-                            await message.channel.send("purple")
-                        await announce_channel.send("We tried to grab the color")
+                        await message.channel.send(value)
+                        #await message.channel.send(rgb)
+                        await message.channel.send(str(color))
+                        if str(color) in embedc:
+                            author_name = _embed.author.name
+                            author_icurl = _embed.author.icon_url
+                            thumb = _embed.image.url
+                            desc = _embed.description
+                            await message.channel.send("I see you...")
+                            embedded=disnake.Embed(
+                                title="Much wow", color=color,description=desc,
+                            )
+                            embedded.set_author(
+                                name=author_name, icon_url=author_icurl
+                            )
+                            embedded.set_image(url=thumb)
+                            await announce_channel.send(embed=embedded)
+                            await announce_channel.send("This will be an embed in the future")
+                        
                     else: await message.channel.send("Wrong color")
                         
-                if re.search(r'\bhatched a\b', message.content, re.IGNORECASE):
+                if (len(message.embeds) > 0):
+                    _embed = message.embeds[0]
+                    if _embed.author != None:
+                        await message.channel.send("Author:")
+                        await message.channel.send(f"```{_embed.author}```")
+                    if _embed.description != None:
+                        await message.channel.send("Description:")
+                        await message.channel.send(f"```{_embed.description}```")
+                    if _embed.fields != None:
+                        await message.channel.send("Fields:")
+                        await message.channel.send(f"```{_embed.fields}```")
+                    if _embed.footer != None:
+                        await message.channel.send("Footer:")
+                        await message.channel.send(f"```{_embed.footer}```")
+                    if _embed.image != None:
+                        await message.channel.send("Image:")
+                        await message.channel.send(f"```{_embed.image.url}```")
+                        await message.channel.send(f"```{_embed.image.proxy_url}```")
+                    if _embed.thumbnail != None:
+                        await message.channel.send("Thumnbail:")
+                        await message.channel.send(f"```{_embed.thumbnail}```")
+
+                if (len(message.embeds) > 0):
+                    _embed = message.embeds[0]
+                    if _embed.fields != None:
+                        for field in _embed.fields:
+                            field_name = field.name
+                            field_value = field.value
+                            insert_data(field_name, field_value)
+                            
+
+
+
+        def insert_data(field_name, field_value):
+            conn = sqlite3.connect('pokemon.db')
+            cursor = conn.cursor()
+
+            cursor.execute('INSERT INTO embed_data (FieldName, FieldValue) VALUES (?, ?)', (field_name, field_value))
+            conn.commit()
+            conn.close()
+
 
 
 
