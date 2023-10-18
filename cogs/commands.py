@@ -190,7 +190,7 @@ class Coms(commands.Cog):
     @commands.command()
     async def toggledb(self, ctx):
         self.db.execute(f'''
-                        CREATE TABLE IF NOT EXISTS Toggle(
+                        CREATE TABLE IF NOT EXISTS Dex(
                             DexID INTEGER PRIMARY KEY,
                         Name TEXT,
                         Type_1 TEXT,
@@ -211,7 +211,7 @@ class Coms(commands.Cog):
                         ''')
         self.db.commit()
         self.db_lot.execute(f'''
-                        CREATE TABLE IF NOT EXISTS Toggle(
+                        CREATE TABLE IF NOT EXISTS Events(
                         Author_Lot TEXT,
                         Title_Lot TEXT,
                         Desc_Lot TEXT,
