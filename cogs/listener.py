@@ -220,14 +220,28 @@ class Listener(commands.Cog):
                             desc = _embed.description
                             file = _embed.files
                             footer = _embed.footer
+                            color = _embed.color
                             self.db_lot.execute(f```
-                            INSERT INTO 
+                            INSERT INTO Events(
+                            author_lot, title_lot, desc_lot, footer_lot, color_lot
+                            ) VALUES (
+                            author, title, desc, file, footer, color
+                            )
+                            self.db_lot.commit
                         if "Tower Result" in _embed.author:
                             author = _embed.author
                             title = _embed.title
                             desc = _embed.description
                             file = _embed.files
                             footer = _embed.footer
+                            color = _embed.color
+                            self.db_lot.execute(f```
+                            INSERT INTO Events(
+                            author_BT, title_BT, desc_BT, footer_BT, color_BT
+                            ) VALUES (
+                            author, title, desc, file, footer, color
+                            )
+                            self.db_lot.commit
                             
 
 
