@@ -6,6 +6,7 @@ import re
 import main
 import json
 from sqlite3 import connect
+from main import client
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -18,7 +19,6 @@ class Listener(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("pokemon.db")
-        self.db_lot = connect("event.db")
 
     #events
     @commands.Cog.listener()
@@ -57,7 +57,49 @@ class Listener(commands.Cog):
         with open("config.json", "r") as config_file:
             parser = json.load(config_file)
             
-        # Example: Respond to a specific message content
+        #Open to every Channel!
+
+            if message.content == "^-^":
+                await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
+
+            if message.content.lower() == "stfu":
+                await message.channel.send("No u.")
+
+            elif message.content.lower() == "lol":
+                if parser['lol'] == 1:
+                    await message.channel.send("Rofl.")
+
+            elif re.search(r'\bsquirtle\b', message.content, re.IGNORECASE):
+
+                if parser['squirtle'] == 1:
+                    emoji = '👎'
+                    emoji2 = self.client.get_emoji(1083883409404854322)
+                    await message.add_reaction(emoji)
+                    await message.add_reaction(emoji2)
+            #        await message.channel.send("Worst starter fr.")
+
+            elif re.search(r'\bcharmander\b', message.content, re.IGNORECASE):
+                if parser['charmander'] == 1:
+                    emoji = '👍'
+                    emoji2 = self.client.get_emoji(1083883459883315200)
+                    await message.add_reaction(emoji)
+                    await message.add_reaction(emoji2)
+            #        await message.channel.send("Wow! What a great Pokémon starter!")
+
+            if "boost has expired" in message.content:
+                referenced_message = await message.channel.fetch_message(message.reference.message_id)
+                if referenced_message:
+            # Print the user ID of the message that received the response
+                    sender = referenced_message.author.id
+                    if "repel" in message.content:
+                        await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                    if "goldenrazz" in message.content:
+                        await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+
+
+
+
+        # Only wotks in specific channels!
         channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
         if message.channel.id in channel_ids:
             
@@ -72,31 +114,7 @@ class Listener(commands.Cog):
                     clowning = message.content
                     await message.send(clowning)
                 
-
-            if message.content.lower() == "stfu":
-                await message.channel.send("No u.")
-
-            elif message.content.lower() == "lol":
-                if parser['lol'] == 1:
-                    await message.channel.send("Rofl.")
-        
-            elif re.search(r'\bsquirtle\b', message.content, re.IGNORECASE):
-
-                if parser['squirtle'] == 1:
-                    emoji = '👎'
-                    emoji2 = self.client.get_emoji(1083883409404854322)
-                    await message.add_reaction(emoji)
-                    await message.add_reaction(emoji2)
-                    await message.channel.send("Worst starter fr.")
-
-            elif re.search(r'\bcharmander\b', message.content, re.IGNORECASE):
-                if parser['charmander'] == 1:
-                    emoji = '👍'
-                    emoji2 = self.client.get_emoji(1083883459883315200)
-                    await message.add_reaction(emoji)
-                    await message.add_reaction(emoji2)
-                    await message.channel.send("Wow! What a great Pokémon starter!")
-
+            
             elif parser['annoy'] == 1:
                 if message.author.id == parser.get('client_id'):
                     copymessage = message.content
@@ -133,6 +151,8 @@ class Listener(commands.Cog):
                 #C HEX  #0855fb
                 embedc = ["#0855fb","13b4e7","fb8908","f8f407","#a007f8", "#fe98cb" , "#e9270b"]
 
+                
+
                 if "found a wild" in message.content:
                     await message.channel.send("Thats a spawn")
                     if (len(message.embeds) > 0):
@@ -163,6 +183,8 @@ class Listener(commands.Cog):
                         
                 if (len(message.embeds) > 0):
                     _embed = message.embeds[0]
+                    if message.content != None:
+                        await message.channel.send("Test: "+message.content)
                     if _embed.author != None:
                         await message.channel.send("Author:")
                         await message.channel.send(f"```{_embed.author}```")
@@ -203,46 +225,35 @@ class Listener(commands.Cog):
                             await message.channel.send(b_spd)
                     
 
-                if (len(message.embeds) > 0):
-                    _embed = message.embeds[0]
-                    if _embed.fields != None:
-                        for field in _embed.fields:
-                            field_name = field.name
-                            field_value = field.value
-                            insert_data(field_name, field_value)
-                            
-                if channel.id == 825822261625880576:
-                    if (len(message.embeds) > 0:
-                        _embed = message.embeds[0]
-                        if "PokeLottery" in _embed.author:
-                            author = _embed.author
-                            title = _embed.title
-                            desc = _embed.description
-                            file = _embed.files
-                            footer = _embed.footer
-                            color = _embed.color
-                            self.db_lot.execute(f```
-                            INSERT INTO Events(
-                            Author_Lot, Title_Lot, Desc_Lot, Footer_Lot, Color_Lot
-                            ) VALUES (
-                            author, title, desc, file, footer, color
-                            )
-                            self.db_lot.commit
-                        if "Tower Result" in _embed.author:
-                            author = _embed.author
-                            title = _embed.title
-                            desc = _embed.description
-                            file = _embed.files
-                            footer = _embed.footer
-                            color = _embed.color
-                            self.db_lot.execute(f```
-                            INSERT INTO Events(
-                            Author_BT, Title_BT, Desc_BT, Footer_BT, Color_BT
-                            ) VALUES (
-                            author, title, desc, file, footer, color
-                            )
-                            self.db_lot.commit
-                            
+                    if _embed.image.url:
+                        if "xyani" in _embed.image.url:
+                            await message.channel.send("Regular")
+                        elif "shiny" in _embed.image.url:
+                            await message.channel.send("Shiny")
+                        elif "golden" in _embed.image.url:
+                            await message.channel.send("Golden")
+                        else: return
+                        name = _embed.image.url.split("/")[5]
+                        real_name = name.split(".")[0]
+                        await message.channel.send(real_name)
+                    else: return
+
+                if "personal contributions" in _embed.description:
+                    if message.channel.id in bot_wl:
+                        ann_msg = _embed.description.split("`")[3]
+                        print(ann_msg)
+                    else: return
+                else: return
+
+                if re.search(r'\bpersonal contribution\b', _embed.description, re.IGNORECASE):
+                    if message.channel.id in bot_wl:
+                        ann_msg = _embed.description.split("`")[3]
+                        print(ann_msg)
+                    
+                for embed in message.embeds:
+                    if 'personal contribution' in embed.description.lower():
+                        await message.channel.send('Found "personal contribution" in an embed description.')
+
 
 
 
@@ -255,10 +266,28 @@ class Listener(commands.Cog):
             conn.close()
 
 
-
+            if (len(message.embeds) > 0):
+                _embed = message.embeds[0]
+                if _embed.fields != None:
+                    for field in _embed.fields:
+                        field_name = field.name
+                        field_value = field.value
+                        insert_data(field_name, field_value)
+                            
+            
 
         
 # Zeichen zum Kopieren: [ ] { }
+
+    # @commands.Cog.listener()
+    # async def on_message_edit(before, after, lol):
+    #     if before.author == client.user:
+    #         return
+    #     if before.author.id == 664508672713424926:
+    #         if "score of" in after.content:
+    #     # Send a message if the edited content contains the word "lantern"
+    #             await after.channel.send(f"Message edited by {before.author.name} contains 'lantern': {after.content}")
+
 
 def setup(client):
     client.add_cog(Listener(client))

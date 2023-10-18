@@ -24,7 +24,6 @@ class Coms(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("pokemon.db")
-        self.db_lot = connect("event.db")
 
 #Creation of the table in the db
 #    @commands.command()
@@ -210,38 +209,9 @@ class Coms(commands.Cog):
                             )
                         ''')
         self.db.commit()
-        self.db_lot.execute(f'''
-                        CREATE TABLE IF NOT EXISTS Events(
-                        Author_Lot TEXT,
-                        Title_Lot TEXT,
-                        Desc_Lot TEXT,
-                        File_Lot TEXT,
-                        Footer_Lot TEXT,
-                        Color_Lot INTEGER,
-                        Author_BT TEXT,
-                        Title_BT TEXT,
-                        Desc_BT TEXT,
-                        File_BT TEXT,
-                        Footer_BT TEXT,
-                        Color_BT INTEGER
-                            )
-                        ''')
-        self.db_lot.commit()
         await ctx.send("Done")
         
-    @commands.command()
-    async def lot(self, ctx)
-    self.db_lot.execute("SELECT Author_Lot, Title_Lot, Desc_Lot, File_Lot, Footer_Lot, Color_Lot FROM Events WHERE id= ?", (event_id,))
-    event_data = self.db_lot.fetchone()
-    if event_data:
-        embed = disnake.Embed(title=event_data[2], color=event_data[6], description=event_data[3])
-        embed.set_author(event_data[1])
-        embed.add_field(event_data[4])
-        embed.set_footer(event_data[5])
-        await ctx.send(embed=embed)
-    else:
-        await ctx.send("There's nuthin")
-    
+
 
 
 def setup(client):
