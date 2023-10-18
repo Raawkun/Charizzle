@@ -223,7 +223,7 @@ class Listener(commands.Cog):
                             color = _embed.color
                             self.db_lot.execute(f```
                             INSERT INTO Events(
-                            author_lot, title_lot, desc_lot, footer_lot, color_lot
+                            Author_Lot, Title_Lot, Desc_Lot, Footer_Lot, Color_Lot
                             ) VALUES (
                             author, title, desc, file, footer, color
                             )
@@ -237,7 +237,7 @@ class Listener(commands.Cog):
                             color = _embed.color
                             self.db_lot.execute(f```
                             INSERT INTO Events(
-                            author_BT, title_BT, desc_BT, footer_BT, color_BT
+                            Author_BT, Title_BT, Desc_BT, Footer_BT, Color_BT
                             ) VALUES (
                             author, title, desc, file, footer, color
                             )
