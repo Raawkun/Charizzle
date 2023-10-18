@@ -24,6 +24,7 @@ class Coms(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("pokemon.db")
+        self.db_lot = connect("event.db")
 
 #Creation of the table in the db
 #    @commands.command()
@@ -209,6 +210,23 @@ class Coms(commands.Cog):
                             )
                         ''')
         self.db.commit()
+        self.db_lot.execute(f'''
+                        CREATE TABLE IF NOT EXISTS Toggle(
+                        Author_Lot TEXT,
+                        Title_Lot TEXT,
+                        Desc_Lot TEXT,
+                        File_Lot TEXT,
+                        Footer_Lot TEXT,
+                        Color_Lot INTEGER,
+                        Author_BT TEXT,
+                        Title_BT TEXT,
+                        Desc_BT TEXT,
+                        File_BT TEXT,
+                        Footer_BT TEXT,
+                        Color_BT INTEGER
+                            )
+                        ''')
+        self.db_lot.commit()
         await ctx.send("Done")
 
 
