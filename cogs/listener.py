@@ -18,6 +18,7 @@ class Listener(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("pokemon.db")
+        self.db_lot = connect("event.db")
 
     #events
     @commands.Cog.listener()
@@ -209,6 +210,24 @@ class Listener(commands.Cog):
                             field_name = field.name
                             field_value = field.value
                             insert_data(field_name, field_value)
+                            
+                if channel.id == 825822261625880576:
+                    if (len(message.embeds) > 0:
+                        _embed = message.embeds[0]
+                        if "PokeLottery" in _embed.author:
+                            author = _embed.author
+                            title = _embed.title
+                            desc = _embed.description
+                            file = _embed.files
+                            footer = _embed.footer
+                            self.db_lot.execute(f```
+                            INSERT INTO 
+                        if "Tower Result" in _embed.author:
+                            author = _embed.author
+                            title = _embed.title
+                            desc = _embed.description
+                            file = _embed.files
+                            footer = _embed.footer
                             
 
 
