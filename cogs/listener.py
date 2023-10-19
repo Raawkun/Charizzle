@@ -129,6 +129,33 @@ class Listener(commands.Cog):
                         if row[0] == 1:
                             await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
 
+            #Rare Spawn Listener
+            receiver_channel = 825958388349272106 #bot-testing channel
+            if "found a wild" in message.content:
+                announce_channel = self.client.get_channel(receiver_channel)
+                if (len(message.embeds) > 0):
+                    _embed = message.embed[0]
+                    #Check if reaction or interaction
+                    referenced_message = await message.channel.fetch_message(message.reference.message_id)
+                    interaction_message = await message.channel.fetch_message(message.interaction.message_id)
+                    if referenced_message:
+                        sender = referenced_message.author.id
+                        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.author.id}')
+                        database.fetchall()
+                        if not database:
+                            self.db.execute(f'INSERT INTO Toggle (USER_ID, Username) VALUES ({sender.author.id}, "{sender.author.name}")')
+                            self.db.commit()
+                            await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check '''<toggle''' for more info.")
+                    if interaction_message:
+                        sender = interaction_message.author.id
+                        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.author.id}')
+                        database.fetchall()
+                        if not database:
+                            self.db.execute(f'INSERT INTO Toggle (USER_ID, Username) VALUES ({sender.author.id}, "{sender.author.name}")')
+                            self.db.commit()
+                            await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check '''<toggle''' for more info.")
+
+
 
 
 

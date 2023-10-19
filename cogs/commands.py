@@ -63,37 +63,37 @@ class Coms(commands.Cog):
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {ctx.author.id}')
         database = database.fetchall()
         for row in database:
-            if switch == "grazz" and row[2] == 0:
+            if switch == "grazz" and row[3] == 0:
                 self.db.execute(f'UPDATE Toggle SET Grazz = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
-            elif switch == "grazz" and row[2] == 1:
+            elif switch == "grazz" and row[3] == 1:
                 self.db.execute(f'UPDATE Toggle SET Grazz = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
-            elif switch == "repel" and row[3] == 0:
+            elif switch == "repel" and row[4] == 0:
                 self.db.execute(f'UPDATE Toggle SET Repel = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
                 
-            elif switch == "repel" and row[3] == 1:
+            elif switch == "repel" and row[4] == 1:
                 self.db.execute(f'UPDATE Toggle SET Repel = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
                 
-            elif switch == "starter" and row[4] == 0:
+            elif switch == "starter" and row[5] == 0:
                 self.db.execute(f'UPDATE Toggle SET Starter = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
-            elif switch == "starter" and row[4] == 1:
+            elif switch == "starter" and row[5] == 1:
                 self.db.execute(f'UPDATE Toggle SET Starter = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
-            elif switch == "privacy" and row[5] == 0:
+            elif switch == "privacy" and row[6] == 0:
                 self.db.execute(f'UPDATE Toggle SET Privacy = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
-            elif switch == "privacy" and row[5] == 1:
+            elif switch == "privacy" and row[6] == 1:
                 self.db.execute(f'UPDATE Toggle SET Privacy = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
@@ -222,6 +222,7 @@ class Coms(commands.Cog):
                         CREATE TABLE IF NOT EXISTS Toggle(
                         Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
                         User_ID INT,
+                        Username TEXT,
                         Grazz BOOLEAN DEFAULT 1,
                         Repel BOOLEAN DEFAULT 1,
                         Starter BOOLEAN DEFAULT 1,
