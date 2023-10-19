@@ -255,7 +255,32 @@ class Listener(commands.Cog):
                         await message.channel.send('Found "personal contribution" in an embed description.')
 
 
-
+        if message.channel.id == 825822261625880576:
+            if (len(message.embeds)) > 0:
+                _embed = message.embeds[0]
+                if "Lottery" in _embed.author:
+                    lot_dict = _embed.to_dict()
+                    print(lot_dict)
+                    announce_channel.id = 1163534668281421915
+                    lot_embed = disnake.Embed.from_dict(lot_dict)
+                    await announce_channel.send(embed=lot_dict)
+                if "Tower" in _embed.author:
+                    tower_dict = _embed.to_dict()
+                    print(tower_dict)
+                    announce_channel.id = 1163534668281421915
+                    lot_embed = disnake.Embed.from_dict(lot_dict)
+                    await announce_channel.send(embed=lot_dict)
+        elif "<lot" in message.content:
+            if lot_dict:
+                lot_embed = disnake.Embed.from_dict(lot_dict)
+                await message.channel.send(embed=lot_embed)
+            else: return
+        elif "<tower" in message.content:
+            if tower_dict:
+                tower_embed = disnake.Embed.from_dict(tower_dict)
+                await message.channels.end(embed=tower_embed)
+            else: return
+                        
 
         def insert_data(field_name, field_value):
             conn = sqlite3.connect('pokemon.db')
