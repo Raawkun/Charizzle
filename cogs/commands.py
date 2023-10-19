@@ -11,139 +11,35 @@ import sqlite3
 
 class Coms(commands.Cog):
 
-    enabled = " is enabled."
-    disabled = " is disabled."
-
-    def __init__(self, client):
-        self.client = client
-
 #Database initialization, needed in every file with db
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
-        self.db_mon = connect("pokemon.db")
+        
 
-#Creation of the table in the db
-#    @commands.command()
-#    async def toggledb(self, ctx):
-#        self.db.execute(f'''
-#                        CREATE TABLE IF NOT EXISTS Toggle(
-#                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
-#                            User_ID INTEGER,
-#                            Switch1 INTEGER DEFAULT 0,
-#                            Switch2 INTEGER DEFAULT 0,
-#                            Switch3 INTEGER DEFAULT 0,
-#                            )
-#                        ''')
-#        self.db.commit()
-#        await ctx.send("Done")
 
-#Toggle command from Pr1nce
-    @commands.slash_command(
-        name="toggle",
-        description="Toggle bot actions",
-        options=[
-            Option(
-                name="switch",
-                description="Choose a switch to toggle",
-                type=3,
-                choices=[
-                    OptionChoice("Grazz", "grazz"),
-                    OptionChoice("Repel", "repel"),
-                    OptionChoice("Starter", "starter"),
-                    OptionChoice("Privacy", "privacy")
-                ],
-                required=True
-            ),   
-        ],)
-    async def _toggle(self, ctx, switch = None):
-        await ctx.response.defer()
-        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {ctx.author.id}')
-        database = database.fetchall()
-        for row in database:
-            if switch == "grazz" and row[2] == 0:
-                self.db.execute(f'UPDATE Toggle SET Grazz = 1 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled on")
-            elif switch == "grazz" and row[2] == 1:
-                self.db.execute(f'UPDATE Toggle SET Grazz = 0 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled off")
-            elif switch == "repel" and row[3] == 0:
-                self.db.execute(f'UPDATE Toggle SET Repel = 1 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled on")
-                
-            elif switch == "repel" and row[3] == 1:
-                self.db.execute(f'UPDATE Toggle SET Repel = 0 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled off")
-                
-            elif switch == "starter" and row[4] == 0:
-                self.db.execute(f'UPDATE Toggle SET Starter = 1 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled on")
-            elif switch == "starter" and row[4] == 1:
-                self.db.execute(f'UPDATE Toggle SET Starter = 0 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled off")
-            elif switch == "privacy" and row[5] == 0:
-                self.db.execute(f'UPDATE Toggle SET Privacy = 1 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled on")
-            elif switch == "privacy" and row[5] == 1:
-                self.db.execute(f'UPDATE Toggle SET Privacy = 0 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled off")
 
-    @commands.slash_command(
-        name="admin",
-        description="Toggle admin stuff",
-        options=[
-            Option(
-                name="switch",
-                description="Choose a switch to toggle",
-                type=3,
-                choices=[
-                    OptionChoice("Stfu", "stfu"),
-                    OptionChoice("Lol", "lol")
-                ],
-                required=True
-            ),   
-        ],)
-    async def _admin(self, ctx, swtich = None):
-        await ctx.response.defer()
-        database = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {ctx.author.id}')
-        database = database.fetchall()
-        if ctx.author.id == self.db.execute(f'SELECT User_ID FROM Admin'):
-            for row in database:
-                if swtich == "stfu" and row[2] == 0:
-                    self.db.execute(f'UPDATE Admin SET Stfu = 1 WHERE User_ID = {ctx.author.id}')
-                    self.db.commit()
-                    await ctx.send("Toggled on", hidden=True)
-                elif swtich == "stfu" and row[2] == 1:
-                    self.db.execute(f'UPDATE Admin SET Stfu = 0 WHERE User_ID = {ctx.author.id}')
-                    self.db.commit()
-                    await ctx.send("Toggled off", hidden=True)
-                elif swtich == "lol" and row[3] == 0:
-                    self.db.execute(f'UPDATE Admin SET Lol = 1 WHERE User_ID = {ctx.author.id}')
-                    self.db.commit()
-                    await ctx.send("Toggled on", hidden=True)
-                    
-                elif swtich == "lol" and row[3] == 1:
-                    self.db.execute(f'UPDATE Admin SET Lol = 0 WHERE User_ID = {ctx.author.id}')
-                    self.db.commit()
-                    await ctx.send("Toggled off", hidden=True)
-        else: await ctx.send("You're not my Trainer, I do no obey to you! <:blastoise_smug:835196079586148443>", hidden=True)
 
-    @commands.command()
-    async def toggle(self, ctx, message):
-        sender = message.author
-        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender}')
-        database.fetchall()
-        if database:
-            embed = disnake.Message.embeds
-
+    # @commands.command()
+    # async def toggle(self, ctx, * arg):
+    #     user_id = ctx.author.id
+    #     database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
+    #     database.fetchall()
+    #     author_url = "https://cdn.discordapp.com/emojis/1153729922620215349.webp?size=96&quality=lossless"
+    #     author_name = "Mega-Gengar Service"
+    #     gengar_bot = disnake.Member(1161011648585285652)
+    #     footer_icon = gengar_bot.display_avatar.url
+    #     footer_name = "Mega Gengar"
+    #     if database:
+    #         guild = ctx.guild
+    #         role_id = 1161013151903514807
+    #         role = disnake.utils.get(guild.roles, id=role_id)
+    #         embed = disnake.Embed(
+    #             title="**Settings**",color=role.color, description="Here you can see your current toggle settings. Changeable via ``/toggle``"
+    #         )
+    #         embed.set_author(icon_url=author_url,name=author_name)
+    #         embed.set_footer(icon_url=footer_icon,text=footer_name)
+    #         await ctx.send(embed=embed)
 
     @commands.command()
     async def calc(self, ctx, operation:str):
@@ -192,17 +88,11 @@ class Coms(commands.Cog):
     
 
 
-    @commands.slash_command(
-            name="test",
-            description="Just getting a badge!!")
-    async def _test(self, ctx):
-            await ctx.response.defer()
-            await ctx.send(f"Now I have my badge!!!")
 
     @commands.command()
     async def toggledb(self, ctx, input: str):
         if "dex" in input:
-            self.db_mon.execute(f'''
+            self.db.execute(f'''
                             CREATE TABLE IF NOT EXISTS Dex(
                             DexID INTEGER PRIMARY KEY,
                             Name TEXT,
@@ -222,7 +112,7 @@ class Coms(commands.Cog):
                             Img_url TEXT
                             )
                             ''')
-            self.db_mon.commit()
+            self.db.commit()
             print("Dex_DB created")
         elif "toggle" in input:
             self.db.execute(f'''

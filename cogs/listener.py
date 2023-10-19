@@ -16,7 +16,6 @@ class Listener(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
-        self.db_mon = connect("pokemon.db")
 
     #events
     @commands.Cog.listener()
@@ -49,13 +48,55 @@ class Listener(commands.Cog):
             for row in database:
                 if row[0] == 1:
                     await message.channel.send("No u.")
+        
+        if message.content.lower() == "<toggle":
+            user_id = message.author.id
+            database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
+            database = database.fetchall()
+            author_url = "https://cdn.discordapp.com/emojis/1153729922620215349.webp?size=96&quality=lossless"
+            author_name = "Mega-Gengar Service Alpha"
+            gengar_bot = self.client.get_user(1161011648585285652)
+            footer_icon = gengar_bot.display_avatar.url
+            footer_name = "Mega Gengar"
+            emo_yes = ":white_check_mark:"
+            emo_no = ":x:"
+            color = 0x807ba6
+            if database:
+                if database[0][2] == 1:
+                    value_grazz = emo_yes
+                else: 
+                    value_grazz = emo_no
+                if database[0][3] == 1:
+                    value_repel = emo_yes
+                else:
+                    value_repel = emo_no
+                if database[0][4] == 1:
+                    value_start = emo_yes
+                else: 
+                    value_start = emo_no
+                if database[0][5] == 1:
+                    value_priv = emo_yes
+                else:
+                    value_priv = emo_no
+                embed = disnake.Embed(
+                    title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
+                )
+                embed.set_author(icon_url=author_url,name=author_name)
+                embed.set_footer(icon_url=footer_icon,text=footer_name)
+                embed.add_field(name="Golden Razz Berry: ",inline=True, value=value_grazz)
+                embed.add_field(name="Repel: ",inline=True, value=value_repel)
+                embed.add_field(name="Starter: ",inline=True, value=value_start)
+                embed.add_field(name="Privacy: ",inline=True, value=value_priv)
+                embed.set_thumbnail(footer_icon)
+                await message.channel.send(embed=embed)
 
-        elif message.content.lower() == "lol":
+
+        if message.content.lower() == "lol":
             database = self.db.execute(f'SELECT Lol FROM Admin')
             database.fetchall()
             print(database)
             if database:
-                if database[0][3]:
+                if database[0][3] == 1:
                     await message.channel.send("Rofl.")
                 else: return
 
@@ -80,7 +121,12 @@ class Listener(commands.Cog):
             
         
             if "found a wild" in message.content:
-                referenced_message = await message.channel.fetch_message(message.reference.message_id)
+                try:
+                    referenced_message = await message.channel.fetch_message(message.reference.message_id)
+                except:
+                    return
+                else: 
+                    referenced_message = await message.channel.fetch_message(message.reference.message_id)
                 #print(referenced_message)
                 if referenced_message:
                     sender = referenced_message.author.id
@@ -115,6 +161,7 @@ class Listener(commands.Cog):
                     # print(interaction_message)
                 except:
                     referenced_message = await message.channel.fetch_message(message.reference.message_id)
+                else: interaction_message = await message.channel.fetch_message(message.interaction.message_id)
                     #print(referenced_message)
                 if referenced_message:
                     sender = referenced_message.author
@@ -129,15 +176,75 @@ class Listener(commands.Cog):
                     self.db.commit()
                     await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
                     await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ```/toggle``` for more info.")
+                
 
 
-
-
-
+        if message.author.id == bot_wl:
+            if (len(message.embeds) > 0):
+                _embed=message.embeds[0]
+                if "version" in _embed.description:
+                    dex=_embed.author.name.split("#")[1]
+                    #print(dex)
+                    name=_embed.author.name.split("#")[0]
+                    #print(name)
+                    for field in _embed.fields:
+                        if field.name == "Type":
+                            type1= field.value.split()[0]
+                            #print(type1)
+                            type1_semi = type1.split(":")[1]
+                            #print(type1_semi)
+                            try:
+                                type2 = field.value.split()[1]
+                                #print(type2)
+                                type2_semi = type2.split(":")[1]
+                                #print(type2_semi)
+                            except: type2 = None
+                            else: type2 = field.value.split()[1]
+                        if field.name == "Base Attack":
+                            b_atk = field.value.split()[1]
+                            #print(b_atk)
+                        if field.name == "Base Defense":
+                            b_def = field.value.split()[1]
+                            #print(b_def)
+                        if field.name == "Base HP":
+                            b_hp = field.value.split()[1]
+                            #print(b_hp)
+                        if field.name == "Base Sp. Atk":
+                            b_spatk = field.value.split()[1]
+                            #print(b_spatk)
+                        if field.name == "Base Sp. Def":
+                            b_spdef = field.value.split()[1]
+                            #print(b_spdef)
+                        if field.name == "Base Speed":
+                            b_spd = field.value.split()[1]
+                            #print(b_spd)
+                        if field.name == "Rarity":
+                            rarity = field.value.split(":")[1]
+                            #print(rarity)
+                            if rarity.lower() == "legendary":
+                                legendary = True
+                            else: legendary = False
+                            if rarity.lower() == "shiny":
+                                shiny = True
+                            else: shiny = False
+                            if rarity.lower() == "golden":
+                                golden = True
+                            else: golden = False
+                            if rarity.lower() == "mega":
+                                mega = True
+                            else: mega = False
+                            if rarity.lower() == "shinymega":
+                                shiny = True
+                                mega = True
+                            else: continue
+                        if _embed.image != None:
+                            imageurl = _embed.image.url
+                            #print(imageurl)
+                database = self.db.execute(f'INSERT INTO Dex VALUES ({dex},{name},{type1_semi},{type2_semi},{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},{rarity},{imageurl})')
+                database.self.commit()
         # Only wotks in specific channels!
         # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
         # if message.channel.id in channel_ids:
-
         
         channel_ids = [1163743648744226886, 827510854467584002] #test-spawns
         receiver_channel = 825958388349272106 #bot-testing channel
@@ -159,17 +266,20 @@ class Listener(commands.Cog):
                         _embed = message.embeds[0]
                         color = _embed.color
                         # value = color.value
-                        # rgb = color.to_rgb
                         # await message.channel.send(value)
-                        # await message.channel.send(rgb)
+                        # await message.channel.send(color)
                         # await message.channel.send(str(color))
+
                         if str(color) in embedc:
                             author_icurl = _embed.author.icon_url
                             thumb = _embed.image.url
-                            desc = _embed.description
                             await message.channel.send("I see you...")
                             embedded=disnake.Embed(
-                                title="Much wow", color=color,description=desc,
+                                title=(
+                                    
+                                ), color=color,description=(
+                                    
+                                ),
                             )
                             embedded.set_author(
                                 name=(str(sender.display_name)+" just found a cool Pokémon!"), icon_url=author_icurl
