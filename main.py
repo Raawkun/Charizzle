@@ -1,15 +1,13 @@
 import asyncio
 import os
-
 import disnake
 from disnake.ext import commands
-from dotenv import dotenv_values
-import json
 
 # Zeichen zum Kopieren: [ ] { }
 
-config = dotenv_values(".env")
-token = config["YOUR_BOT_TOKEN"]
+
+f = open("key.txt", "r")
+token = f.read()
 
 intents = disnake.Intents.all()
 

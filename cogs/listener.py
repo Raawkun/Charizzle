@@ -12,35 +12,18 @@ from main import client
 
 class Listener(commands.Cog):
 
-    with open("config.json", "r") as config_file:
-        config = json.load(config_file)
-
 
     def __init__(self, client):
         self.client = client
-        self.db = connect("pokemon.db")
+        self.db = connect("database.db")
+        self.db_mon = connect("pokemon.db")
 
     #events
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
-        print("Checking for config.json")
-        if __file__.startswith("config") == False:
-            config_info = { 
-                "squirtle" : 1,
-                "charmander" : 1,
-                "lol" : 1,
-                "annoy" : 0,
-                "client_id" : 0,
-                "attempts" : 0
-            }
-            myJSON = json.dumps(config_info)
-            with open("config.json", "w") as jsonfile:
-                jsonfile.write(myJSON)
-                print("Config written successful")
-        else: print("Config already there")
-        
+        print("Time do to ghost stuff!")
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.playing, name="with your feelings."))
 
     @commands.Cog.listener()
@@ -49,14 +32,14 @@ class Listener(commands.Cog):
         # You can add your custom logic here.
         if message.author == self.client.user:
             return  # Ignore messages sent by the bot itself.
-        bot_wl = 664508672713424926
-        #Meow ID
+        bot_wl = 664508672713424926     #Meow ID
+        celadon = 1080049677518508032
+
+
         if message.author.bot and message.author.id != bot_wl:
             return
         
-            
         #Open to every Channel!
-
         if message.content == "^-^":
             await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
 
@@ -70,90 +53,82 @@ class Listener(commands.Cog):
         elif message.content.lower() == "lol":
             database = self.db.execute(f'SELECT Lol FROM Admin')
             database.fetchall()
-            for row in database:
-                if row[0] == 1:
+            print(database)
+            if database:
+                if database[0][3]:
                     await message.channel.send("Rofl.")
+                else: return
 
-        elif re.search(r'\bsquirtle\b', message.content, re.IGNORECASE):
-            database = self.db.execute(f'SELECT Starter FROM Toggle WHERE User_ID = {message.author.id}')
-            database.fetchall()
-            for row in database:
-                if row[0] == 1:
+        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {message.author.id}')
+        database = database.fetchall()
+        if database:
+            if database[0][4] == 1:
+                emoji = False
+                emoji2 = False
+                # print("Starter is toggled on")
+                if re.search(r'\bsquirtle\b', message.content, re.IGNORECASE):
                     emoji = '👎'
                     emoji2 = self.client.get_emoji(1083883409404854322)
-                    await message.add_reaction(emoji)
-                    await message.add_reaction(emoji2)
-            #        await message.channel.send("Worst starter fr.")
-
-        elif re.search(r'\bcharmander\b', message.content, re.IGNORECASE):
-            database = self.db.execute(f'SELECT Repel FROM Toggle WHERE User_ID = {sender.author.id}')
-            database.fetchall()
-            for row in database:
-                if row[0] == 1:
+                if re.search(r'\bcharmander\b', message.content, re.IGNORECASE):
                     emoji = '👍'
                     emoji2 = self.client.get_emoji(1083883459883315200)
+                if emoji and emoji2:
                     await message.add_reaction(emoji)
                     await message.add_reaction(emoji2)
-            #        await message.channel.send("Wow! What a great Pokémon starter!")
 
-        if "boost has expired" in message.content:
-            referenced_message = await message.channel.fetch_message(message.reference.message_id)
-            interaction_message = await message.channel.fetch_message(message.interaction.message_id)
-            if referenced_message:
-                                # Print the user ID of the message that received the response
-                sender = referenced_message.author.id
-                if "repel" in message.content:
-                    database = self.db.execute(f'SELECT Repel FROM Toggle WHERE User_ID = {sender.author.id}')
-                    database.fetchall()
-                    for row in database:
-                        if row[0] == 1:
-                            await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
-                if "goldenrazz" in message.content:
-                    database = self.db.execute(f'SELECT Grazz FROM Toggle WHERE User_ID = {sender.author.id}')
-                    database.fetchall()
-                    for row in database:
-                        if row[0] == 1:
-                            await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
-            elif interaction_message:
-                sender = interaction_message.author.id
-                if "repel" in message.content:
-                    database = self.db.execute(f'SELECT Repel FROM Toggle WHERE User_ID = {sender.author.id}')
-                    database.fetchall()
-                    for row in database:
-                        if row[0] == 1:
-                            await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
-                if "goldenrazz" in message.content:
-                    database = self.db.execute(f'SELECT Grazz FROM Toggle WHERE User_ID = {sender.author.id}')
-                    database.fetchall()
-                    for row in database:
-                        if row[0] == 1:
-                            await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+        if message.author.id == bot_wl:
+            
+        
+            if "found a wild" in message.content:
+                referenced_message = await message.channel.fetch_message(message.reference.message_id)
+                #print(referenced_message)
+                if referenced_message:
+                    sender = referenced_message.author.id
+                    # print(sender)
+                    database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender}')
+                    database = database.fetchall()
+                    #print(database)
+                    if database:
+                        if database[0][3] == 1:
+                            #print("repel activated"+str(database[0][3]))
+                            if "repel" in message.content:
+                                await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                        else: return
+                        if database[0][2] == 1:
+                            #print("grazz activated"+str(database[0][2]))
+                            if "goldenrazz" in message.content:
+                                await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+                        else: return
+                
 
             #Rare Spawn Listener
-            receiver_channel = 825958388349272106 #bot-testing channel
-            if "found a wild" in message.content:
-                announce_channel = self.client.get_channel(receiver_channel)
-                if (len(message.embeds) > 0):
-                    _embed = message.embed[0]
-                    #Check if reaction or interaction
-                    referenced_message = await message.channel.fetch_message(message.reference.message_id)
+        receiver_channel = 825958388349272106 #bot-testing channel
+        log_channel = 1164544776985653319
+        if "found a wild" in message.content:
+            announce_channel = self.client.get_channel(receiver_channel)
+            log_channel = self.client.get_channel(log_channel)
+            if (len(message.embeds) > 0):
+                __embed = message.embeds[0]
+                #Check if reaction or interaction
+                try:
                     interaction_message = await message.channel.fetch_message(message.interaction.message_id)
-                    if referenced_message:
-                        sender = referenced_message.author.id
-                        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.author.id}')
-                        database.fetchall()
-                        if not database:
-                            self.db.execute(f'INSERT INTO Toggle (USER_ID, Username) VALUES ({sender.author.id}, "{sender.author.name}")')
-                            self.db.commit()
-                            await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check '''<toggle''' for more info.")
-                    if interaction_message:
-                        sender = interaction_message.author.id
-                        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.author.id}')
-                        database.fetchall()
-                        if not database:
-                            self.db.execute(f'INSERT INTO Toggle (USER_ID, Username) VALUES ({sender.author.id}, "{sender.author.name}")')
-                            self.db.commit()
-                            await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check '''<toggle''' for more info.")
+                    # print(interaction_message)
+                except:
+                    referenced_message = await message.channel.fetch_message(message.reference.message_id)
+                    #print(referenced_message)
+                if referenced_message:
+                    sender = referenced_message.author
+                    #print(sender)
+                elif interaction_message:
+                    sender = interaction_message.author
+                    #print(sender)
+                database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.id}')
+                database = database.fetchall()
+                if not database:
+                    self.db.execute(f'INSERT INTO Toggle (USER_ID) VALUES ({sender.id})')
+                    self.db.commit()
+                    await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
+                    await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ```/toggle``` for more info.")
 
 
 
@@ -162,45 +137,13 @@ class Listener(commands.Cog):
         # Only wotks in specific channels!
         # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
         # if message.channel.id in channel_ids:
-            
-            #if message.content.lower() == "no":
-                #await message.channel.send("Yes.")
-            #elif message.content.lower() == "yes":
-                #await message.channel.send("No.")
 
-            # if message.author.id == parser.get('client_id'):
-            #     if int(parser.get('attempts')) >= 1:
-            #         parser['attempts'] -= 1
-            #         clowning = message.content
-            #         await message.send(clowning)
-                
-            
-            # elif parser['annoy'] == 1:
-            #     if message.author.id == parser.get('client_id'):
-            #         copymessage = message.content
-            #         await message.send(copymessage)
-
-
-        channel_ids = [1079815106277425243]
-        if message.channel.id in channel_ids:
-                message_id = message.message_id
-                channel_id = message.channel_id
-
-                if message.emoji.name == "🎨":
-                    channel = await main.client.fetch_channel(channel_id)
-                    message = await channel.fetch_message(message_id)
-
-                    if message.embeds:
-                        for embed in message.embeds:
-                            color_hex = embed.color
-                            await message.channel.send(f"The color is {color_hex}")
         
         channel_ids = [1163743648744226886, 827510854467584002] #test-spawns
         receiver_channel = 825958388349272106 #bot-testing channel
-        meowbot = 664508672713424926 #id from PokeMeow
         if message.channel.id in channel_ids:
             print("Message received")
-            if message.author.id == meowbot:
+            if message.author.id == bot_wl:
                 announce_channel = self.client.get_channel(receiver_channel)
                 #Legendary Embed HEX #a007f8 160, 7, 248
                 #Shiny Embed HEX #fe98cb 254, 152, 203
@@ -209,22 +152,18 @@ class Listener(commands.Cog):
                 #R HEX  #fb8908
                 #UC HEX #13b4e7
                 #C HEX  #0855fb
-                embedc = ["#0855fb","13b4e7","fb8908","f8f407","#a007f8", "#fe98cb" , "#e9270b"]
-
-                
-
+                embedc = ["#0855fb","#13b4e7","#fb8908","#f8f407","#a007f8", "#fe98cb" , "#e9270b"]
                 if "found a wild" in message.content:
                     await message.channel.send("Thats a spawn")
                     if (len(message.embeds) > 0):
                         _embed = message.embeds[0]
                         color = _embed.color
-                        value = color.value
-                        rgb = color.to_rgb
-                        await message.channel.send(value)
-                        #await message.channel.send(rgb)
-                        await message.channel.send(str(color))
+                        # value = color.value
+                        # rgb = color.to_rgb
+                        # await message.channel.send(value)
+                        # await message.channel.send(rgb)
+                        # await message.channel.send(str(color))
                         if str(color) in embedc:
-                            author_name = _embed.author.name
                             author_icurl = _embed.author.icon_url
                             thumb = _embed.image.url
                             desc = _embed.description
@@ -233,7 +172,7 @@ class Listener(commands.Cog):
                                 title="Much wow", color=color,description=desc,
                             )
                             embedded.set_author(
-                                name=author_name, icon_url=author_icurl
+                                name=(str(sender.display_name)+" just found a cool Pokémon!"), icon_url=author_icurl
                             )
                             embedded.set_image(url=thumb)
                             await announce_channel.send(embed=embedded)
@@ -244,7 +183,7 @@ class Listener(commands.Cog):
                 if (len(message.embeds) > 0):
                     _embed = message.embeds[0]
                     if message.content != None:
-                        await message.channel.send("Test: "+message.content)
+                        await message.channel.send("Text: "+message.content)
                     if _embed.author != None:
                         await message.channel.send("Author:")
                         await message.channel.send(f"```{_embed.author}```")
@@ -297,23 +236,6 @@ class Listener(commands.Cog):
                         real_name = name.split(".")[0]
                         await message.channel.send(real_name)
                     else: return
-
-                if "personal contributions" in _embed.description:
-                    if message.channel.id in bot_wl:
-                        ann_msg = _embed.description.split("`")[3]
-                        print(ann_msg)
-                    else: return
-                else: return
-
-                if re.search(r'\bpersonal contribution\b', _embed.description, re.IGNORECASE):
-                    if message.channel.id in bot_wl:
-                        ann_msg = _embed.description.split("`")[3]
-                        print(ann_msg)
-                    
-                for embed in message.embeds:
-                    if 'personal contribution' in embed.description.lower():
-                        await message.channel.send('Found "personal contribution" in an embed description.')
-
 
         if message.channel.id == 825822261625880576:
             if (len(message.embeds)) > 0:

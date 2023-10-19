@@ -14,16 +14,14 @@ class Coms(commands.Cog):
     enabled = " is enabled."
     disabled = " is disabled."
 
-    with open("config.json", "r") as config_file:
-        config = json.load(config_file)
-
     def __init__(self, client):
         self.client = client
 
 #Database initialization, needed in every file with db
     def __init__(self, client):
         self.client = client
-        self.db = connect("pokemon.db")
+        self.db = connect("database.db")
+        self.db_mon = connect("pokemon.db")
 
 #Creation of the table in the db
 #    @commands.command()
@@ -63,37 +61,37 @@ class Coms(commands.Cog):
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {ctx.author.id}')
         database = database.fetchall()
         for row in database:
-            if switch == "grazz" and row[3] == 0:
+            if switch == "grazz" and row[2] == 0:
                 self.db.execute(f'UPDATE Toggle SET Grazz = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
-            elif switch == "grazz" and row[3] == 1:
+            elif switch == "grazz" and row[2] == 1:
                 self.db.execute(f'UPDATE Toggle SET Grazz = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
-            elif switch == "repel" and row[4] == 0:
+            elif switch == "repel" and row[3] == 0:
                 self.db.execute(f'UPDATE Toggle SET Repel = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
                 
-            elif switch == "repel" and row[4] == 1:
+            elif switch == "repel" and row[3] == 1:
                 self.db.execute(f'UPDATE Toggle SET Repel = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
                 
-            elif switch == "starter" and row[5] == 0:
+            elif switch == "starter" and row[4] == 0:
                 self.db.execute(f'UPDATE Toggle SET Starter = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
-            elif switch == "starter" and row[5] == 1:
+            elif switch == "starter" and row[4] == 1:
                 self.db.execute(f'UPDATE Toggle SET Starter = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
-            elif switch == "privacy" and row[6] == 0:
+            elif switch == "privacy" and row[5] == 0:
                 self.db.execute(f'UPDATE Toggle SET Privacy = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled on")
-            elif switch == "privacy" and row[6] == 1:
+            elif switch == "privacy" and row[5] == 1:
                 self.db.execute(f'UPDATE Toggle SET Privacy = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off")
@@ -138,12 +136,18 @@ class Coms(commands.Cog):
                     await ctx.send("Toggled off", hidden=True)
         else: await ctx.send("You're not my Trainer, I do no obey to you! <:blastoise_smug:835196079586148443>", hidden=True)
 
+    @commands.command()
+    async def toggle(self, ctx, message):
+        sender = message.author
+        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender}')
+        database.fetchall()
+        if database:
+            embed = disnake.Message.embeds
 
 
     @commands.command()
-    async def calc(self, ctx, input: int):
-        """Adds two numbers together."""
-        await ctx.send(input)
+    async def calc(self, ctx, operation:str):
+        await ctx.send(eval(operation))
 
     @commands.command()
     async def vers(self, ctx):
@@ -196,47 +200,54 @@ class Coms(commands.Cog):
             await ctx.send(f"Now I have my badge!!!")
 
     @commands.command()
-    async def toggledb(self, ctx):
-        self.db.execute(f'''
-                        CREATE TABLE IF NOT EXISTS Dex(
+    async def toggledb(self, ctx, input: str):
+        if "dex" in input:
+            self.db_mon.execute(f'''
+                            CREATE TABLE IF NOT EXISTS Dex(
                             DexID INTEGER PRIMARY KEY,
-                        Name TEXT,
-                        Type_1 TEXT,
-                        Type_2 TEXT,
-                        Hp INTEGER,
-                        Attack INTEGER,
-                        Defence INTEGER,
-                        Sp_atk INTEGER,
-                        Sp_def INTEGER,
-                        Speed INTEGER,
-                        Legendary BOOLEAN,
-                        Shiny BOOLEAN,
-                        Golden BOOLEAN,
-                        Mega BOOLEAN,
-                        Rarity TEXT,
-                        Img_url TEXT
+                            Name TEXT,
+                            Type_1 TEXT,
+                            Type_2 TEXT,
+                            Hp INTEGER,
+                            Attack INTEGER,
+                            Defence INTEGER,
+                            Sp_atk INTEGER,
+                            Sp_def INTEGER,
+                            Speed INTEGER,
+                            Legendary BOOLEAN,
+                            Shiny BOOLEAN,
+                            Golden BOOLEAN,
+                            Mega BOOLEAN,
+                            Rarity TEXT,
+                            Img_url TEXT
                             )
-                        ''')
-        self.db.commit()
-        self.db.execute(f'''
-                        CREATE TABLE IF NOT EXISTS Toggle(
-                        Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
-                        User_ID INT,
-                        Username TEXT,
-                        Grazz BOOLEAN DEFAULT 1,
-                        Repel BOOLEAN DEFAULT 1,
-                        Starter BOOLEAN DEFAULT 1,
-                        Privacy BOOLEAN DEFAULT 0,
-                        )
-                        ''')
-        self.db.commit()
-        self.db.execute(f'''
-                        CREATE TABLE IF NOT EXISTS Admin(
-                        User_ID INTEGER DEFAULT 352224989367369729,
-                        Stfu BOOLEAN DEFAULT 1,
-                        Lol BOOLEAN DEFAULT 1
-                        )
-        ''')
+                            ''')
+            self.db_mon.commit()
+            print("Dex_DB created")
+        elif "toggle" in input:
+            self.db.execute(f'''
+                            CREATE TABLE IF NOT EXISTS Toggle (
+                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
+                            User_ID INT,
+                            Grazz INT DEFAULT 1,
+                            Repel INT DEFAULT 1,
+                            Starter INT DEFAULT 1,
+                            Privacy INT DEFAULT 0
+                            )
+                            ''')
+            self.db.commit()
+            print("Toggle_DB created")
+        elif "admin" in input:
+            self.db.execute(f'''
+                            CREATE TABLE IF NOT EXISTS Admin (
+                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
+                            User_ID INTEGER DEFAULT 352224989367369729,
+                            Stfu INT DEFAULT 1,
+                            Lol INT DEFAULT 1
+                            )
+            ''')
+            self.db.commit()
+            print("Admin_DB created")
         await ctx.send("Done")
         
 
