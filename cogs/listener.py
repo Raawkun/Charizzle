@@ -54,71 +54,104 @@ class Listener(commands.Cog):
         if message.author.bot and message.author.id != bot_wl:
             return
         
-        with open("config.json", "r") as config_file:
-            parser = json.load(config_file)
             
         #Open to every Channel!
 
-            if message.content == "^-^":
-                await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
+        if message.content == "^-^":
+            await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
 
-            if message.content.lower() == "stfu":
-                await message.channel.send("No u.")
+        if message.content.lower() == "stfu":
+            database = self.db.execute(f'SELECT Stfu FROM Admin')
+            database.fetchall()
+            for row in database:
+                if row[0] == 1:
+                    await message.channel.send("No u.")
 
-            elif message.content.lower() == "lol":
-                if parser['lol'] == 1:
+        elif message.content.lower() == "lol":
+            database = self.db.execute(f'SELECT Lol FROM Admin')
+            database.fetchall()
+            for row in database:
+                if row[0] == 1:
                     await message.channel.send("Rofl.")
 
-            elif re.search(r'\bsquirtle\b', message.content, re.IGNORECASE):
-
-                if parser['squirtle'] == 1:
+        elif re.search(r'\bsquirtle\b', message.content, re.IGNORECASE):
+            database = self.db.execute(f'SELECT Starter FROM Toggle WHERE User_ID = {message.author.id}')
+            database.fetchall()
+            for row in database:
+                if row[0] == 1:
                     emoji = '👎'
                     emoji2 = self.client.get_emoji(1083883409404854322)
                     await message.add_reaction(emoji)
                     await message.add_reaction(emoji2)
             #        await message.channel.send("Worst starter fr.")
 
-            elif re.search(r'\bcharmander\b', message.content, re.IGNORECASE):
-                if parser['charmander'] == 1:
+        elif re.search(r'\bcharmander\b', message.content, re.IGNORECASE):
+            database = self.db.execute(f'SELECT Repel FROM Toggle WHERE User_ID = {sender.author.id}')
+            database.fetchall()
+            for row in database:
+                if row[0] == 1:
                     emoji = '👍'
                     emoji2 = self.client.get_emoji(1083883459883315200)
                     await message.add_reaction(emoji)
                     await message.add_reaction(emoji2)
             #        await message.channel.send("Wow! What a great Pokémon starter!")
 
-            if "boost has expired" in message.content:
-                referenced_message = await message.channel.fetch_message(message.reference.message_id)
-                if referenced_message:
-            # Print the user ID of the message that received the response
-                    sender = referenced_message.author.id
-                    if "repel" in message.content:
-                        await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
-                    if "goldenrazz" in message.content:
-                        await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+        if "boost has expired" in message.content:
+            referenced_message = await message.channel.fetch_message(message.reference.message_id)
+            interaction_message = await message.channel.fetch_message(message.interaction.message_id)
+            if referenced_message:
+                                # Print the user ID of the message that received the response
+                sender = referenced_message.author.id
+                if "repel" in message.content:
+                    database = self.db.execute(f'SELECT Repel FROM Toggle WHERE User_ID = {sender.author.id}')
+                    database.fetchall()
+                    for row in database:
+                        if row[0] == 1:
+                            await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                if "goldenrazz" in message.content:
+                    database = self.db.execute(f'SELECT Grazz FROM Toggle WHERE User_ID = {sender.author.id}')
+                    database.fetchall()
+                    for row in database:
+                        if row[0] == 1:
+                            await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+            elif interaction_message:
+                sender = interaction_message.author.id
+                if "repel" in message.content:
+                    database = self.db.execute(f'SELECT Repel FROM Toggle WHERE User_ID = {sender.author.id}')
+                    database.fetchall()
+                    for row in database:
+                        if row[0] == 1:
+                            await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                if "goldenrazz" in message.content:
+                    database = self.db.execute(f'SELECT Grazz FROM Toggle WHERE User_ID = {sender.author.id}')
+                    database.fetchall()
+                    for row in database:
+                        if row[0] == 1:
+                            await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
 
 
 
 
         # Only wotks in specific channels!
-        channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
-        if message.channel.id in channel_ids:
+        # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
+        # if message.channel.id in channel_ids:
             
             #if message.content.lower() == "no":
                 #await message.channel.send("Yes.")
             #elif message.content.lower() == "yes":
                 #await message.channel.send("No.")
 
-            if message.author.id == parser.get('client_id'):
-                if int(parser.get('attempts')) >= 1:
-                    parser['attempts'] -= 1
-                    clowning = message.content
-                    await message.send(clowning)
+            # if message.author.id == parser.get('client_id'):
+            #     if int(parser.get('attempts')) >= 1:
+            #         parser['attempts'] -= 1
+            #         clowning = message.content
+            #         await message.send(clowning)
                 
             
-            elif parser['annoy'] == 1:
-                if message.author.id == parser.get('client_id'):
-                    copymessage = message.content
-                    await message.send(copymessage)
+            # elif parser['annoy'] == 1:
+            #     if message.author.id == parser.get('client_id'):
+            #         copymessage = message.content
+            #         await message.send(copymessage)
 
 
         channel_ids = [1079815106277425243]

@@ -41,104 +41,113 @@ class Coms(commands.Cog):
 #        await ctx.send("Done")
 
 #Toggle command from Pr1nce
-#    @commands.slash_command(
-#        name="toggle",
-#        description="Toggle commands",
-#        options=[
-#            Option(
-#                name="switch",
-#                description="Choose a switch to toggle",
-#                type=3,
-#                choices=[
-#                    OptionChoice("Squirtle", "squirtle"),
-#                    OptionChoice("Charmander", "charmander"),
-#                    OptionChoice("Annoy", "annoy"),
-#                ],
-#                required=True
-#            ),   
-#        ],)
-#    async def _toggle(self, ctx, switch = None):
-#        await ctx.response.defer()
-#        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {ctx.author.id}')
-#        database = database.fetchall()
-#        for row in database:
-#            if switch == "squirtle" and row[2] == 0:
-#                self.db.execute(f'UPDATE Toggle SET Switch1 = 1 WHERE User_ID = {ctx.author.id}')
-#                self.db.commit()
-#                await ctx.send("Toggled on")
-#            elif switch == "squirtle" and row[2] == 1:
-#                self.db.execute(f'UPDATE Toggle SET Switch1 = 0 WHERE User_ID = {ctx.author.id}')
-#                self.db.commit()
-#                await ctx.send("Toggled off")
-#            elif switch == "annoy" and row[3] == 0:
-#                self.db.execute(f'UPDATE Toggle SET Switch3 = 1 WHERE User_ID = {ctx.author.id}')
-#                self.db.commit()
-#                await ctx.send("Toggled on")
+    @commands.slash_command(
+        name="toggle",
+        description="Toggle bot actions",
+        options=[
+            Option(
+                name="switch",
+                description="Choose a switch to toggle",
+                type=3,
+                choices=[
+                    OptionChoice("Grazz", "grazz"),
+                    OptionChoice("Repel", "repel"),
+                    OptionChoice("Starter", "starter"),
+                    OptionChoice("Privacy", "privacy")
+                ],
+                required=True
+            ),   
+        ],)
+    async def _toggle(self, ctx, switch = None):
+        await ctx.response.defer()
+        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {ctx.author.id}')
+        database = database.fetchall()
+        for row in database:
+            if switch == "grazz" and row[2] == 0:
+                self.db.execute(f'UPDATE Toggle SET Grazz = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled on")
+            elif switch == "grazz" and row[2] == 1:
+                self.db.execute(f'UPDATE Toggle SET Grazz = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled off")
+            elif switch == "repel" and row[3] == 0:
+                self.db.execute(f'UPDATE Toggle SET Repel = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled on")
+                
+            elif switch == "repel" and row[3] == 1:
+                self.db.execute(f'UPDATE Toggle SET Repel = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled off")
+                
+            elif switch == "starter" and row[4] == 0:
+                self.db.execute(f'UPDATE Toggle SET Starter = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled on")
+            elif switch == "starter" and row[4] == 1:
+                self.db.execute(f'UPDATE Toggle SET Starter = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled off")
+            elif switch == "privacy" and row[5] == 0:
+                self.db.execute(f'UPDATE Toggle SET Privacy = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled on")
+            elif switch == "privacy" and row[5] == 1:
+                self.db.execute(f'UPDATE Toggle SET Privacy = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled off")
+
+    @commands.slash_command(
+        name="admin",
+        description="Toggle admin stuff",
+        options=[
+            Option(
+                name="switch",
+                description="Choose a switch to toggle",
+                type=3,
+                choices=[
+                    OptionChoice("Stfu", "stfu"),
+                    OptionChoice("Lol", "lol")
+                ],
+                required=True
+            ),   
+        ],)
+    async def _admin(self, ctx, swtich = None):
+        await ctx.response.defer()
+        database = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {ctx.author.id}')
+        database = database.fetchall()
+        if ctx.author.id == self.db.execute(f'SELECT User_ID FROM Admin'):
+            for row in database:
+                if swtich == "stfu" and row[2] == 0:
+                    self.db.execute(f'UPDATE Admin SET Stfu = 1 WHERE User_ID = {ctx.author.id}')
+                    self.db.commit()
+                    await ctx.send("Toggled on", hidden=True)
+                elif swtich == "stfu" and row[2] == 1:
+                    self.db.execute(f'UPDATE Admin SET Stfu = 0 WHERE User_ID = {ctx.author.id}')
+                    self.db.commit()
+                    await ctx.send("Toggled off", hidden=True)
+                elif swtich == "lol" and row[3] == 0:
+                    self.db.execute(f'UPDATE Admin SET Lol = 1 WHERE User_ID = {ctx.author.id}')
+                    self.db.commit()
+                    await ctx.send("Toggled on", hidden=True)
+                    
+                elif swtich == "lol" and row[3] == 1:
+                    self.db.execute(f'UPDATE Admin SET Lol = 0 WHERE User_ID = {ctx.author.id}')
+                    self.db.commit()
+                    await ctx.send("Toggled off", hidden=True)
+        else: await ctx.send("You're not my Trainer, I do no obey to you! <:blastoise_smug:835196079586148443>", hidden=True)
+
+
 
     @commands.command()
-    async def toggle(ctx, input: str):
-        enabled = " is enabled."
-        disabled = " is disabled."
-
-        with open("config.json", "r") as config_file:
-            config_data = json.load(config_file)
-
-        authorized_users = [837611415070048277]
-        sender = disnake.Message.author
-
-        if authorized_users in disnake.Message.author.get_role:
-            if input == "squirtle":
-                if config_data.get('squirtle') == 1:
-                    config_data['squirtle'] = 0
-                    print("SQUIRTLE"+disabled)
-                    await ctx.message.send(input+disabled)
-                else: 
-                    config_data['squirtle'] = 1
-                    print("SQUIRTLE"+enabled)
-                    await ctx.message.send(input+enabled)
-            elif input == "charmander":
-                if config_data.get('charmander') == 1:
-                    config_data['charmander'] = 0
-                    print("CHARMANDER"+disabled)
-                    await ctx.message.send(input+disabled)
-                else: 
-                    config_data['charmander'] = 1
-                    print("CHARMANDER"+enabled)
-                    await ctx.message.send(input+enabled)
-            elif input == "lol":
-                if config_data.get('lol') == 1:
-                    config_data['lol'] = 0
-                    print("LOL"+disabled)
-                    await ctx.message.send(input+disabled)
-                else: 
-                    config_data['lol'] = 1
-                    print("LOL"+enabled)
-                    await ctx.message.send(input+enabled)
-            elif input == "annoy":
-                if config_data.get('annoy') == 1:
-                    config_data['annoy'] = 0
-                    print("ANNOY"+disabled)
-                    await ctx.message.send(input+disabled)
-                else: 
-                    config_data['annoy'] = 1
-                    print("ANNOY"+enabled)
-                    await ctx.message.send(input+enabled)
-
-            else:
-                await ctx.message.send("Wrong input.")
-
-        else: 
-            await ctx.message.send("You don't have enough power to access this.")
-
-
-    @commands.command()
-    async def add(self, ctx, left: int, right: int):
+    async def calc(self, ctx, input: int):
         """Adds two numbers together."""
-        await ctx.send(left + right)
+        await ctx.send(input)
 
     @commands.command()
     async def vers(self, ctx):
-        vers1 = str("1.0.0.2")
+        vers1 = str("1.0.0.3")
         await ctx.send(vers1)
 
     @commands.command()
@@ -209,6 +218,24 @@ class Coms(commands.Cog):
                             )
                         ''')
         self.db.commit()
+        self.db.execute(f'''
+                        CREATE TABLE IF NOT EXISTS Toggle(
+                        Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
+                        User_ID INT,
+                        Grazz BOOLEAN DEFAULT 1,
+                        Repel BOOLEAN DEFAULT 1,
+                        Starter BOOLEAN DEFAULT 1,
+                        Privacy BOOLEAN DEFAULT 0,
+                        )
+                        ''')
+        self.db.commit()
+        self.db.execute(f'''
+                        CREATE TABLE IF NOT EXISTS Admin(
+                        User_ID INTEGER DEFAULT 352224989367369729,
+                        Stfu BOOLEAN DEFAULT 1,
+                        Lol BOOLEAN DEFAULT 1
+                        )
+        ''')
         await ctx.send("Done")
         
 
