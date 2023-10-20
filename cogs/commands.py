@@ -24,7 +24,7 @@ class Coms(commands.Cog):
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
         database = database.fetchall()
         author_url = "https://cdn.discordapp.com/emojis/1153729922620215349.webp?size=96&quality=lossless"
-        author_name = cyx.author.display_name
+        author_name = ctx.author.display_name
         gengar_bot = self.client.get_user(1161011648585285652)
         footer_icon = gengar_bot.display_avatar.url
         footer_name = "Mega Gengar"
@@ -63,6 +63,20 @@ class Coms(commands.Cog):
     @commands.command()
     async def calc(self, ctx, operation:str):
         await ctx.send(eval(operation))
+
+    @commands.command()
+    async def random(self, ctx, str: inp = None)
+        role = 837611415070048277
+        if inp == "hunt"
+            if role in ctx.author.roles
+                roll1 = random(478)+1
+                roll2 = random(478)+1
+                while roll2 == roll1:
+                    roll2 = random(478)+1
+                await ctx.send("Your hunt mons are **"+str(roll1)+"** and **"+str(roll2)+"**.")
+            else: await ctx.send("Wrong usage. Try without input")
+        else: roll1=random(913)+1; await ctx.send("Your random Pokémon is **"+roll1+"**.")
+        
 
     @commands.command()
     async def vers(self, ctx):
