@@ -198,8 +198,7 @@ class Listener(commands.Cog):
                                 #print(type2)
                                 type2_semi = type2.split(":")[1]
                                 #print(type2_semi)
-                            except: type2 = None
-                            else: type2 = field.value.split()[1]
+                            except: type2_semi = None
                         if field.name == "Base Attack":
                             b_atk = field.value.split()[1]
                             #print(b_atk)
@@ -236,12 +235,10 @@ class Listener(commands.Cog):
                             if rarity.lower() == "shinymega":
                                 shiny = True
                                 mega = True
-                            else: continue
-                        if _embed.image != None:
-                            imageurl = _embed.image.url
+                        imageurl = _embed.image.url
                             #print(imageurl)
-                database = self.db.execute(f'INSERT INTO Dex VALUES ({dex},{name},{type1_semi},{type2_semi},{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},{rarity},{imageurl})')
-                database.self.commit()
+                self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},{name},{type1_semi},{type2_semi},{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},{rarity},{imageurl})')
+                self.db.commit()
         # Only wotks in specific channels!
         # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
         # if message.channel.id in channel_ids:
