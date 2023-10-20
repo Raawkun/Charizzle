@@ -18,28 +18,47 @@ class Coms(commands.Cog):
         
 
 
-
-
-    # @commands.command()
-    # async def toggle(self, ctx, * arg):
-    #     user_id = ctx.author.id
-    #     database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
-    #     database.fetchall()
-    #     author_url = "https://cdn.discordapp.com/emojis/1153729922620215349.webp?size=96&quality=lossless"
-    #     author_name = "Mega-Gengar Service"
-    #     gengar_bot = disnake.Member(1161011648585285652)
-    #     footer_icon = gengar_bot.display_avatar.url
-    #     footer_name = "Mega Gengar"
-    #     if database:
-    #         guild = ctx.guild
-    #         role_id = 1161013151903514807
-    #         role = disnake.utils.get(guild.roles, id=role_id)
-    #         embed = disnake.Embed(
-    #             title="**Settings**",color=role.color, description="Here you can see your current toggle settings. Changeable via ``/toggle``"
-    #         )
-    #         embed.set_author(icon_url=author_url,name=author_name)
-    #         embed.set_footer(icon_url=footer_icon,text=footer_name)
-    #         await ctx.send(embed=embed)
+    @commands.command()
+    async def toggle(self, ctx):
+        user_id = ctx.author.id
+        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
+        database = database.fetchall()
+        author_url = "https://cdn.discordapp.com/emojis/1153729922620215349.webp?size=96&quality=lossless"
+        author_name = cyx.author.display_name
+        gengar_bot = self.client.get_user(1161011648585285652)
+        footer_icon = gengar_bot.display_avatar.url
+        footer_name = "Mega Gengar"
+        emo_yes = ":white_check_mark:"
+        emo_no = ":x:"
+        color = 0x807ba6
+        if database:
+            if database[0][2] == 1:
+                value_grazz = emo_yes
+            else: 
+                value_grazz = emo_no
+            if database[0][3] == 1:
+                value_repel = emo_yes
+            else:
+                value_repel = emo_no
+            if database[0][4] == 1:
+                value_start = emo_yes
+            else: 
+                value_start = emo_no
+            if database[0][5] == 1:
+                value_priv = emo_yes
+            else:
+                value_priv = emo_no
+            embed = disnake.Embed(
+                title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
+            )
+            embed.set_author(icon_url=author_url,name=author_name)
+            embed.set_footer(icon_url=footer_icon,text=footer_name)
+            embed.add_field(name="Golden Razz Berry: ",inline=True, value=value_grazz)
+            embed.add_field(name="Repel: ",inline=True, value=value_repel)
+            embed.add_field(name="Starter: ",inline=True, value=value_start)
+            embed.add_field(name="Privacy: ",inline=True, value=value_priv)
+            embed.set_thumbnail(footer_icon)
+            await ctx.send(embed=embed)```
 
     @commands.command()
     async def calc(self, ctx, operation:str):
