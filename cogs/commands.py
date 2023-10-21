@@ -1,3 +1,4 @@
+import random
 from typing import Any
 import disnake
 from disnake.ext import commands
@@ -58,24 +59,30 @@ class Coms(commands.Cog):
             embed.add_field(name="Starter: ",inline=True, value=value_start)
             embed.add_field(name="Privacy: ",inline=True, value=value_priv)
             embed.set_thumbnail(footer_icon)
-            await ctx.send(embed=embed)```
+            await ctx.send(embed=embed)
 
     @commands.command()
     async def calc(self, ctx, operation:str):
         await ctx.send(eval(operation))
 
     @commands.command()
-    async def random(self, ctx, str: inp = None)
-        role = 837611415070048277
-        if inp == "hunt"
-            if role in ctx.author.roles
-                roll1 = random(478)+1
-                roll2 = random(478)+1
-                while roll2 == roll1:
-                    roll2 = random(478)+1
-                await ctx.send("Your hunt mons are **"+str(roll1)+"** and **"+str(roll2)+"**.")
-            else: await ctx.send("Wrong usage. Try without input")
-        else: roll1=random(913)+1; await ctx.send("Your random Pokémon is **"+roll1+"**.")
+    async def random(self, ctx, message = None):
+        try:
+            message = ctx.message.content.split()[1]
+        except: message = None
+        #print(str(message))
+        if message == "hunt":
+            roll1 = random.randint(1, 479)
+            roll2 = random.randint(1, 479)
+            while roll2 == roll1:
+                roll2 = random.randint(1, 479)
+            #print(roll1)
+            #print(roll2)
+            await ctx.send("Your mons are **"+str(roll1)+"** and **"+str(roll2)+"**.")
+        else: 
+            roll1 = random.randint(1, 914)
+            #print(roll1)
+            await ctx.send("Your random Pokémon is **"+str(roll1)+"**.")
         
 
     @commands.command()

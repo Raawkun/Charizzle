@@ -137,13 +137,19 @@ class Listener(commands.Cog):
                     if database:
                         if database[0][3] == 1:
                             #print("repel activated"+str(database[0][3]))
-                            if "repel" in message.content:
+                            if "super_repel" and "boost" in message.content:
+                                await message.channel.send("<@"+str(sender)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
+                            if "max_repel" and "boost" in message.content:
+                                await message.channel.send("<@"+str(sender)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
+                            if ":repel" and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
                         else: return
                         if database[0][2] == 1:
                             #print("grazz activated"+str(database[0][2]))
-                            if "goldenrazz" in message.content:
+                            if "goldenrazz" and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+                            if "honey" and "boost" in message.content:
+                                await message.channel.send("<@"+str(sender)+"> Hey, your <:honey:1165231049287155793> boost expired!")
                         else: return
                 
 
@@ -178,7 +184,8 @@ class Listener(commands.Cog):
                     await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ```/toggle``` for more info.")
                 
 
-
+        
+        log_channel = 1164544776985653319
         if message.author.id == bot_wl:
             if (len(message.embeds) > 0):
                 _embed=message.embeds[0]
@@ -237,8 +244,8 @@ class Listener(commands.Cog):
                                 mega = True
                         imageurl = _embed.image.url
                             #print(imageurl)
-                self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},{name},{type1_semi},{type2_semi},{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},{rarity},{imageurl})')
-                self.db.commit()
+                    self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}")')
+                    self.db.commit()
         # Only wotks in specific channels!
         # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
         # if message.channel.id in channel_ids:
