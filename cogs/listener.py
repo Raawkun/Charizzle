@@ -242,7 +242,7 @@ class Listener(commands.Cog):
                             await announce_channel.send(embed=embed)
                 if _embed.description:
                     if "returned with" in _embed.description:
-                        await message.channel.send(_embed.description)
+                        # await message.channel.send(_embed.description)
                         description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
                         sender = ref_msg.author.display_name
                         author_icurl = _embed.author.icon_url
