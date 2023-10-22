@@ -71,18 +71,54 @@ class Coms(commands.Cog):
             message = ctx.message.content.split()[1]
         except: message = None
         #print(str(message))
+        gengar_bot = self.client.get_user(1161011648585285652)
+        footer_icon = gengar_bot.display_avatar.url
+        footer_name = "Mega Gengar"
         if message == "hunt":
             roll1 = random.randint(1, 479)
+            database1 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll1}')
+            database1 = database1.fetchall()
             roll2 = random.randint(1, 479)
             while roll2 == roll1:
                 roll2 = random.randint(1, 479)
+            database2 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll2}')
+            database2 = database2.fetchall()
             #print(roll1)
             #print(roll2)
-            await ctx.send("Your mons are **"+str(roll1)+"** and **"+str(roll2)+"**.")
+            monname = database1[0][1]
+            monurl = database1[0][15]
+            monrare = database1[0][14]
+            embed = disnake.Embed(title="Your first Pokémon is **"+str(roll1)+"**.", color=0x807ba6)
+            embed.set_footer(icon_url=footer_icon,text=footer_name)
+            embed.set_author(name="PNG (Pokémon Number Generator)",icon_url="https://cdn.discordapp.com/emojis/862641822404050964.png")
+            embed.set_image(monurl)
+            embed.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll1)+"\n\nRarity: "+monrare+"\n\n"))
+            await ctx.send(embed=embed)
+            embed2 = disnake.Embed(title="Your second Pokémon is **"+str(roll2)+"**.", color=0x807ba6)
+            embed2.set_author(name="PNG (Pokémon Number Generator)",icon_url="https://cdn.discordapp.com/emojis/862641822404050964.png")
+            monname = database2[0][1]
+            monurl = database2[0][15]
+            monrare = database2[0][14]
+            embed2.set_footer(icon_url=footer_icon,text=footer_name)
+            embed2.set_image(monurl)
+            embed2.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll2)+"\n\nRarity: "+monrare))
+            
+            await ctx.send(embed=embed2)
+
         else: 
             roll1 = random.randint(1, 914)
+            database1 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll1}')
+            database1 = database1.fetchall()
+            monname = database1[0][1]
+            monurl = database1[0][15]
+            monrare = database1[0][14]
+            embed = disnake.Embed(title="Your Pokémon is **"+str(roll1)+"**.", color=0x807ba6)
+            embed.set_footer(icon_url=footer_icon,text=footer_name)
+            embed.set_author(name="PNG (Pokémon Number Generator)",icon_url="https://cdn.discordapp.com/emojis/862641822404050964.png")
+            embed.set_image(monurl)
             #print(roll1)
-            await ctx.send("Your random Pokémon is **"+str(roll1)+"**.")
+            embed.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll1)+"\n\nRarity: "+monrare))
+            await ctx.send(embed=embed)
         
 
     @commands.command()

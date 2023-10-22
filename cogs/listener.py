@@ -7,6 +7,8 @@ import main
 import json
 from sqlite3 import connect
 from main import client
+from utility.rarity_db import poke_rarity
+from utility.egglist import eggexcl
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -17,6 +19,7 @@ class Listener(commands.Cog):
         self.client = client
         self.db = connect("database.db")
 
+    
     #events
     @commands.Cog.listener()
     async def on_ready(self):
@@ -137,18 +140,18 @@ class Listener(commands.Cog):
                     if database:
                         if database[0][3] == 1:
                             #print("repel activated"+str(database[0][3]))
-                            if "super_repel" and "boost" in message.content:
+                            if "super_repel" in message.content and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
-                            if "max_repel" and "boost" in message.content:
+                            if "max_repel" in message.content and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
-                            if ":repel" and "boost" in message.content:
+                            if ":repel" in message.content and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
                         else: return
                         if database[0][2] == 1:
                             #print("grazz activated"+str(database[0][2]))
-                            if "goldenrazz" and "boost" in message.content:
+                            if "goldenrazz" in message.content and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
-                            if "honey" and "boost" in message.content:
+                            if "honey" in message.content and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:honey:1165231049287155793> boost expired!")
                         else: return
                 
@@ -181,7 +184,7 @@ class Listener(commands.Cog):
                     self.db.execute(f'INSERT INTO Toggle (USER_ID) VALUES ({sender.id})')
                     self.db.commit()
                     await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
-                    await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ```/toggle``` for more info.")
+                    await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ```<toggle``` for more info.")
                 
 
         
@@ -189,111 +192,119 @@ class Listener(commands.Cog):
         if message.author.id == bot_wl:
             if (len(message.embeds) > 0):
                 _embed=message.embeds[0]
-                if "version" in _embed.description:
-                    dex=_embed.author.name.split("#")[1]
-                    #print(dex)
-                    name=_embed.author.name.split("#")[0]
-                    #print(name)
-                    for field in _embed.fields:
-                        if field.name == "Type":
-                            type1= field.value.split()[0]
-                            #print(type1)
-                            type1_semi = type1.split(":")[1]
-                            #print(type1_semi)
-                            try:
-                                type2 = field.value.split()[1]
-                                #print(type2)
-                                type2_semi = type2.split(":")[1]
-                                #print(type2_semi)
-                            except: type2_semi = None
-                        if field.name == "Base Attack":
-                            b_atk = field.value.split()[1]
-                            #print(b_atk)
-                        if field.name == "Base Defense":
-                            b_def = field.value.split()[1]
-                            #print(b_def)
-                        if field.name == "Base HP":
-                            b_hp = field.value.split()[1]
-                            #print(b_hp)
-                        if field.name == "Base Sp. Atk":
-                            b_spatk = field.value.split()[1]
-                            #print(b_spatk)
-                        if field.name == "Base Sp. Def":
-                            b_spdef = field.value.split()[1]
-                            #print(b_spdef)
-                        if field.name == "Base Speed":
-                            b_spd = field.value.split()[1]
-                            #print(b_spd)
-                        if field.name == "Rarity":
-                            rarity = field.value.split(":")[1]
-                            #print(rarity)
-                            if rarity.lower() == "legendary":
-                                legendary = True
-                            else: legendary = False
-                            if rarity.lower() == "shiny":
-                                shiny = True
-                            else: shiny = False
-                            if rarity.lower() == "golden":
-                                golden = True
-                            else: golden = False
-                            if rarity.lower() == "mega":
-                                mega = True
-                            else: mega = False
-                            if rarity.lower() == "shinymega":
-                                shiny = True
-                                mega = True
-                        imageurl = _embed.image.url
-                            #print(imageurl)
-                    self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}")')
-                    self.db.commit()
+                try:
+                    if "version" in _embed.description:
+                        dex=_embed.author.name.split("#")[1]
+                        #print(dex)
+                        name=_embed.author.name.split("#")[0]
+                        #print(name)
+                        for field in _embed.fields:
+                            if field.name == "Type":
+                                type1= field.value.split()[0]
+                                #print(type1)
+                                type1_semi = type1.split(":")[1]
+                                #print(type1_semi)
+                                try:
+                                    type2 = field.value.split()[1]
+                                    #print(type2)
+                                    type2_semi = type2.split(":")[1]
+                                    #print(type2_semi)
+                                except: type2_semi = None
+                            if field.name == "Base Attack":
+                                b_atk = field.value.split()[1]
+                                #print(b_atk)
+                            if field.name == "Base Defense":
+                                b_def = field.value.split()[1]
+                                #print(b_def)
+                            if field.name == "Base HP":
+                                b_hp = field.value.split()[1]
+                                #print(b_hp)
+                            if field.name == "Base Sp. Atk":
+                                b_spatk = field.value.split()[1]
+                                #print(b_spatk)
+                            if field.name == "Base Sp. Def":
+                                b_spdef = field.value.split()[1]
+                                #print(b_spdef)
+                            if field.name == "Base Speed":
+                                b_spd = field.value.split()[1]
+                                #print(b_spd)
+                            if field.name == "Rarity":
+                                rarity = field.value.split(":")[1]
+                                #print(rarity)
+                                if rarity.lower() == "legendary":
+                                    legendary = True
+                                else: legendary = False
+                                if rarity.lower() == "shiny":
+                                    shiny = True
+                                else: shiny = False
+                                if rarity.lower() == "golden":
+                                    golden = True
+                                else: golden = False
+                                if rarity.lower() == "mega":
+                                    mega = True
+                                else: mega = False
+                                if rarity.lower() == "shinymega":
+                                    shiny = True
+                                    mega = True
+                            imageurl = _embed.image.url
+                                #print(imageurl)
+                        self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}")')
+                        self.db.commit()
+                except: return
         # Only wotks in specific channels!
         # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
         # if message.channel.id in channel_ids:
         
-        channel_ids = [1163743648744226886, 827510854467584002] #test-spawns
+        receiver_channel = 825958388349272106
+        announce_channel = self.client.get_channel(receiver_channel)
+        if message.author.id == bot_wl:
+            if (len(message.embeds)>0):
+                _embed = message.embeds[0]
+                color = _embed.color
+                database = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
+                database = database.fetchall()
+                Rare_Spawned = ["Event", "Legendary", "Shiny"]
+                
+                if "found a wild" in message.content:
+                    ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                    sender = ref_msg.author.display_name
+                    author_icurl = _embed.author.icon_url
+                    raremon = poke_rarity[(database[0][14])]
+                    description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                    if database[0][14] in Rare_Spawned or _embed.color == 0xe9270b:
+                        embed = disnake.Embed(title=raremon+" **"+database[0][1]+"** \nDex: #"+str(database[0][0]), color=color,description=description_text)
+                        embed.set_author(name=(str(sender.display_name)+" just spawned a:"), icon_url=author_icurl)
+                        embed.set_image(_embed.image.url)
+                        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.cline.user.avatar}')
+                        await announce_channel.send(embed=embed)
+                elif "just hatched" in message.content:
+                    print(str(database[0][1]))
+                    ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                    sender = ref_msg.author.display_name
+                    description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                    
+                    if database[0][14] in Rare_Spawned or str(database[0][0]) in eggexcl:
+                        embed = disnake.Embed(title=raremon+" **"+database[0][1]+"** \nDex: #"+str(database[0][0]), color=color,description=description_text)
+                        embed.set_author(name=(str(sender.display_name)+" just hatched an exclusive:"))
+                        embed.set_image(_embed.image.url)
+                        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.cline.user.avatar}')
+                        await announce_channel.send(embed=embed)
+
+                    
+                    
+
+#------------------------------------- Testing area---------------------------------------------------------------------------------------------#
+
+
+
+        channel_ids = [1083131761451606096, 827510854467584002] #test-spawns
         receiver_channel = 825958388349272106 #bot-testing channel
         if message.channel.id in channel_ids:
             print("Message received")
+            print(message.content)
             if message.author.id == bot_wl:
                 announce_channel = self.client.get_channel(receiver_channel)
-                #Legendary Embed HEX #a007f8 160, 7, 248
-                #Shiny Embed HEX #fe98cb 254, 152, 203
-                #Event Excl HEX #e9270b 233, 39, 11
-                #SR HEX #f8f407
-                #R HEX  #fb8908
-                #UC HEX #13b4e7
-                #C HEX  #0855fb
-                embedc = ["#0855fb","#13b4e7","#fb8908","#f8f407","#a007f8", "#fe98cb" , "#e9270b"]
-                if "found a wild" in message.content:
-                    await message.channel.send("Thats a spawn")
-                    if (len(message.embeds) > 0):
-                        _embed = message.embeds[0]
-                        color = _embed.color
-                        # value = color.value
-                        # await message.channel.send(value)
-                        # await message.channel.send(color)
-                        # await message.channel.send(str(color))
-
-                        if str(color) in embedc:
-                            author_icurl = _embed.author.icon_url
-                            thumb = _embed.image.url
-                            await message.channel.send("I see you...")
-                            embedded=disnake.Embed(
-                                title=(
-                                    
-                                ), color=color,description=(
-                                    
-                                ),
-                            )
-                            embedded.set_author(
-                                name=(str(sender.display_name)+" just found a cool Pokémon!"), icon_url=author_icurl
-                            )
-                            embedded.set_image(url=thumb)
-                            await announce_channel.send(embed=embedded)
-                            await announce_channel.send("This will be an embed in the future")
-                        
-                    else: await message.channel.send("Wrong color")
-                        
+                print(message.content)
                 if (len(message.embeds) > 0):
                     _embed = message.embeds[0]
                     if message.content != None:
