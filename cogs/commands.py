@@ -7,6 +7,7 @@ from sqlite3 import connect
 from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
 import json
 import sqlite3
+import datetime
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -16,11 +17,18 @@ class Coms(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
+
+    
+    
+    current_time = datetime.datetime.utcnow()
+    timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         
 
 
     @commands.command()
     async def toggle(self, ctx):
+        current_time = datetime.datetime.now()
+        timestamp = str("<t:"+{int(current_time.timestamp)}+":R>")
         user_id = ctx.author.id
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
         database = database.fetchall()
@@ -28,7 +36,7 @@ class Coms(commands.Cog):
         author_name = ctx.author.display_name
         gengar_bot = self.client.get_user(1161011648585285652)
         footer_icon = gengar_bot.display_avatar.url
-        footer_name = "Mega Gengar"
+        footer_name = "Mega Gengar "+timestamp
         emo_yes = ":white_check_mark:"
         emo_no = ":x:"
         color = 0x807ba6
@@ -53,7 +61,7 @@ class Coms(commands.Cog):
                 title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
             )
             embed.set_author(icon_url=author_url,name=author_name)
-            embed.set_footer(icon_url=footer_icon,text=footer_name)
+            embed.set_footer(icon_url=footer_icon,text=(footer_name+" I "+timestamp))
             embed.add_field(name="Golden Razz Berry: ",inline=True, value=value_grazz)
             embed.add_field(name="Repel: ",inline=True, value=value_repel)
             embed.add_field(name="Starter: ",inline=True, value=value_start)
