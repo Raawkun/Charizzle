@@ -4,6 +4,7 @@ from disnake.ext import commands
 import sqlite3
 from sqlite3 import connect
 from  utility.rarity_db import poke_rarity
+from utility.embed import Custom_embed
 
 class On_Edit(commands.Cog):
 
@@ -27,12 +28,10 @@ class On_Edit(commands.Cog):
                 _embed = after.embeds[0]
                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                 data = data.fetchall()
-                try: 
+                if before.reference:
                     ref_msg = await before.channel.fetch_message(before.reference.message_id)
                     sender = ref_msg.author.display_name
-                except AttributeError:
-                    print("Some AttributeError")
-                except:
+                elif before.interaction:
                     ref_msg = before.interaction.user
                     sender = ref_msg.display_name
                 

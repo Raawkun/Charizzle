@@ -10,6 +10,7 @@ from main import client
 from utility.rarity_db import poke_rarity
 from utility.egglist import eggexcl
 import datetime
+from utility.embed import Custom_embed
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -132,10 +133,17 @@ class Listener(commands.Cog):
         #             await message.channel.send("<@"+str(sender)+"> don't you dare catching Pokémon in here! I'm calling the cops!")
         
 
-            #Rare Spawn Listener
+        ########Rare Spawn Listener
         receiver_channel = 825958388349272106 #bot-testing channel
         log_channel = 1164544776985653319
         if message.author.id == meow:
+            if message.reference:
+                ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                sender = ref_msg.author
+                # print(interaction_message)
+            if message.interaction:
+                interaction_message = message.interaction
+                sender = interaction_message.author
             if (len(message.embeds) > 0):
                 _embed = message.embeds[0]
                 color = _embed.color
@@ -143,25 +151,98 @@ class Listener(commands.Cog):
                 announce_channel = self.client.get_channel(receiver_channel)
                 
                 Rare_Spawned = ["Event", "Legendary", "Shiny"]
-                if message.reference:
-                    ref_msg = await message.channel.fetch_message(message.reference.message_id)
                 
+                    #print(referenced_message)
+                if _embed.author:
+                    if "Counters" in _embed.author.name:
+                        if _embed.fields:
+                            for field in _embed.fields:
+                                if field.name == "Counter • Pokemon/Thing":
+                                    i=0
+                                    eventshiny = field.value.split(" • ")[i]
+                                    eventshiny = eventshiny.replace(",", "")
+                                    eventshiny = int(eventshiny)
+                                    i+=1
+                                    print(eventshiny)
+                                    fullodds = field.value.split(" • ")[i]
+                                    fullodds = fullodds.split("\n")[1]
+                                    fullodds = fullodds.replace(",", "")
+                                    i+=1
+                                    fullodds = int(fullodds)
+                                    print(fullodds)
+                                    legendary = field.value.split(" • ")[i]
+                                    legendary = legendary.split("\n")[1]
+                                    legendary = legendary.replace(",", "")
+                                    i+=1
+                                    legendary = int(legendary)
+                                    print(legendary)
+                                    item = field.value.split(" • ")[i]
+                                    item = item.split("\n")[1]
+                                    item = item.replace(",", "")
+                                    i+=1
+                                    item = int(item)
+                                    print(fullodds)
+                                    fgolden = field.value.split(" • ")[i]
+                                    fgolden = fgolden.split("\n")[1]
+                                    fgolden = fgolden.replace(",", "")
+                                    i+=1
+                                    fgolden = int(fgolden)
+                                    print(fgolden)
+                                    fshiny = field.value.split(" • ")[i]
+                                    fshiny = fshiny.split("\n")[1]
+                                    fshiny = fshiny.replace(",", "")
+                                    i+=1
+                                    fshiny = int(fshiny)
+                                    print(fshiny)
+                                    flegend= field.value.split(" • ")[i]
+                                    flegend = flegend.split("\n")[1]
+                                    flegend = flegend.replace(",", "")
+                                    i+=1
+                                    flegend = int(flegend)
+                                    print(flegend)
+                                    egolden = field.value.split(" • ")[i]
+                                    egolden = egolden.split("\n")[1]
+                                    egolden = egolden.replace(",", "")
+                                    i+=1
+                                    egolden = int(egolden)
+                                    print(egolden)
+                                    eshiny = field.value.split(" • ")[i]
+                                    eshiny = eshiny.split("\n")[1]
+                                    eshiny = eshiny.replace(",", "")
+                                    i+=1
+                                    eshiny = int(eshiny)
+                                    print(eshiny)
+                                    elegend = field.value.split(" • ")[i]
+                                    elegend = elegend.split("\n")[1]
+                                    elegend = elegend.replace(",", "")
+                                    i+=1
+                                    elegend = int(elegend)
+                                    print(elegend)
+                                    icon = field.value.split(" • ")[i]
+                                    icon = icon.split("\n")[1]
+                                    icon = icon.replace(",", "")
+                                    i+=1
+                                    icon = int(icon)
+                                    print(icon)
+                                    data = self.db.execute(f'SELECT * FROM Counter WHERE User_ID = ({sender.id})')
+                                    data = data.fetchall()
+                                    if data:
+                                        print("Fetched it?")
+                                        self.db.execute(f'UPDATE Counter SET event = ({eventshiny}), fullodd = {fullodds}, legendary = {legendary}, item = {item}, goldenfish = {fgolden}, shinyfish = {fshiny}, legendaryfish = {flegend}, goldenexp = {egolden}, shinyexp = {eshiny}, legendaryexp = {elegend}, icon = {icon} WHERE User_ID = ({sender.id})')
+                                        self.db.commit()
+                                        print("Error where?")
+                                    else:
+                                        self.db.execute(f'INSERT INTO Counter VALUES ({sender.id},{eventshiny},{fullodds},{legendary},{item},{fgolden},{fshiny},{flegend},{egolden},{eshiny},{elegend},{icon})')
+                                        self.db.commit()
+                                        print("New in")
+
+
+
                 if "found a wild" in message.content:
                     log_channel = self.client.get_channel(log_channel)
                     if (len(message.embeds) > 0):
                         #Check if reaction or interaction
-                        try:
-                            interaction_message = await message.channel.fetch_message(message.interaction.message_id)
-                            # print(interaction_message)
-                        except:
-                            referenced_message = await message.channel.fetch_message(message.reference.message_id)
-                        else: interaction_message = await message.channel.fetch_message(message.interaction.message_id)
-                            #print(referenced_message)
-                        if referenced_message:
-                            sender = referenced_message.author
-                            #print(sender)
-                        elif interaction_message:
-                            sender = interaction_message.author
+                        
                             #print(sender)
                         ## Checking for a User in Database, if not, initializing
                         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.id}')
@@ -257,7 +338,6 @@ class Listener(commands.Cog):
                     if "claimed a " in _embed.description:
                         data_pr = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_pr = data_sw.fetchall()
-                        sender = ref_msg.author.display_name
                         raremon = poke_rarity[(data_pr[0][14])]
                         description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
                         embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
@@ -337,6 +417,7 @@ class Listener(commands.Cog):
                 _embed=message.embeds[0]
                 try:
                     if "version" in _embed.description:
+                        #print("Version in it")
                         dex=_embed.author.name.split("#")[1]
                         #print(dex)
                         name=_embed.author.name.split("#")[0]
@@ -390,9 +471,10 @@ class Listener(commands.Cog):
                                     shiny = True
                                     mega = True
                             imageurl = _embed.image.url
-                                #print(imageurl)
+                            #print(imageurl)
                         self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}")')
                         self.db.commit()
+                        #print("Its in the dex now")
                 except: return
         # Only wotks in specific channels!
         # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
@@ -411,7 +493,7 @@ class Listener(commands.Cog):
         receiver_channel = 825958388349272106 #bot-testing channel
         if message.channel.id in channel_ids:
             await message.channel.send("Message received: "+message.author.display_name)
-            await message.channel.send(message.content)
+            
             if message.author.id == meow:
                 announce_channel = self.client.get_channel(receiver_channel)
                 if (len(message.embeds) > 0):

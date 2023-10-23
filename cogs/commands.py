@@ -9,6 +9,8 @@ import json
 import sqlite3
 import datetime
 from utility.all_checks import Basic_checker
+from utility.embed import Custom_embed
+from utility.rarity_db import counts, countnumber
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -70,7 +72,7 @@ class Coms(commands.Cog):
             embed.set_thumbnail(footer_icon)
             await ctx.send(embed=embed)
 
-    @commands.check(Basic_checker.check_management)
+    @commands.check(Basic_checker().check_management)
     @commands.command()
     async def huntadd(self, ctx):
         def check(m):
@@ -116,7 +118,7 @@ class Coms(commands.Cog):
         if "no" in third_response.content.lower():
             await ctx.send("Wow. Start again & this time do it better.")
 
-    @commands.check(Basic_checker.check_management)
+    @commands.check(Basic_checker().check_management)
     @commands.command()
     async def huntremove(self, ctx):
         def check(m):
@@ -147,7 +149,7 @@ class Coms(commands.Cog):
         if "no" in second_response.content.lower():
             await ctx.send("Smh. Make up your mind.")
 
-    @commands.check(Basic_checker.check_management)
+    @commands.check(Basic_checker().check_management)
     @commands.command()
     async def huntclear(self, ctx):
         def check(m):
@@ -171,30 +173,29 @@ class Coms(commands.Cog):
         data = self.db.execute(f'SELECT * FROM Hunt')
         data = data.fetchall()
         max = self.db.execute(f'SELECT Count(*) FROM Hunt')
-        max = max.arraysize
+        max = max.fetchone()[0]
         #max = max.rowcount
-        intmax = int(max)
-        print(intmax)
+        #print(max)
         if data:
             embed = disnake.Embed(description="Current Hunt Pokémon",color=0x807ba6)
             embed.set_author(name="ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ Hunt System")
             embed.set_footer(text=f'{self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
-            embed.set_thumbnail(url="https://images-ext-1.discordapp.net/external/iOQTy4FH801uV8aT7XMd82A1wnZWAjHjvS69IOW1NIk/https/play.pokemonshowdown.com/sprites/ani-shiny/eevee.gif")
-            print("0x807ba6")
+            guild = ctx.guild
+            embed.set_thumbnail(url=guild.icon)
+            #print("0x807ba6")
             i = 0
-            while i <= (intmax+1):
-                embed.add_field(name=("**"+str(data[i][2])+"**with threshold of "+str(data[i][3])),value="")
+            while i < (max):
+                #print("First i is:"+str(i))
+                embed.add_field(name=("**"+str(data[i][1])+"**with threshold of "+str(data[i][2])),value="",inline=False)
+                #embed.add_field(name=" ",value=" ",inline=True)
+                #print("Added embed")
                 i+=1
-                print(i)
+                #print(i)
             
             await ctx.send(embed=embed)
         else:
             await ctx.send("There is no hunt event at the moment.")
 
-
-    # @commands.command()
-    # async def help(self, ctx):
-    #     test = None
 
 
     @commands.command()
@@ -258,11 +259,6 @@ class Coms(commands.Cog):
         
 
     @commands.command()
-    async def vers(self, ctx):
-        vers1 = str("1.0.0.3")
-        await ctx.send(vers1)
-
-    @commands.command()
     async def joined(self, ctx, member: disnake.Member):
         """Says when a member joined."""
         await ctx.send(f"{member.name} joined in {member.joined_at}")
@@ -278,26 +274,23 @@ class Coms(commands.Cog):
     async def test(self, ctx):
         await ctx.send(f"I'm alive!!! {ctx.author.name}")
 
-
     @commands.command()
-    async def annoy(self, ctx, input_id, try_amount):
-            with open("config.json", "r") as config_file:
-                config_data = json.load(config_file)
-            
-            if disnake.message.author.id == [352224989367369729]:
-                if input_id != int:
-                    await ctx.message.send("Please input a user ID.")
-                else: annoy_id = input_id
-                if try_amount != int:
-                    await ctx.message.send("Please input a number")
-                else: amounts = try_amount
-            
-                config_data['client_id'] = annoy_id
-                config_data['attempts'] = amounts
-                await ctx.message.send(f"Changed the ID!")
-            else: await ctx.message.send("Not allowed to use this command.")
-
-    
+    async def topcount(self, ctx, message = None):
+        cat = ["event","fullodd","legendary","item","goldenfish","shinyfish","legendaryfish","goldenexp","shinyexp","legendaryexp","icon"]
+        if message:
+            if message in cat:
+                data = self.db.execute(f'SELECT * FROM Counter ORDER BY {message} DESC')
+                data = data.fetchall()
+                e = countnumber[message]
+                embed = await Custom_embed(self.client,title=f"Top Count Leaderboard",description=f"Top 5 Leaderboard in "+counts[message]).setup_embed()
+                embed.add_field(name="Place:",value="1.\n2.\n3.\n4.\n5.")
+                embed.add_field(name="Username",value="<@"+str(data[0][0])+">\n"+"<@"+str(data[1][0])+">\n"+"<@"+str(data[2][0])+">\n"+"<@"+str(data[3][0])+">\n"+"<@"+str(data[4][0])+">")
+                embed.add_field(name="Amount",value=str(data[0][e])+"\n"+str(data[1][e])+"\n"+str(data[2][e])+"\n"+str(data[3][e])+"\n"+str(data[4][e]))
+                await ctx.send(embed=embed)
+        else:
+            embed = await Custom_embed(self.client,title=f"Wrong Usage",description=f"Sorry, wrong parameter.").setup_embed()
+            embed.add_field(name="Valid parameter for ``topcount``:",value="event, fullodd, legendary, item, goldenfish, shinyfish, legendaryfish, goldenexp, shinyexp, legendaryexp, icon")
+            await ctx.send(embed=embed)
 
 
 
@@ -361,6 +354,25 @@ class Coms(commands.Cog):
             ''')
             self.db.commit()
             print("Hunt_DB created")
+        elif "count" in input:
+            self.db.execute(f'''
+                            CREATE TABLE IF NOT EXISTS Counter (
+                            User_ID INTEGER,
+                            Event INTEGER,
+                            Fullodd INTEGER,
+                            Legendary INTEGER,
+                            ITEM INTEGER,
+                            FGolden INTEGER,
+                            FShiny INTEGER,
+                            FLegendary INTEGER,
+                            EGolden INTEGER,
+                            EShiny INTEGER,
+                            ELegendary INTEGER,
+                            Icon INTEGER
+                            )
+            ''')
+            self.db.commit()
+            print("Count_DB created")
         await ctx.send("Done")
         
 

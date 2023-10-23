@@ -3,6 +3,7 @@ import disnake
 from disnake.ext import commands
 from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
 import asyncio
+from utility.embed import Custom_embed
 
 class SlashComs(commands.Cog):
 
