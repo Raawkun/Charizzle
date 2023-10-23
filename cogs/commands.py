@@ -192,9 +192,9 @@ class Coms(commands.Cog):
             await ctx.send("There is no hunt event at the moment.")
 
 
-    @commands.command()
-    async def help(self, ctx):
-        test = None
+    # @commands.command()
+    # async def help(self, ctx):
+    #     test = None
 
 
     @commands.command()
