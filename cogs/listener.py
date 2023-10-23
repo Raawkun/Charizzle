@@ -116,7 +116,21 @@ class Listener(commands.Cog):
                             if "honey" in message.content and "boost" in message.content:
                                 await message.channel.send("<@"+str(sender)+"> Hey, your <:honey:1165231049287155793> boost expired!")
                         else: return
-                
+
+
+        #         #### Smalltalk w Bots, Absences, Pog or Sadge, Help Chat etc.
+        # channel_ids = [827551577698730015, 862670403147530240, 825820031677759568, 825922247608500224]
+        # if message.channel.id in channel_ids:
+        #     if message.author.id == 664508672713424926: #PokeMeow ID
+        #         if "found a wild" in message.content:
+        #             try:
+        #                 ref_msg = await message.channel.fetch_message(message.reference.id)
+        #                 sender = ref_msg.author.id
+        #             except:
+        #                 ref_msg = message.interaction.user
+        #                 sender = ref_msg.id
+        #             await message.channel.send("<@"+str(sender)+"> don't you dare catching Pokémon in here! I'm calling the cops!")
+        
 
             #Rare Spawn Listener
         receiver_channel = 825958388349272106 #bot-testing channel
@@ -125,7 +139,7 @@ class Listener(commands.Cog):
             if (len(message.embeds) > 0):
                 _embed = message.embeds[0]
                 color = _embed.color
-                print(_embed.author.name)
+                #print(_embed.author.name)
                 announce_channel = self.client.get_channel(receiver_channel)
                 
                 Rare_Spawned = ["Event", "Legendary", "Shiny"]
@@ -188,12 +202,12 @@ class Listener(commands.Cog):
                         author_icurl = _embed.author.icon_url
                         raremon = poke_rarity[(databasesp[0][14])]
                         description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
-                        if databasesp[0][14] in Rare_Spawned or _embed.color == 0xe9270b:
-                            embed = disnake.Embed(title=raremon+" **"+databasesp[0][1]+"** \nDex: #"+str(databasesp[0][0]), color=color,description=description_text)
-                            embed.set_author(name=(sender+" just spawned a:"), icon_url=author_icurl)
-                            embed.set_image(_embed.image.url)
-                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                            await announce_channel.send(embed=embed)
+                        # if databasesp[0][14] in Rare_Spawned or _embed.color == 0xe9270b:
+                        #     embed = disnake.Embed(title=raremon+" **"+databasesp[0][1]+"** \nDex: #"+str(databasesp[0][0]), color=color,description=description_text)
+                        #     embed.set_author(name=(sender+" just spawned a:"), icon_url=author_icurl)
+                        #     embed.set_image(_embed.image.url)
+                        #     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                        #     await announce_channel.send(embed=embed)
                 if _embed.author.name:
                     if "hatched" in _embed.author.name:
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
@@ -230,7 +244,6 @@ class Listener(commands.Cog):
                         data_sw = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_sw = data_sw.fetchall()
                         sender = ref_msg.author.display_name
-                        author_icurl = _embed.author.icon_url
                         raremon = poke_rarity[(data_sw[0][14])]
                         #Rare_Spawned = ["Event", "Shiny", "Legendary", "SuperRare", "Rare", "Uncommon", "Common"]
                         description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
@@ -241,6 +254,17 @@ class Listener(commands.Cog):
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce_channel.send(embed=embed)
                 if _embed.description:
+                    if "claimed a " in _embed.description:
+                        data_pr = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
+                        data_pr = data_sw.fetchall()
+                        sender = ref_msg.author.display_name
+                        raremon = poke_rarity[(data_pr[0][14])]
+                        description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                        embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
+                        embed.set_author(name=(sender+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
+                        embed.set_image(_embed.image.url)
+                        embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                        await announce_channel.send(embed=embed)
                     if "returned with" in _embed.description:
                         # await message.channel.send(_embed.description)
                         description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
@@ -302,16 +326,6 @@ class Listener(commands.Cog):
                             embed.set_image(data_cb[0][15])
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce_channel.send(embed=embed)
-
-
-
-
-
-
-
-
-
-
 
 
 
