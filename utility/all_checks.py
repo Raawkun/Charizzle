@@ -10,8 +10,6 @@ from datetime import datetime, timedelta
 
 import random
 
-from utility.cogs.travel_check import Travel_check
-
 # basic checker
 class Basic_checker:
     """
@@ -41,15 +39,6 @@ class Basic_checker:
         await ctx.send("Sorry, this only works in the Paralympics server.", ephemeral=True)
         return(False)
     
-    async def check_travel_channel(self, ctx):
-        locations = await Travel_check.travel_locations()
-        for location, numbers in locations.items():
-            if ctx.channel.id in numbers:
-                return True
-                
-        await ctx.send("This command only works in the Kanto region, you have no phone reception here", ephemeral=True)
-        return False
-
     async def check_if_it_is_me(self, ctx):
         if ctx.user.id == 427135226066501642:
             return(True)
