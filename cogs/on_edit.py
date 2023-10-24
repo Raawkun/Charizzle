@@ -25,7 +25,10 @@ class On_Edit(commands.Cog):
         announce = self.client.get_channel(receiver_channel)
         if before.author.id == 664508672713424926:
             if (len(before.embeds) > 0):
-                _embed = after.embeds[0]
+                try:
+                    _embed = after.embeds[0]
+                except:
+                    print("Message edited. No Embed")
                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                 data = data.fetchall()
                 if before.reference:

@@ -83,56 +83,7 @@ class Listener(commands.Cog):
                     await message.add_reaction(emoji)
                     await message.add_reaction(emoji2)
 
-        if message.author.id == meow:
-            
         
-            if "found a wild" in message.content:
-                try:
-                    referenced_message = await message.channel.fetch_message(message.reference.message_id)
-                except:
-                    return
-                else: 
-                    referenced_message = await message.channel.fetch_message(message.reference.message_id)
-                #print(referenced_message)
-                if referenced_message:
-                    sender = referenced_message.author.id
-                    # print(sender)
-                    database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender}')
-                    database = database.fetchall()
-                    #print(database)
-                    if database:
-                        if database[0][3] == 1:
-                            #print("repel activated"+str(database[0][3]))
-                            if "super_repel" in message.content and "boost" in message.content:
-                                await message.channel.send("<@"+str(sender)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
-                            if "max_repel" in message.content and "boost" in message.content:
-                                await message.channel.send("<@"+str(sender)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
-                            if ":repel" in message.content and "boost" in message.content:
-                                await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
-                        else: return
-                        if database[0][2] == 1:
-                            #print("grazz activated"+str(database[0][2]))
-                            if "goldenrazz" in message.content and "boost" in message.content:
-                                await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
-                            if "honey" in message.content and "boost" in message.content:
-                                await message.channel.send("<@"+str(sender)+"> Hey, your <:honey:1165231049287155793> boost expired!")
-                        else: return
-
-
-        #         #### Smalltalk w Bots, Absences, Pog or Sadge, Help Chat etc.
-        # channel_ids = [827551577698730015, 862670403147530240, 825820031677759568, 825922247608500224]
-        # if message.channel.id in channel_ids:
-        #     if message.author.id == 664508672713424926: #PokeMeow ID
-        #         if "found a wild" in message.content:
-        #             try:
-        #                 ref_msg = await message.channel.fetch_message(message.reference.id)
-        #                 sender = ref_msg.author.id
-        #             except:
-        #                 ref_msg = message.interaction.user
-        #                 sender = ref_msg.id
-        #             await message.channel.send("<@"+str(sender)+"> don't you dare catching Pokémon in here! I'm calling the cops!")
-        
-
         ########Rare Spawn Listener
         receiver_channel = 825958388349272106 #bot-testing channel
         log_channel = 1164544776985653319
@@ -142,8 +93,8 @@ class Listener(commands.Cog):
                 sender = ref_msg.author
                 # print(interaction_message)
             if message.interaction:
-                interaction_message = message.interaction
-                sender = interaction_message.author
+                ref_msg = message.interaction
+                sender = ref_msg.author
             if (len(message.embeds) > 0):
                 _embed = message.embeds[0]
                 color = _embed.color
@@ -261,18 +212,18 @@ class Listener(commands.Cog):
                             if databaserep[0][3] == 1:
                                 #print("repel activated"+str(database[0][3]))
                                 if "super_repel" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
+                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
                                 if "max_repel" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
+                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
                                 if ":repel" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:repel:1164286208822738967> boost expired!")
                             else: return
                             if databaserep[0][2] == 1:
                                 #print("grazz activated"+str(database[0][2]))
                                 if "goldenrazz" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
                                 if "honey" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender)+"> Hey, your <:honey:1165231049287155793> boost expired!")
+                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:honey:1165231049287155793> boost expired!")
                             else: return
 
                 ######## Start here for Spawn Listener
@@ -282,7 +233,7 @@ class Listener(commands.Cog):
                         sender = ref_msg.author.display_name
                         author_icurl = _embed.author.icon_url
                         raremon = poke_rarity[(databasesp[0][14])]
-                        description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                        description_text = f"Original message: [Click here]({message.jump_url})\n"
                         # if databasesp[0][14] in Rare_Spawned or _embed.color == 0xe9270b:
                         #     embed = disnake.Embed(title=raremon+" **"+databasesp[0][1]+"** \nDex: #"+str(databasesp[0][0]), color=color,description=description_text)
                         #     embed.set_author(name=(sender+" just spawned a:"), icon_url=author_icurl)
@@ -294,9 +245,8 @@ class Listener(commands.Cog):
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_egg = data_egg.fetchall()
                         sender = ref_msg.author.display_name
-                        author_icurl = _embed.author.icon_url
                         raremon = poke_rarity[(data_egg[0][14])]
-                        description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                        description_text = f"Original message: [Click here]({message.jump_url})\n"
                         #Rare_Spawned = ["Event", "Legendary", "Shiny", "Rare", "SuperRare"]
 
                         if data_egg[0][14] in Rare_Spawned or str(data_egg[0][0]) in eggexcl:
@@ -314,7 +264,7 @@ class Listener(commands.Cog):
                             sender = ref_msg.author.display_name
                             author_icurl = _embed.author.icon_url
                             raremon = poke_rarity[(data_box[0][14])]
-                            description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                            description_text = f"Original message: [Click here]({message.jump_url})\n"
                             if data_box[0][14] in Rare_Spawned:
                                 embed = disnake.Embed(title=raremon+" **"+data_box[0][1]+"** \nDex: #"+str(data_box[0][0]), color=color,description=description_text)
                                 embed.set_author(name=(sender+" just unboxed an exclusive:"),icon_url="https://cdn.discordapp.com/emojis/784865588207157259.gif?size=96&quality=lossless")
@@ -327,7 +277,7 @@ class Listener(commands.Cog):
                         sender = ref_msg.author.display_name
                         raremon = poke_rarity[(data_sw[0][14])]
                         #Rare_Spawned = ["Event", "Shiny", "Legendary", "SuperRare", "Rare", "Uncommon", "Common"]
-                        description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                        description_text = f"Original message: [Click here]({message.jump_url})\n"
                         if data_sw[0][14] in Rare_Spawned:
                             embed = disnake.Embed(title=raremon+" **"+data_sw[0][1]+"** \nDex: #"+str(data_sw[0][0]), color=color,description=description_text)
                             embed.set_author(name=(sender+" just swapped for a:"),icon_url="https://cdn.discordapp.com/emojis/869901886080315392.webp?size=96&quality=lossless")
@@ -337,9 +287,10 @@ class Listener(commands.Cog):
                 if _embed.description:
                     if "claimed a " in _embed.description:
                         data_pr = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                        data_pr = data_sw.fetchall()
+                        data_pr = data_pr.fetchall()
+                        print(data_pr[0][14])
                         raremon = poke_rarity[(data_pr[0][14])]
-                        description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                        description_text = f"Original message: [Click here]({message.jump_url})\n"
                         embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
                         embed.set_author(name=(sender+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
                         embed.set_image(_embed.image.url)
@@ -347,7 +298,7 @@ class Listener(commands.Cog):
                         await announce_channel.send(embed=embed)
                     if "returned with" in _embed.description:
                         # await message.channel.send(_embed.description)
-                        description_text = f"Original message: [Click here]({ref_msg.jump_url})\n"
+                        description_text = f"Original message: [Click here]({message.jump_url})\n"
                         sender = ref_msg.author.display_name
                         author_icurl = _embed.author.icon_url
                         # if "SuperRare" in _embed.description:
@@ -406,6 +357,56 @@ class Listener(commands.Cog):
                             embed.set_image(data_cb[0][15])
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce_channel.send(embed=embed)
+
+
+        data = self.db.execute(f'SELECT * FROM Admin')
+        data = data.fetchall()
+        log = 1166470108068188200
+        #  1037323228961579049
+        if message.channel.id == 920260648045273088:
+            log = self.client.get_channel(1166470108068188200)
+            if data[0][4] == 1:
+                #print("Its active")
+                if message.author.id == meow:
+                    #print("From Meow")
+                    if " PokeCoins!" in message.content:
+                        #print("There are coins")
+                        try:
+                            ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                            sender = ref_msg.author
+                            #print("Ref")
+                        except:
+                            ref_msg = message.interaction
+                            sender = ref_msg.author
+                            #print("Int")
+                        amount = message.content.split("<:PokeCoin:666879070650236928> ")[1]
+                        amount = amount.split(" ")[0]
+                        #print(amount)
+                        try:
+                            amount = int(amount.replace(",", ""))
+                        except:
+                            amount = int(amount)
+                        if amount >= 200000:
+                            update = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                            update = update.fetchall()
+                            if update:
+                                #print("We trying")
+                                newamount = (update[0][1])+amount
+                                #print(newamount)
+                                self.db.execute(f'UPDATE Events SET Buyin = {newamount} WHERE User_ID = {sender.id}')
+                                self.db.commit()
+                                await log.send(f'{sender}'+"'s entry got updated, +"+f'{amount}'+", now: "+f'{newamount}'+" -- "+f'{sender.id}')
+                            else:
+                                #print("Someone new")
+                                self.db.execute(f'INSERT INTO Events VALUES ({sender.id}, {amount}, 0, 0, 0)')
+                                self.db.commit()
+                                await message.channel.send("You've entered this "+f'{self.client.user.display_name}'+"'s Event.")
+                                await log.send(f'{sender}'+" paid & joined this event. -- "+f'str({sender.id})')
+
+
+
+
+
 
 
 

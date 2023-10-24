@@ -274,7 +274,7 @@ class Coms(commands.Cog):
     async def test(self, ctx):
         await ctx.send(f"I'm alive!!! {ctx.author.name}")
 
-    @commands.command()
+    @commands.command(aliases=["tc","topc"])
     async def topcount(self, ctx, message = None):
         cat = ["event","fullodd","legendary","item","goldenfish","shinyfish","legendaryfish","goldenexp","shinyexp","legendaryexp","icon"]
         if message:
@@ -283,99 +283,89 @@ class Coms(commands.Cog):
                 data = data.fetchall()
                 e = countnumber[message]
                 embed = await Custom_embed(self.client,title=f"Top Count Leaderboard",description=f"Top 5 Leaderboard in "+counts[message]).setup_embed()
+
                 embed.add_field(name="Place:",value="1.\n2.\n3.\n4.\n5.")
                 embed.add_field(name="Username",value="<@"+str(data[0][0])+">\n"+"<@"+str(data[1][0])+">\n"+"<@"+str(data[2][0])+">\n"+"<@"+str(data[3][0])+">\n"+"<@"+str(data[4][0])+">")
                 embed.add_field(name="Amount",value=str(data[0][e])+"\n"+str(data[1][e])+"\n"+str(data[2][e])+"\n"+str(data[3][e])+"\n"+str(data[4][e]))
                 await ctx.send(embed=embed)
+            if message == "total":
+                embed = await Custom_embed(self.client,title=f"Top Count Leaderboard",description=f"Top 5 Leaderboard in total").setup_embed()
+                i = 0
+                while i <= 4:
+                    data = self.db.execute(f'SELECT * FROM Counter ORDER BY {cat[i]} DESC')
+                    data = data.fetchall()
+                    #print(cat[i])
+                    e = countnumber[cat[i]]
+                    fieldname = counts[cat[i]]
+                    #print(fieldname)
+                    embed.add_field(name=fieldname,value="",inline=False)
+                    embed.add_field(name="Place:",value="1.\n2.\n3.\n4.\n5.")
+                    embed.add_field(name="Username",value="<@"+str(data[0][0])+">\n"+"<@"+str(data[1][0])+">\n"+"<@"+str(data[2][0])+">\n"+"<@"+str(data[3][0])+">\n"+"<@"+str(data[4][0])+">")
+                    embed.add_field(name="Amount",value=str(data[0][e])+"\n"+str(data[1][e])+"\n"+str(data[2][e])+"\n"+str(data[3][e])+"\n"+str(data[4][e]))
+                    i+=1
+                await ctx.send(embed=embed)
+                embed = await Custom_embed(self.client,title=f"Top Count Leaderboard",description=f"Top 5 Leaderboard in total").setup_embed()
+                while i >= 5 and i <=9:
+                    data = self.db.execute(f'SELECT * FROM Counter ORDER BY {cat[i]} DESC')
+                    data = data.fetchall()
+                    #print(cat[i])
+                    e = countnumber[cat[i]]
+                    fieldname = counts[cat[i]]
+                    embed.add_field(name=fieldname,value="",inline=False)
+                    embed.add_field(name="Place:",value="1.\n2.\n3.\n4.\n5.")
+                    embed.add_field(name="Username",value="<@"+str(data[0][0])+">\n"+"<@"+str(data[1][0])+">\n"+"<@"+str(data[2][0])+">\n"+"<@"+str(data[3][0])+">\n"+"<@"+str(data[4][0])+">")
+                    embed.add_field(name="Amount",value=str(data[0][e])+"\n"+str(data[1][e])+"\n"+str(data[2][e])+"\n"+str(data[3][e])+"\n"+str(data[4][e]))
+                    i+=1
+                await ctx.send(embed=embed)
         else:
             embed = await Custom_embed(self.client,title=f"Wrong Usage",description=f"Sorry, wrong parameter.").setup_embed()
-            embed.add_field(name="Valid parameter for ``topcount``:",value="event, fullodd, legendary, item, goldenfish, shinyfish, legendaryfish, goldenexp, shinyexp, legendaryexp, icon")
+            embed.add_field(name="Valid parameter for ``topcount``:",value="event, fullodd, legendary, item, goldenfish, shinyfish, legendaryfish, goldenexp, shinyexp, legendaryexp, icon\n''total'' prints a summary for every category.")
+            embed.add_field(name="__Aliases:__",value="``topc`` or ``tc``",inline=False)
             await ctx.send(embed=embed)
 
 
 
     @commands.command()
-    async def toggledb(self, ctx, input: str):
-        if "dex" in input:
-            self.db.execute(f'''
-                            CREATE TABLE IF NOT EXISTS Dex(
-                            DexID INTEGER PRIMARY KEY,
-                            Name TEXT,
-                            Type_1 TEXT,
-                            Type_2 TEXT,
-                            Hp INTEGER,
-                            Attack INTEGER,
-                            Defence INTEGER,
-                            Sp_atk INTEGER,
-                            Sp_def INTEGER,
-                            Speed INTEGER,
-                            Legendary BOOLEAN,
-                            Shiny BOOLEAN,
-                            Golden BOOLEAN,
-                            Mega BOOLEAN,
-                            Rarity TEXT,
-                            Img_url TEXT
-                            )
-                            ''')
-            self.db.commit()
-            print("Dex_DB created")
-        elif "toggle" in input:
-            self.db.execute(f'''
-                            CREATE TABLE IF NOT EXISTS Toggle (
-                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
-                            User_ID INT,
-                            Grazz INT DEFAULT 1,
-                            Repel INT DEFAULT 1,
-                            Starter INT DEFAULT 1,
-                            Privacy INT DEFAULT 0
-                            )
-                            ''')
-            self.db.commit()
-            print("Toggle_DB created")
-        elif "admin" in input:
-            self.db.execute(f'''
-                            CREATE TABLE IF NOT EXISTS Admin (
-                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
-                            User_ID INTEGER DEFAULT 352224989367369729,
-                            Stfu INT DEFAULT 1,
-                            Lol INT DEFAULT 1
-                            )
-            ''')
-            self.db.commit()
-            print("Admin_DB created")
-        elif "hunt" in input:
-            self.db.execute(f'''
-                            CREATE TABLE IF NOT EXISTS Hunt (
-                            Ref INTEGER AUTO_INCREMENT PRIMARY KEY,
-                            DexID INTEGER,
-                            Name INTEGE,
-                            Threshold INTEGER
-                            )
-            ''')
-            self.db.commit()
-            print("Hunt_DB created")
-        elif "count" in input:
-            self.db.execute(f'''
-                            CREATE TABLE IF NOT EXISTS Counter (
-                            User_ID INTEGER,
-                            Event INTEGER,
-                            Fullodd INTEGER,
-                            Legendary INTEGER,
-                            ITEM INTEGER,
-                            FGolden INTEGER,
-                            FShiny INTEGER,
-                            FLegendary INTEGER,
-                            EGolden INTEGER,
-                            EShiny INTEGER,
-                            ELegendary INTEGER,
-                            Icon INTEGER
-                            )
-            ''')
-            self.db.commit()
-            print("Count_DB created")
+    async def toggledb(self, ctx):
+        self.db.execute(f'''
+                        CREATE TABLE IF NOT EXISTS Events(
+                        User_ID INTEGER,
+                        Buyin INTEGER,
+                        Points INTEGER DEFAULT 0,
+                        ItemsUsed INTEGER DEFAULT 0,
+                        Items INTEGER DEFAULT 0
+                        )
+                        ''')
+        self.db.commit()
+        print("Dex_DB created")
         await ctx.send("Done")
-        
 
+    @commands.command()
+    async def eventset(self, ctx):
+        data = self.db.execute(f'SELECT * FROM Admin')
+        data = data.fetchall()
+        announce = self.client.get_channel(917890289652346911)
+        log = self.client.get_channel(1166470108068188200)
+        if data[0][4] == 0:
+            self.db.execute(f'UPDATE Admin SET Event = 1')
+            self.db.commit()
+            await ctx.send(f'{self.client.user.display_name}'+"'s Event is now active!")
+            await announce.send("Ignore me, thats a test")
+            await log.send("**Event started**")
+        if data[0][4] == 1:
+            self.db.execute(f'UPDATE Admin SET Event = 0')
+            self.db.commit()
+            data = self.db.execute(f'SELECT * FROM Events')
+            data = data.fetchall()
+            embed = await Custom_embed(self.client,title="Event Leaderboard").setup_embed()
+            #
+            # Placeholder for table
+            #                               
+            await ctx.send("Ended the event. Check <#917890289652346911> for the leaderboard table.")
+            await log.send("**Event ended**")
+            await announce.send("Test message")
+            # self.db.execute(f'DELETE FROM Events')
+            # self.cb.commit()
 
 
 def setup(client):
