@@ -292,7 +292,7 @@ class Listener(commands.Cog):
                         raremon = poke_rarity[(data_pr[0][14])]
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
                         embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
-                        embed.set_author(name=(sender+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
+                        embed.set_author(name=f'{sender}'+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
                         embed.set_image(_embed.image.url)
                         embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                         await announce_channel.send(embed=embed)
