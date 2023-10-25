@@ -84,10 +84,22 @@ class Listener(commands.Cog):
                     await message.add_reaction(emoji2)
 
         
-        ########Rare Spawn Listener
-        receiver_channel = 825958388349272106 #bot-testing channel
+        ########Rare Spawn Listener 825958388349272106 #bot-testing channel
+        receiver_channel = 825950637958234133 # rare-spawns
         log_channel = 1164544776985653319
         if message.author.id == meow:
+            announce_channel = self.client.get_channel(receiver_channel)
+            if "s trainer icon!" in message.content:
+                iconname = message.content.split("unlocked ")[1]
+                iconname = iconname.split(":")[1]
+                iconname = iconname.replace("_"," ")
+                iconname = iconname.title()
+                authorid = message.content.split("@")[1]
+                authorid = authorid.split(">")[0]
+                embed = await Custom_embed().setup_embed()
+                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                embed.set_author(name=f'{self.client.get_user(int(authorid))}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
+                await announce_channel.send(embed=embed)
             if message.reference:
                 ref_msg = await message.channel.fetch_message(message.reference.message_id)
                 sender = ref_msg.author
@@ -99,8 +111,6 @@ class Listener(commands.Cog):
                 _embed = message.embeds[0]
                 color = _embed.color
                 #print(_embed.author.name)
-                announce_channel = self.client.get_channel(receiver_channel)
-                
                 Rare_Spawned = ["Event", "Legendary", "Shiny"]
                 
                     #print(referenced_message)
@@ -262,7 +272,7 @@ class Listener(commands.Cog):
                             data_box = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                             data_box = data_box.fetchall()
                             sender = ref_msg.author.display_name
-                            author_icurl = _embed.author.icon_url
+                            #Rare_Spawned = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Common","Uncommon"]
                             raremon = poke_rarity[(data_box[0][14])]
                             description_text = f"Original message: [Click here]({message.jump_url})\n"
                             if data_box[0][14] in Rare_Spawned:
@@ -292,7 +302,7 @@ class Listener(commands.Cog):
                         raremon = poke_rarity[(data_pr[0][14])]
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
                         embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
-                        embed.set_author(name=f'{sender}'+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
+                        embed.set_author(name=(f'{sender}'+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
                         embed.set_image(_embed.image.url)
                         embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                         await announce_channel.send(embed=embed)

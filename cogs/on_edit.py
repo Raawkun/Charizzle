@@ -19,7 +19,7 @@ class On_Edit(commands.Cog):
     async def on_message_edit(self, before, after):
 
         
-        receiver_channel = 825958388349272106
+        receiver_channel = 825950637958234133
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         announce = self.client.get_channel(receiver_channel)
@@ -41,6 +41,7 @@ class On_Edit(commands.Cog):
                 color = _embed.color
                 ##### Rare Spawn #####
                 Rare_Spawns = ["Event", "Legendary", "Shiny"]
+                #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare"]
                 if _embed.description:
                     if "caught a" in _embed.description:
                         raremon = data[0][14]
