@@ -1,3 +1,4 @@
+import random
 import sqlite3
 import disnake
 from disnake.ext import commands
@@ -100,6 +101,9 @@ class Listener(commands.Cog):
                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                 embed.set_author(name=f'{self.client.get_user(int(authorid))}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                 await announce_channel.send(embed=embed)
+            if "won the battle!" in message.content:
+                print("Battle won")
+                drop = random.
             if message.reference:
                 ref_msg = await message.channel.fetch_message(message.reference.message_id)
                 sender = ref_msg.author
