@@ -30,7 +30,7 @@ class Listener(commands.Cog):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
         print("Time do to ghost stuff!")
-        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.playing, name="with your feelings."))
+        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.playing, name="with mInfo :)"))
 
     @commands.Cog.listener()
     async def on_message(self, message):
