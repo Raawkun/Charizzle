@@ -104,15 +104,18 @@ class Listener(commands.Cog):
                 await announce_channel.send(embed=embed)
             if "won the battle!" in message.content:
                 print("Battle won")
-                drop = random.randint(1, drop_pos[battle])
-                if drop == 1:
-                    await message.channel.send("You've found an item!")
-                    data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                    data = data.fetchall()
-                    old_amount = data[0][PLATZHALTER]
-                    new_amount = 1+old_amount
-                    self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                    self.db.commit()
+                dataev = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {sender.id}')
+                dataev = dataev.fetchall()
+                if dataev[0][4] == 1:
+                    drop = random.randint(1, drop_pos[battle])
+                    if drop == 1:
+                        await message.channel.send("You've found an item!")
+                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                        data = data.fetchall()
+                        old_amount = data[0][PLATZHALTER]
+                        new_amount = 1+old_amount
+                        self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                        self.db.commit()
                     
             if message.reference:
                 ref_msg = await message.channel.fetch_message(message.reference.message_id)
