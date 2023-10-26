@@ -10,6 +10,7 @@ from sqlite3 import connect
 from main import client
 from utility.rarity_db import poke_rarity
 from utility.egglist import eggexcl
+from utility.drop_chance import drop_pos
 import datetime
 from utility.embed import Custom_embed
 
@@ -103,7 +104,16 @@ class Listener(commands.Cog):
                 await announce_channel.send(embed=embed)
             if "won the battle!" in message.content:
                 print("Battle won")
-                drop = random.
+                drop = random.randint(1, drop_pos[battle])
+                if drop == 1:
+                    await message.channel.send("You've found an item!")
+                    data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                    data = data.fetchall()
+                    old_amount = data[0][PLATZHALTER]
+                    new_amount = 1+old_amount
+                    self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                    self.db.commit()
+                    
             if message.reference:
                 ref_msg = await message.channel.fetch_message(message.reference.message_id)
                 sender = ref_msg.author
@@ -261,6 +271,20 @@ class Listener(commands.Cog):
                         sender = ref_msg.author.display_name
                         raremon = poke_rarity[(data_egg[0][14])]
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
+                        dataev = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {sender.id}')
+                        dataev = dataev.fetchall()
+                        if dataev[0][4] == 1:
+                            print("Event active")
+                            print("Egg hatched")
+                            drop = random.randint(1, drop_pos[egg])
+                            if drop == 1:
+                                await message.channel.send("You've found an item!")
+                                data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                data = data.fetchall()
+                                old_amount = data[0][PLATZHALTER]
+                                new_amount = 1+old_amount
+                                self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                                self.db.commit()
                         #Rare_Spawned = ["Event", "Legendary", "Shiny", "Rare", "SuperRare"]
 
                         if data_egg[0][14] in Rare_Spawned or str(data_egg[0][0]) in eggexcl:
