@@ -5,6 +5,7 @@ import sqlite3
 from sqlite3 import connect
 from  utility.rarity_db import poke_rarity
 from utility.embed import Custom_embed
+from utility.drop_chance import drops_pos
 
 class On_Edit(commands.Cog):
 
@@ -43,8 +44,55 @@ class On_Edit(commands.Cog):
                 Rare_Spawns = ["Event", "Legendary", "Shiny"]
                 #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare"]
                 if _embed.description:
+                    if "token" in _embed.footer.text:
+                        if "caught a" in _embed.description:
+                            raremon = data[0][14]
+                            print("Battle won")
+                            dataev = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {sender.id}')
+                            dataev = dataev.fetchall()
+                            if dataev[0][4] == 1:
+                                drop = random.randint(1, drop_pos[hunt])
+                                if drop == 1:
+                                    await message.channel.send("You've found an item!")
+                                    data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                    data = data.fetchall()
+                                    old_amount = data[0][4]
+                                    new_amount = 1+old_amount
+                                    self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                                    self.db.commit()
+                            if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                                raremon = poke_rarity[(data[0][14])]
+                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                embed.set_author(name=(sender+" just caught a:"), icon_url=_embed.author.icon_url)
+                                embed.set_image(_embed.image.url)
+                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                await announce.send(embed=embed)
+                        if "broke out" in _embed.description:
+                            raremon = data[0][14]
+                            if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                                raremon = poke_rarity[(data[0][14])]
+                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                embed.set_author(name=(sender+" almost caught a:"), icon_url=_embed.author.icon_url)
+                                embed.set_image(_embed.image.url)
+                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                await announce.send(embed=embed)
                     if "caught a" in _embed.description:
                         raremon = data[0][14]
+                        print("Battle won")
+                        dataev = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {sender.id}')
+                        dataev = dataev.fetchall()
+                        if dataev[0][4] == 1:
+                            drop = random.randint(1, drop_pos[hunt])
+                            if drop == 1:
+                                await message.channel.send("You've found an item!")
+                                data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                data = data.fetchall()
+                                old_amount = data[0][4]
+                                new_amount = 1+old_amount
+                                self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                                self.db.commit()
                         if raremon in Rare_Spawns or _embed.color == 0xe9270b:
                             raremon = poke_rarity[(data[0][14])]
                             description_text = f"Original message: [Click here]({before.jump_url})\n"
@@ -63,7 +111,6 @@ class On_Edit(commands.Cog):
                             embed.set_image(_embed.image.url)
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce.send(embed=embed)
-                    
 
 
 
