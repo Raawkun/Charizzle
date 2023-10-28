@@ -258,6 +258,7 @@ class Coms(commands.Cog):
             await ctx.send(embed=embed)
         
 
+
     @commands.command()
     async def joined(self, ctx, member: disnake.Member):
         """Says when a member joined."""
@@ -376,12 +377,15 @@ class Coms(commands.Cog):
         data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender}')
         data = data.fetchall()
         if message == None:
+            #print("No extra input")
             if data:
                 if data[0][4] == 0:
-                    await ctx.send("Sorry, you don't have enough")
+                    await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
                 else:
+                    newamount = data[0][4]-1
                     self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
                     self.db.commit()
+                    await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
         elif message == "all":
             if data:
                 self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + Items, Items == 0 WHERE User_ID = {sender}')
@@ -393,12 +397,48 @@ class Coms(commands.Cog):
             reducer = int(message)
             if data:
                 if reducer > data[0][4]:
-                    await ctx.send("You dont have enough pal")
+                    await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
                 else:
-                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
+                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + {reducer}, Items = Items - {reducer} WHERE User_ID = {sender}')
                     self.db.commit()
-                    newamount = data[0][4]-1
+                    newamount = data[0][4]-reducer
                     await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
+
+    @commands.command(aliases=["inv","inventory"])
+    async def bag(self,ctx):
+        dataad = self.db.execute(f'SELECT * FROM Admin')
+        dataad = dataad.fetchall()
+        if dataad[0][4] == 1:
+            database_table = self.db.execute(f"SELECT * FROM Events WHERE User_ID = {ctx.author.id}")
+            database_table = database_table.fetchall()
+            if database_table == None:
+                msg ="Your inventory is empty."
+            else:
+                msg = "Lava Cookies: "+f'{database_table[0][4]}'+" <:lavacookie:1167592527570935922>"
+        else:
+            msg = "Your inventory is empty."
+            
+        embed = await Custom_embed(self.client,title=f'{ctx.author.display_name}'"'s Item Bag",thumb="https://www.pokewiki.de/images/e/ec/Pyrobeutel2.png",description=msg).setup_embed()
+        await ctx.send(embed=embed)
+
+
+    @commands.command()
+    async def event(self, ctx):
+        dataad = self.db.execute(f'SELECT * FROM Admin')
+        dataad = dataad.fetchall()
+        if dataad[0][4] == 1:
+            msg = "# - Points - User\n"
+            database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
+            database_table = database_table.fetchall()
+            if database_table:
+                i = 1
+                for row in database_table:
+                    msg += (f'#{i:02} {str(row[2]).ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+                    i += 1
+                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+                await ctx.send(embed=embed)
+        else:
+            await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")
         
 
 def setup(client):
