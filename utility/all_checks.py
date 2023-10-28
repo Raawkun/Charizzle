@@ -52,3 +52,4 @@ class Basic_checker:
         else:
             await ctx.send("You can't use that in here, you must go to <#1079409997496193145>", ephemeral=True)
             return(False)
+        

@@ -340,6 +340,8 @@ class Coms(commands.Cog):
         print("Dex_DB created")
         await ctx.send("Done")
 
+
+    @commands.check(Basic_checker().check_management)
     @commands.command()
     async def eventset(self, ctx):
         data = self.db.execute(f'SELECT * FROM Admin')
@@ -366,7 +368,38 @@ class Coms(commands.Cog):
             await announce.send("Test message")
             # self.db.execute(f'DELETE FROM Events')
             # self.cb.commit()
-
+    
+    @commands.command(aliases=["ex"])
+    async def feed(self,ctx, message = None):
+        sender = ctx.author.id
+        print(sender)
+        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender}')
+        data = data.fetchall()
+        if message == None:
+            if data:
+                if data[0][4] == 0:
+                    await ctx.send("Sorry, you don't have enough")
+                else:
+                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
+                    self.db.commit()
+        elif message == "all":
+            if data:
+                self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + Items, Items == 0 WHERE User_ID = {sender}')
+                self.db.commit()
+                await asyncio.sleep(0.5)
+                await ctx.send("That was yummy! You have 0 cookies left right now.")
+        elif int(message) > 0:
+            print(message)
+            reducer = int(message)
+            if data:
+                if reducer > data[0][4]:
+                    await ctx.send("You dont have enough pal")
+                else:
+                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
+                    self.db.commit()
+                    newamount = data[0][4]-1
+                    await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
+        
 
 def setup(client):
     client.add_cog(Coms(client))

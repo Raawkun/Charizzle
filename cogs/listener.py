@@ -11,6 +11,7 @@ from main import client
 from utility.rarity_db import poke_rarity
 from utility.egglist import eggexcl
 from utility.drop_chance import drop_pos
+from utility.all_checks import Basic_checker
 import datetime
 from utility.embed import Custom_embed
 
@@ -30,7 +31,7 @@ class Listener(commands.Cog):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
         print("Time do to ghost stuff!")
-        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.playing, name="with mInfo :)"))
+        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -104,18 +105,31 @@ class Listener(commands.Cog):
                 await announce_channel.send(embed=embed)
             if "won the battle!" in message.content:
                 print("Battle won")
-                dataev = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {sender.id}')
+                dataev = self.db.execute(f'SELECT * FROM Admin')
                 dataev = dataev.fetchall()
                 if dataev[0][4] == 1:
-                    drop = random.randint(1, drop_pos[battle])
-                    if drop == 1:
-                        await message.channel.send("You've found an item!")
-                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                        data = data.fetchall()
-                        old_amount = data[0][PLATZHALTER]
-                        new_amount = 1+old_amount
-                        self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                        self.db.commit()
+                    username = message.content.split("**")[1]
+                    username = message.guild.get_member_named(username)
+                    print(username)
+                    print(username.id)
+                    data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {username.id}')
+                    data = data.fetchall()
+                    if data:
+
+                        item_count = data[0][3]
+                        battle_odds = ((1/(drop_pos["battle"])) * (1 + (0.01 * item_count)))
+                        odds = 0
+                        # if coin_type == "battle":
+                        odds = battle_odds
+
+                        roll = random.random()
+
+                        if odds > roll:
+                            await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
+                            old_amount = data[0][4]
+                            new_amount = 1+old_amount
+                            self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {username.id}')
+                            self.db.commit()
                     
             if message.reference:
                 ref_msg = await message.channel.fetch_message(message.reference.message_id)
@@ -274,20 +288,27 @@ class Listener(commands.Cog):
                         sender = ref_msg.author.display_name
                         raremon = poke_rarity[(data_egg[0][14])]
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
-                        dataev = self.db.execute(f'SELECT * FROM Admin WHERE User_ID = {sender.id}')
+                        dataev = self.db.execute(f'SELECT * FROM Admin')
                         dataev = dataev.fetchall()
                         if dataev[0][4] == 1:
                             print("Event active")
                             print("Egg hatched")
-                            drop = random.randint(1, drop_pos[egg])
-                            if drop == 1:
-                                await message.channel.send("You've found an item!")
+                            item_count = dataev[0][3]
+                            print(item_count)
+                            egg_odds = ((1/drop_pos["egg"]) * (1 + (0.01 * item_count)))
+                            odds = egg_odds
+
+                            roll = random.random()
+
+                            if odds > roll:
                                 data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
                                 data = data.fetchall()
-                                old_amount = data[0][PLATZHALTER]
-                                new_amount = 1+old_amount
-                                self.db.execute(f'UPGRADE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                                self.db.commit()
+                                if data:
+                                    await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
+                                    old_amount = data[0][4]
+                                    new_amount = 1+old_amount
+                                    self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                                    self.db.commit()
                         #Rare_Spawned = ["Event", "Legendary", "Shiny", "Rare", "SuperRare"]
 
                         if data_egg[0][14] in Rare_Spawned or str(data_egg[0][0]) in eggexcl:
@@ -400,49 +421,51 @@ class Listener(commands.Cog):
                             await announce_channel.send(embed=embed)
 
 
-        data = self.db.execute(f'SELECT * FROM Admin')
+        data = self.db.execute(f'SELECT * FROM Admin') #Checks my Admin Toggle db
         data = data.fetchall()
         log = 1166470108068188200
-        #  1037323228961579049
-        if message.channel.id == 920260648045273088:
-            log = self.client.get_channel(1166470108068188200)
-            if data[0][4] == 1:
-                #print("Its active")
+        #Bot-testing = 825958388349272106, buy-in-sponsoring = 920260648045273088, Meow-grind 1 = 1037323228961579049
+        if message.channel.id == 825958388349272106:  #Checks for the Bot-testing channel
+            log = self.client.get_channel(1166470108068188200) #Setting up my log channel ^^
+            if data[0][4] == 1: #If "Event" is turned on
+                print("Its active")
                 if message.author.id == meow:
-                    #print("From Meow")
-                    if " PokeCoins!" in message.content:
-                        #print("There are coins")
+                    print("From Meow")
+                    if " PokeCoins!" in message.content: #Looking for oaid PokeCoins
+                        print("There are coins")
                         try:
-                            ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                            ref_msg = await message.channel.fetch_message(message.reference.message_id)  # Command with ;
                             sender = ref_msg.author
-                            #print("Ref")
+                            print("Ref")
                         except:
-                            ref_msg = message.interaction
+                            ref_msg = message.interaction #Command with /
                             sender = ref_msg.author
-                            #print("Int")
-                        amount = message.content.split("<:PokeCoin:666879070650236928> ")[1]
-                        amount = amount.split(" ")[0]
-                        #print(amount)
+                            print("Int")
+                        amount = message.content.split("<:PokeCoin:666879070650236928> ")[1] #Splitting the msg of Meow after the Coin Emote
+                        amount = amount.split(" ")[0] #Splitting it again at the Space behind the Number
+                        print(amount)
                         try:
-                            amount = int(amount.replace(",", ""))
+                            amount = int(amount.replace(",", "")) #Replacing any , if there are any
                         except:
                             amount = int(amount)
-                        if amount >= 200000:
-                            update = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                        if amount >= 2: #Checking for a minimum amount
+                            update = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}') #Connecting to the event db
                             update = update.fetchall()
-                            if update:
-                                #print("We trying")
-                                newamount = (update[0][1])+amount
-                                #print(newamount)
-                                self.db.execute(f'UPDATE Events SET Buyin = {newamount} WHERE User_ID = {sender.id}')
+                            if update: #Is the User in the db already?
+                                print("We know them!")
+                                newamount = (update[0][1])+amount #Taking the old amount they paid in & putting the new onto that
+                                print(newamount)
+                                self.db.execute(f'UPDATE Events SET Buyin = {newamount} WHERE User_ID = {sender.id}') #Updating that dude
                                 self.db.commit()
                                 await log.send(f'{sender}'+"'s entry got updated, +"+f'{amount}'+", now: "+f'{newamount}'+" -- "+f'{sender.id}')
-                            else:
-                                #print("Someone new")
+                            else: #Not in the db? Must be new then
+                                print("Someone new")
                                 self.db.execute(f'INSERT INTO Events VALUES ({sender.id}, {amount}, 0, 0, 0)')
                                 self.db.commit()
                                 await message.channel.send("You've entered this "+f'{self.client.user.display_name}'+"'s Event.")
-                                await log.send(f'{sender}'+" paid & joined this event. -- "+f'str({sender.id})')
+                                await log.send(f'{sender}'+" paid & joined this event. -- "+f'{sender.id}')
+
+
 
 
 
