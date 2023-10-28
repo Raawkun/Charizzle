@@ -71,8 +71,9 @@ class On_Edit(commands.Cog):
                                     dataev = dataev.fetchall()
                                     if dataev:
                                         used = dataev[0][3]
-                                        ball = _embed.description.split(" with an ")[1]
+                                        ball = _embed.description.split(" with a")[1]
                                         ball = ball.split("!")[0]
+                                        ball = ball.split(" ")[1]
                                         print(used)
                                         print(rare_calc[raremon])
                                         points = (used * ball_used[ball] * rare_calc[raremon] * random.random())*1000
@@ -135,6 +136,7 @@ class On_Edit(commands.Cog):
                                         used = dataev[0][3]
                                         ball = _embed.description.split(" with an ")[1]
                                         ball = ball.split("!")[0]
+                                        ball = ball.split(" ")[1]
                                         print(used)
                                         print(rare_calc[raremon])
                                         points = (used * ball_used[ball] * rare_calc[raremon] * random.random())*1000
