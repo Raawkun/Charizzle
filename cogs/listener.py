@@ -350,6 +350,16 @@ class Listener(commands.Cog):
                     if "claimed a " in _embed.description:
                         data_pr = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_pr = data_pr.fetchall()
+                        logging = 1083131761451606096
+                        logging = self.client.get_channel(logging)
+                        try:
+                            await logging.send(message)
+                        except:
+                            logging.send("NO message to log")
+                        try:
+                            await logging.send(_embed.description)
+                        except:
+                            logging.send("How's there no description???")
                         print(data_pr[0][14])
                         raremon = poke_rarity[(data_pr[0][14])]
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
