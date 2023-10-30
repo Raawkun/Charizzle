@@ -8,3 +8,4 @@ poke_rarity = {"Common" : "<:com:1165313741664043049>", "Uncommon" : "<:uncom:11
                 #C HEX  #0855fb
 counts = {"event" : "Event Shiny","fullodd" : "Fullodds Shiny","legendary" : "Legendary","item" : "Item Spawn","goldenfish" : "Fish Golden","shinyfish" : "Fish Shiny","legendaryfish" : "Fish Legendary","goldenexp" : "Explore Golden","shinyexp" : "Explore Shiny","legendaryexp" : "Explore Legendary","icon" : "Battle Icon"}
 countnumber = {"event" : 1, "fullodd" : 2,"legendary" : 3, "item" : 4, "goldenfish" : 5, "shinyfish" : 6, "legendaryfish" : 7, "goldenexp" : 8, "shinyexp" : 9, "legendaryexp" : 10, "icon" : 11}
+embed_color = {"Common" : 0x0855fb,"Uncommon" : 0x13b4e7,"Rare" : 0xfb8908,"SuperRare" : 0xf8f407,"Legendary" : 0xa007f8,"Shiny" : 0xfe98cb,"Golden" : 0xd4b100}

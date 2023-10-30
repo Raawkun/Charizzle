@@ -10,7 +10,7 @@ from sqlite3 import connect
 from main import client
 from utility.rarity_db import poke_rarity
 from utility.egglist import eggexcl
-from utility.drop_chance import drop_pos
+from utility.drop_chance import drop_pos, buyin
 from utility.all_checks import Basic_checker
 import datetime
 from utility.embed import Custom_embed
@@ -49,6 +49,8 @@ class Listener(commands.Cog):
             if message.author.bot and message.author.id != meow:
                 return
             
+            if message.content.lower() == "trygoogle":
+                await message.channel.send("https://tenor.com/bUYzH.gif")
             #Open to every Channel!
             if message.content == "^-^":
                 await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
@@ -105,32 +107,34 @@ class Listener(commands.Cog):
                     await announce_channel.send(embed=embed)
                 if "won the battle!" in message.content:
                     #print("Battle won")
-                    dataev = self.db.execute(f'SELECT * FROM Admin')
-                    dataev = dataev.fetchall()
-                    if dataev[0][4] == 1:
-                        username = message.content.split("**")[1]
-                        username = message.guild.get_member_named(username)
-                        #print(username)
-                        #print(username.id)
-                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {username.id}')
-                        data = data.fetchall()
-                        if data:
+                    try:
+                        dataev = self.db.execute(f'SELECT * FROM Admin')
+                        dataev = dataev.fetchall()
+                        if dataev[0][4] == 1:
+                            username = message.content.split("**")[1]
+                            username = message.guild.get_member_named(username)
+                            #print(username)
+                            #print(username.id)
+                            data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {username.id}')
+                            data = data.fetchall()
+                            if data:
 
-                            item_count = data[0][3]
-                            battle_odds = ((1/(drop_pos["battle"])) * (1 + (0.01 * item_count)))
-                            odds = 0
-                            # if coin_type == "battle":
-                            odds = battle_odds
+                                item_count = data[0][3]
+                                battle_odds = ((1/(drop_pos["battle"])) * (1 + (0.01 * item_count)))
+                                odds = 0
+                                # if coin_type == "battle":
+                                odds = battle_odds
 
-                            roll = random.random()
+                                roll = random.random()
 
-                            if odds > roll:
-                                await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                                old_amount = data[0][4]
-                                new_amount = 1+old_amount
-                                self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {username.id}')
-                                self.db.commit()
-                        
+                                if odds > roll:
+                                    await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
+                                    old_amount = data[0][4]
+                                    new_amount = 1+old_amount
+                                    self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {username.id}')
+                                    self.db.commit()
+                    except: 
+                        print("User not bought in")
                 if message.reference:
                     ref_msg = await message.channel.fetch_message(message.reference.message_id)
                     sender = ref_msg.author
@@ -333,7 +337,7 @@ class Listener(commands.Cog):
                                 description_text = f"Original message: [Click here]({message.jump_url})\n"
                                 if data_box[0][14] in Rare_Spawned:
                                     embed = disnake.Embed(title=raremon+" **"+data_box[0][1]+"** \nDex: #"+str(data_box[0][0]), color=color,description=description_text)
-                                    embed.set_author(name=(sender+" just unboxed an exclusive:"),icon_url="https://cdn.discordapp.com/emojis/784865588207157259.gif?size=96&quality=lossless")
+                                    embed.set_author(name=(sender+" just unboxed a:"),icon_url="https://cdn.discordapp.com/emojis/784865588207157259.gif?size=96&quality=lossless")
                                     embed.set_image(_embed.image.url)
                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                     await announce_channel.send(embed=embed)
@@ -368,7 +372,7 @@ class Listener(commands.Cog):
                             raremon = poke_rarity[(data_pr[0][14])]
                             description_text = f"Original message: [Click here]({message.jump_url})\n"
                             embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
-                            embed.set_author(name=(f'{sender}'+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
+                            embed.set_author(name=(f'{sender.display_name}'+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
                             embed.set_image(_embed.image.url)
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce_channel.send(embed=embed)
@@ -462,7 +466,7 @@ class Listener(commands.Cog):
                                 amount = int(amount.replace(",", "")) #Replacing any , if there are any
                             except:
                                 amount = int(amount)
-                            if amount >= 2: #Checking for a minimum amount
+                            if amount >= buyin: #Checking for a minimum amount
                                 update = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}') #Connecting to the event db
                                 update = update.fetchall()
                                 if update: #Is the User in the db already?
@@ -474,20 +478,10 @@ class Listener(commands.Cog):
                                     await log.send(f'{sender}'+"'s entry got updated, +"+f'{amount}'+", now: "+f'{newamount}'+" -- "+f'{sender.id}')
                                 else: #Not in the db? Must be new then
                                     #print("Someone new")
-                                    self.db.execute(f'INSERT INTO Events VALUES ({sender.id}, {amount}, 0, 0, 0)')
+                                    self.db.execute(f'INSERT INTO Events VALUES ({sender.id}, {amount}, 0, 1, 0)')
                                     self.db.commit()
                                     await message.channel.send("You've entered this "+f'{self.client.user.display_name}'+"'s Event.")
                                     await log.send(f'{sender}'+" paid "f'{amount}'" & joined this event. -- "+f'{sender.id}')
-
-
-
-
-
-
-
-
-
-
 
 
             log_channel = 1164544776985653319
@@ -567,14 +561,14 @@ class Listener(commands.Cog):
 #------------------------------------- Testing area---------------------------------------------------------------------------------------------#
 
 
-#1037323228961579049
+#1037323228961579049     825958388349272106 bot testing
         channel_ids = [1083131761451606096, 827510854467584002] #test-spawns
-        receiver_channel = 825958388349272106 #bot-testing channel
+        receiver_channel = 827510854467584002 #flaming hell
         if message.channel.id in channel_ids:
             await message.channel.send("Message received: "+message.author.display_name)
+            log = self.client.get_channel(receiver_channel)
             
             if message.author.id == meow:
-                announce_channel = self.client.get_channel(receiver_channel)
                 if (len(message.embeds) > 0):
                     _embed = message.embeds[0]
                     if message.content != None:
@@ -634,64 +628,6 @@ class Listener(commands.Cog):
                         real_name = name.split(".")[0]
                         await message.channel.send(real_name)
                     else: return
-
-        if message.channel.id == 825822261625880576:
-            if (len(message.embeds)) > 0:
-                _embed = message.embeds[0]
-                if "Lottery" in _embed.author:
-                    lot_dict = _embed.to_dict()
-                    print(lot_dict)
-                    announce_channel.id = 1163534668281421915
-                    lot_embed = disnake.Embed.from_dict(lot_dict)
-                    await announce_channel.send(embed=lot_dict)
-                if "Tower" in _embed.author:
-                    tower_dict = _embed.to_dict()
-                    print(tower_dict)
-                    announce_channel.id = 1163534668281421915
-                    lot_embed = disnake.Embed.from_dict(lot_dict)
-                    await announce_channel.send(embed=lot_dict)
-        elif "<lot" in message.content:
-            if lot_dict:
-                lot_embed = disnake.Embed.from_dict(lot_dict)
-                await message.channel.send(embed=lot_embed)
-            else: return
-        elif "<tower" in message.content:
-            if tower_dict:
-                tower_embed = disnake.Embed.from_dict(tower_dict)
-                await message.channels.end(embed=tower_embed)
-            else: return
-                        
-
-        def insert_data(field_name, field_value):
-            conn = sqlite3.connect('pokemon.db')
-            cursor = conn.cursor()
-
-            cursor.execute('INSERT INTO embed_data (FieldName, FieldValue) VALUES (?, ?)', (field_name, field_value))
-            conn.commit()
-            conn.close()
-
-
-            if (len(message.embeds) > 0):
-                _embed = message.embeds[0]
-                if _embed.fields != None:
-                    for field in _embed.fields:
-                        field_name = field.name
-                        field_value = field.value
-                        insert_data(field_name, field_value)
-                            
-            
-
-        
-# Zeichen zum Kopieren: [ ] { }
-
-    # @commands.Cog.listener()
-    # async def on_message_edit(before, after, lol):
-    #     if before.author == client.user:
-    #         return
-    #     if before.author.id == 664508672713424926:
-    #         if "score of" in after.content:
-    #     # Send a message if the edited content contains the word "lantern"
-    #             await after.channel.send(f"Message edited by {before.author.name} contains 'lantern': {after.content}")
 
 
 def setup(client):

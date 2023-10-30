@@ -29,7 +29,7 @@ class Info_Cmd(commands.Cog):
                 embed.add_field(name="**__Clan Hunts__**", value="> ``hunt`` - for checking the current hunt.",inline=False)
                 embed.add_field(name="**__Top Count__**",value="> ``topcount`` to check valid parameter; will show the most catches since last encounter")
                 embed.add_field(name=" ", value=" ",inline=False)
-                embed.add_field(name="Miscellanous Cmds", value="> ``calc`` - enter a formula to get a result.\n> ``joined`` - find out when you entered the server.\n> ``test`` - Well, a test command.",inline=False)
+                embed.add_field(name="Miscellanous Cmds", value="> ``calc`` - enter a formula to get a result.\n> ``joined`` - find out when you entered the server.\n> ``test`` - Well, a test command.\n> ``pin`` - When given a message ID (same channel) or used as an answer to as message, will pin that message.\n> ``unpin`` - Same procedure as ``pin``, but will unpin.",inline=False)
                 await ctx.send(embed=embed)
             elif message in ["functions","Functions"]:
                 embed.add_field(name="**__Boost notifier__**",value="> Offers different kinds of notifiers when boosts (Repels, Grazz, Honey) are expired in a spawn.\n> You can toggle them on/off via ``/toggle``.",inline=False)

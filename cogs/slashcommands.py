@@ -4,6 +4,8 @@ from disnake.ext import commands
 from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
 import asyncio
 from utility.embed import Custom_embed
+from utility.all_checks import Basic_checker
+from utility.rarity_db import counts, countnumber
 
 class SlashComs(commands.Cog):
 
@@ -18,7 +20,7 @@ class SlashComs(commands.Cog):
             await ctx.response.defer()
             await ctx.send(f"Now I have my badge!!!")
 
-
+    @commands.check(Basic_checker.check_if_it_is_me)
     @commands.slash_command(
         name="admin",
         description="Toggle admin stuff",
@@ -118,6 +120,152 @@ class SlashComs(commands.Cog):
                 await ctx.send("Toggled off")
 
 
+    @commands.slash_command(name="event", description="Shows the current Leaderboard, if there's an event.")
+    async def event(self, ctx):
+        dataad = self.db.execute(f'SELECT * FROM Admin')
+        dataad = dataad.fetchall()
+        if dataad[0][4] == 1:
+            msg = "# - Points - User\n"
+            database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
+            database_table = database_table.fetchall()
+            if database_table:
+                i = 1
+                for row in database_table:
+                    msg += (f'#{i:02} {str(row[2]).ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+                    i += 1
+                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+                await ctx.send(embed=embed)
+        else:
+            await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")
+        
+    @commands.slash_command(name="bag", description="Take a look into your bag.")
+    async def bag(self, ctx):
+        dataad = self.db.execute(f'SELECT * FROM Admin')
+        dataad = dataad.fetchall()
+        if dataad[0][4] == 1:
+            database_table = self.db.execute(f"SELECT * FROM Events WHERE User_ID = {ctx.author.id}")
+            database_table = database_table.fetchall()
+            if database_table == None:
+                msg ="Your inventory is empty."
+            else:
+                msg = "Lava Cookies: "+f'{database_table[0][4]}'+" <:lavacookie:1167592527570935922>"
+        else:
+            msg = "Your inventory is empty."
+            
+        embed = await Custom_embed(self.client,title=f'{ctx.author.display_name}'"'s Item Bag",thumb="https://www.pokewiki.de/images/e/ec/Pyrobeutel2.png",description=msg).setup_embed()
+        await ctx.send(embed=embed)
 
+    @commands.slash_command(name="feed", description="Give a Cookie to Mega Gengar.")
+    async def feed(self,ctx,amount = None):
+        sender = ctx.author.id
+        print(sender)
+        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender}')
+        data = data.fetchall()
+        if amount == None:
+            #print("No extra input")
+            if data:
+                if data[0][4] == 0:
+                    await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
+                else:
+                    newamount = data[0][4]-1
+                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
+                    self.db.commit()
+                    await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
+        elif amount == "all":
+            if data:
+                self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + Items, Items == 0 WHERE User_ID = {sender}')
+                self.db.commit()
+                await asyncio.sleep(0.5)
+                await ctx.send("That was yummy! You have 0 cookies left right now.")
+        elif int(amount) > 0:
+            print(amount)
+            reducer = int(amount)
+            if data:
+                if reducer > data[0][4]:
+                    await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
+                else:
+                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + {reducer}, Items = Items - {reducer} WHERE User_ID = {sender}')
+                    self.db.commit()
+                    newamount = data[0][4]-reducer
+                    await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
+
+    @commands.slash_command(name="topcount",description="Shows a leaderboard for different ;count stats")
+    async def topcount(self, ctx, category = None):
+        cat = ["event","fullodd","legendary","item","goldenfish","shinyfish","legendaryfish","goldenexp","shinyexp","legendaryexp","icon"]
+        if category:
+            if category in cat:
+                data = self.db.execute(f'SELECT * FROM Counter ORDER BY {category} DESC')
+                data = data.fetchall()
+                e = countnumber[category]
+                embed = await Custom_embed(self.client,title=f"Top Count Leaderboard",description=f"Top 5 Leaderboard in "+counts[category]).setup_embed()
+
+                embed.add_field(name="Place:",value="1.\n2.\n3.\n4.\n5.")
+                embed.add_field(name="Username",value="<@"+str(data[0][0])+">\n"+"<@"+str(data[1][0])+">\n"+"<@"+str(data[2][0])+">\n"+"<@"+str(data[3][0])+">\n"+"<@"+str(data[4][0])+">")
+                embed.add_field(name="Amount",value=str(data[0][e])+"\n"+str(data[1][e])+"\n"+str(data[2][e])+"\n"+str(data[3][e])+"\n"+str(data[4][e]))
+                await ctx.send(embed=embed)
+            if category == "total":
+                embed = await Custom_embed(self.client,title=f"Top Count Leaderboard",description=f"Top 5 Leaderboard in total").setup_embed()
+                i = 0
+                while i <= 4:
+                    data = self.db.execute(f'SELECT * FROM Counter ORDER BY {cat[i]} DESC')
+                    data = data.fetchall()
+                    #print(cat[i])
+                    e = countnumber[cat[i]]
+                    fieldname = counts[cat[i]]
+                    #print(fieldname)
+                    embed.add_field(name=fieldname,value="",inline=False)
+                    embed.add_field(name="Place:",value="1.\n2.\n3.\n4.\n5.")
+                    embed.add_field(name="Username",value="<@"+str(data[0][0])+">\n"+"<@"+str(data[1][0])+">\n"+"<@"+str(data[2][0])+">\n"+"<@"+str(data[3][0])+">\n"+"<@"+str(data[4][0])+">")
+                    embed.add_field(name="Amount",value=str(data[0][e])+"\n"+str(data[1][e])+"\n"+str(data[2][e])+"\n"+str(data[3][e])+"\n"+str(data[4][e]))
+                    i+=1
+                await ctx.send(embed=embed)
+                embed = await Custom_embed(self.client,title=f"Top Count Leaderboard",description=f"Top 5 Leaderboard in total").setup_embed()
+                while i >= 5 and i <=9:
+                    data = self.db.execute(f'SELECT * FROM Counter ORDER BY {cat[i]} DESC')
+                    data = data.fetchall()
+                    #print(cat[i])
+                    e = countnumber[cat[i]]
+                    fieldname = counts[cat[i]]
+                    embed.add_field(name=fieldname,value="",inline=False)
+                    embed.add_field(name="Place:",value="1.\n2.\n3.\n4.\n5.")
+                    embed.add_field(name="Username",value="<@"+str(data[0][0])+">\n"+"<@"+str(data[1][0])+">\n"+"<@"+str(data[2][0])+">\n"+"<@"+str(data[3][0])+">\n"+"<@"+str(data[4][0])+">")
+                    embed.add_field(name="Amount",value=str(data[0][e])+"\n"+str(data[1][e])+"\n"+str(data[2][e])+"\n"+str(data[3][e])+"\n"+str(data[4][e]))
+                    i+=1
+                await ctx.send(embed=embed)
+        else:
+            embed = await Custom_embed(self.client,title=f"Wrong Usage",description=f"Sorry, wrong parameter.").setup_embed()
+            embed.add_field(name="Valid parameter for ``topcount``:",value="event, fullodd, legendary, item, goldenfish, shinyfish, legendaryfish, goldenexp, shinyexp, legendaryexp, icon\n''total'' prints a summary for every category.")
+            embed.add_field(name="__Aliases:__",value="``topc`` or ``tc``",inline=False)
+            await ctx.send(embed=embed)
+
+    @commands.slash_command(name="hunt",description="Shows you the current hunt targets during a hunt event.")
+    async def hunt(self, ctx):
+        data = self.db.execute(f'SELECT * FROM Hunt')
+        data = data.fetchall()
+        max = self.db.execute(f'SELECT Count(*) FROM Hunt')
+        max = max.fetchone()[0]
+        #max = max.rowcount
+        #print(max)
+        if data:
+            embed = disnake.Embed(description="Current Hunt Pokémon",color=0x807ba6)
+            embed.set_author(name="ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ Hunt System")
+            embed.set_footer(text=f'{self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
+            guild = ctx.guild
+            embed.set_thumbnail(url=guild.icon)
+            #print("0x807ba6")
+            i = 0
+            while i < (max):
+                #print("First i is:"+str(i))
+                embed.add_field(name=("**"+str(data[i][1])+"**with threshold of "+str(data[i][2])),value="",inline=False)
+                #embed.add_field(name=" ",value=" ",inline=True)
+                #print("Added embed")
+                i+=1
+                #print(i)
+            
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("There is no hunt event at the moment.")
+
+            
 def setup(client):
     client.add_cog(SlashComs(client))

@@ -1,0 +1,2 @@
+unpinnables = [825813023716540429, 827551577698730015, 1162756872277856346, 1132224324179345489, 825820031677759568]
+#              Smalltalk,           Smalltalk With bot, Trade Offers,       Collection Market       Pog Sadge

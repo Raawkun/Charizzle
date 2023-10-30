@@ -1,3 +1,4 @@
+import math
 import random
 from typing import Any
 import disnake
@@ -11,6 +12,7 @@ import datetime
 from utility.all_checks import Basic_checker
 from utility.embed import Custom_embed
 from utility.rarity_db import counts, countnumber
+from utility.id_lists import unpinnables
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -360,13 +362,39 @@ class Coms(commands.Cog):
             self.db.commit()
             data = self.db.execute(f'SELECT * FROM Events')
             data = data.fetchall()
-            embed = await Custom_embed(self.client,title="Event Leaderboard").setup_embed()
-            #
-            # Placeholder for table
-            #                               
+            msg = "# - Points - User\n"
+            database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
+            database_table = database_table.fetchall()
+            if database_table:
+                i = 1
+                for row in database_table:
+                    msg += (f'#{i:02} {str(row[2]).ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+                    i += 1
+                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+            await announce.send(embed=embed)
+            msg = "# - Payout - User\n"
+            amount = self.db.execute(f'SELECT SUM(Buyin) FROM Events')
+            amount = amount.fetchone()
+            amount = amount[0]
+            print(amount)
+            firstplace = math.ceil(int(amount)*0.5)
+            print(firstplace)
+            secondplace = math.floor(int(amount)*0.3)
+            print(secondplace)
+            thirdplace = math.floor(int(amount)*0.2)
+            print(thirdplace)
+            payouts = [f'{firstplace:,}',f'{secondplace:,}',f'{thirdplace:,}']
+            database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC LIMIT 3")
+            database_table = database_table.fetchall()
+            if database_table:
+                i = 1
+                for row in database_table:
+                    msg += (f'#{i:02} {payouts[i-1].ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+                    i += 1
+                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+            await announce.send(embed=embed)
             await ctx.send("Ended the event. Check <#917890289652346911> for the leaderboard table.")
             await log.send("**Event ended**")
-            await announce.send("Test message")
             # self.db.execute(f'DELETE FROM Events')
             # self.cb.commit()
     
@@ -440,6 +468,45 @@ class Coms(commands.Cog):
         else:
             await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")
         
+    @commands.command()
+    async def pin(self, ctx, message_id: int = None):
+        checker = 1
+        if message_id == None:
+            #print("No ID given")
+            if ctx.message.reference:
+                message_id = ctx.message.reference.message_id
+            #print("Ref id is "+str(message_id))
+            else:
+                await ctx.send("Please use a message ID or answer to a message.")
+                checker = 0
+        if checker == 1:
+            ref_msg = await ctx.channel.fetch_message(message_id)
+            #print(ref_msg)
+            if ctx.channel.id not in unpinnables:
+                #print("Channel is ok")
+                message = ref_msg
+                await message.pin()
+
+    @commands.command()
+    async def unpin(self, ctx, message_id: int = None):
+        checker = 1
+        if message_id == None:
+            #print("No ID given")
+            if ctx.message.reference:
+                message_id = ctx.message.reference.message_id
+            else:
+                await ctx.send("Please use a message ID or answer to a message.")
+                checker = 0
+        if checker == 1:
+            ref_msg = await ctx.channel.fetch_message(message_id)
+            #print(ref_msg)
+            if ctx.channel.id not in unpinnables:
+                emoji = ':white_check_mark:'
+                await ctx.message.add_reaction(emoji)
+                #print("Channel is ok")
+                message = ref_msg
+                await message.unpin()
+
 
 def setup(client):
     client.add_cog(Coms(client))
