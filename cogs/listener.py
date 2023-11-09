@@ -269,7 +269,7 @@ class Listener(commands.Cog):
                                     if "honey" in message.content and "boost" in message.content:
                                         await message.channel.send("<@"+str(sender.id)+"> Hey, your <:honey:1165231049287155793> boost expired!")
                                 else: return
-                                
+
                             if message.channel.id == 1079152774622744726:
                                 await asyncio.sleep(8)
                                 datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
@@ -298,20 +298,21 @@ class Listener(commands.Cog):
                                 await message.channel.send("You can now swap again.")
                             elif datarem[0][6] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now swap again.")
-                    try:
-                        if "'s CatchBot" in _embed.author.name or "your catch bot" in message.content:
+                    if _embed.author.name or message.content:
+                        if "CatchBot" in _embed.author.name or "your catch bot" in message.content:
                         #if message.channel.id == 1079152774622744726:
-                            await asyncio.sleep(3)
+                            print("Aha, catchbotting")
+                            await asyncio.sleep(5)
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][6] == 1:
                                 await message.channel.send("You can now use your catchbot again.")
                             elif datarem[0][6] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now use your catchbot again.")
-                    except:
-                        None
-                    try:
+                    
+                    if _embed.footer.text:
                         if "battle will begin" in _embed.footer.text:
+                            print("Aha, battling.")
                             if message.channel.id == 1079152774622744726:
                                 await asyncio.sleep(59)
                                 datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
@@ -320,8 +321,6 @@ class Listener(commands.Cog):
                                     await message.channel.send("You can now battle again.")
                                 elif datarem[0][6] == 2:
                                     await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
-                    except:
-                        None
                             
 
                     if _embed.author.name:
