@@ -248,6 +248,44 @@ class Listener(commands.Cog):
                                 self.db.commit()
                                 await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
                                 await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ```<toggle``` for more info.")
+                            if message.channel.id == 1079152774622744726:
+                                await asyncio.sleep(8)
+                                datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                                datarem = datarem.fetchall()
+                                if datarem[0][6] == 1:
+                                    await message.channel.send("You can now hunt again.")
+                                elif datarem[0][6] == 2:
+                                    await message.channel.send("<@"+str(sender.id)+"> - You can now hunt again.")
+                    
+                    if "cast out a" in _embed.description:
+                        if message.channel.id == 1079152774622744726:
+                            await asyncio.sleep(24.2)
+                            datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                            datarem = datarem.fetchall()
+                            if datarem[0][6] == 1:
+                                await message.channel.send("You can now fish again.")
+                            elif datarem[0][6] == 2:
+                                await message.channel.send("<@"+str(sender.id)+"> - You can now fish again.")
+                    
+                    if "from a swap" in _embed.description:
+                        if message.channel.id == 1079152774622744726:
+                            await asyncio.sleep(6)
+                            datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                            datarem = datarem.fetchall()
+                            if datarem[0][6] == 1:
+                                await message.channel.send("You can now swap again.")
+                            elif datarem[0][6] == 2:
+                                await message.channel.send("<@"+str(sender.id)+"> - You can now swap again.")
+                    if "battle will begin" in _embed.footer.text:
+                        if message.channel.id == 1079152774622744726:
+                            await asyncio.sleep(59)
+                            datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                            datarem = datarem.fetchall()
+                            if datarem[0][6] == 1:
+                                await message.channel.send("You can now battle again.")
+                            elif datarem[0][6] == 2:
+                                await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
+                            
 
                     ######## Repel/Grazz notifier 
                             databaserep = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
@@ -549,7 +587,7 @@ class Listener(commands.Cog):
                             self.db.commit()
                             #print("Its in the dex now")
                     except: return
-            # Only wotks in specific channels!
+            # Only works in specific channels!
             # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
             # if message.channel.id in channel_ids:
         
