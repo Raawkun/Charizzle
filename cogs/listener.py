@@ -248,6 +248,28 @@ class Listener(commands.Cog):
                                 self.db.commit()
                                 await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
                                 await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ```<toggle``` for more info.")
+                            ######## Repel/Grazz notifier 
+                            databaserep = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                            databaserep = databaserep.fetchall()
+                            #print(database)
+                            if databaserep:
+                                if databaserep[0][3] == 1:
+                                    #print("repel activated"+str(database[0][3]))
+                                    if "super_repel" in message.content and "boost" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
+                                    if "max_repel" in message.content and "boost" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
+                                    if ":repel" in message.content and "boost" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                                else: return
+                                if databaserep[0][2] == 1:
+                                    #print("grazz activated"+str(database[0][2]))
+                                    if "goldenrazz" in message.content and "boost" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+                                    if "honey" in message.content and "boost" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:honey:1165231049287155793> boost expired!")
+                                else: return
+                                
                             if message.channel.id == 1079152774622744726:
                                 await asyncio.sleep(8)
                                 datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
@@ -276,53 +298,32 @@ class Listener(commands.Cog):
                                 await message.channel.send("You can now swap again.")
                             elif datarem[0][6] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now swap again.")
-                    if "battle will begin" in _embed.footer.text:
-                        if message.channel.id == 1079152774622744726:
-                            await asyncio.sleep(59)
+                    try:
+                        if "'s CatchBot" in _embed.author.name or "your catch bot" in message.content:
+                        #if message.channel.id == 1079152774622744726:
+                            await asyncio.sleep(3)
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][6] == 1:
-                                await message.channel.send("You can now battle again.")
+                                await message.channel.send("You can now use your catchbot again.")
                             elif datarem[0][6] == 2:
-                                await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
+                                await message.channel.send("<@"+str(sender.id)+"> - You can now use your catchbot again.")
+                    except:
+                        None
+                    try:
+                        if "battle will begin" in _embed.footer.text:
+                            if message.channel.id == 1079152774622744726:
+                                await asyncio.sleep(59)
+                                datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                                datarem = datarem.fetchall()
+                                if datarem[0][6] == 1:
+                                    await message.channel.send("You can now battle again.")
+                                elif datarem[0][6] == 2:
+                                    await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
+                    except:
+                        None
                             
 
-                    ######## Repel/Grazz notifier 
-                            databaserep = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                            databaserep = databaserep.fetchall()
-                            #print(database)
-                            if databaserep:
-                                if databaserep[0][3] == 1:
-                                    #print("repel activated"+str(database[0][3]))
-                                    if "super_repel" in message.content and "boost" in message.content:
-                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
-                                    if "max_repel" in message.content and "boost" in message.content:
-                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
-                                    if ":repel" in message.content and "boost" in message.content:
-                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:repel:1164286208822738967> boost expired!")
-                                else: return
-                                if databaserep[0][2] == 1:
-                                    #print("grazz activated"+str(database[0][2]))
-                                    if "goldenrazz" in message.content and "boost" in message.content:
-                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
-                                    if "honey" in message.content and "boost" in message.content:
-                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:honey:1165231049287155793> boost expired!")
-                                else: return
-
-                    ######## Start here for Spawn Listener
-                            databasesp = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                            databasesp = databasesp.fetchall()
-                        
-                            sender = ref_msg.author.display_name
-                            author_icurl = _embed.author.icon_url
-                            raremon = poke_rarity[(databasesp[0][14])]
-                            description_text = f"Original message: [Click here]({message.jump_url})\n"
-                            # if databasesp[0][14] in Rare_Spawned or _embed.color == 0xe9270b:
-                            #     embed = disnake.Embed(title=raremon+" **"+databasesp[0][1]+"** \nDex: #"+str(databasesp[0][0]), color=color,description=description_text)
-                            #     embed.set_author(name=(sender+" just spawned a:"), icon_url=author_icurl)
-                            #     embed.set_image(_embed.image.url)
-                            #     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                            #     await announce_channel.send(embed=embed)
                     if _embed.author.name:
                         if "hatched" in _embed.author.name:
                             data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')

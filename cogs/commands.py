@@ -62,6 +62,12 @@ class Coms(commands.Cog):
                 value_priv = emo_yes
             else:
                 value_priv = emo_no
+            if database[0][6] == 0:
+                value_rem = "Off"
+            elif database[0][6] == 1:
+                value_rem = "On, no ping"
+            else:
+                value_rem = "On, with ping"
             embed = disnake.Embed(
                 title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
             )
@@ -70,6 +76,7 @@ class Coms(commands.Cog):
             embed.add_field(name="Golden Razz Berry: ",inline=True, value=value_grazz)
             embed.add_field(name="Repel: ",inline=True, value=value_repel)
             embed.add_field(name="Starter: ",inline=True, value=value_start)
+            embed.add_field(name="Reminders: ", inline=True, value=value_rem)
             embed.add_field(name="Privacy: ",inline=True, value=value_priv)
             embed.set_thumbnail(footer_icon)
             await ctx.send(embed=embed)
