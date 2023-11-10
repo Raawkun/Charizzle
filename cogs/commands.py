@@ -474,7 +474,7 @@ class Coms(commands.Cog):
                     points = f'{points:,}'
                     msg += (f'{i:02} - {str(points).ljust(7)} - {str(row[3]-1).ljust(6)}  - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
                     i += 1
-                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```',thumb=ctx.guild.icon).setup_embed()
+                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
                 await ctx.send(embed=embed)
         else:
             await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")
