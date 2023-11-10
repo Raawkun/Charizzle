@@ -1,5 +1,6 @@
 import random
 import sqlite3
+import time
 import disnake
 from disnake.ext import commands
 import asyncio
@@ -343,7 +344,10 @@ class Listener(commands.Cog):
                             datarem = datarem.fetchall()
                             if datarem[0][7] == 0 and datarem[0][6] != 0:
                                 print("Oh, a new timer")
-                                self.db.execute(f'UPDATE Toggle SET QuestTime = 1 WHERE User_ID = {sender.id}')
+                                q_time = time.time()
+                                print(q_time)
+                                q_time = q_time+waiter
+                                self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time} WHERE User_ID = {sender.id}')
                                 self.db.commit()
                                 await asyncio.sleep(waiter)
                                 self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {sender.id}')

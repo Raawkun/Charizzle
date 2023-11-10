@@ -32,6 +32,12 @@ class Basic_checker:
         
         await ctx.send("You need to have the 'Management' role to use this command.", ephemeral=True)
         return False
+    
+    async def check_lb_helper(self, ctx):
+        lb_role_name = "Leaderboard Helper"
+        for role in ctx.author.roles:
+            if role.name == lb_role_name:
+                return True
 
     async def check_server(self, ctx):
         if ctx.guild.id == 825813023716540426:

@@ -459,12 +459,12 @@ class Coms(commands.Cog):
         await ctx.send(embed=embed)
 
 
-    @commands.command()
+    @commands.command(aliases=["Event","events","Events"])
     async def event(self, ctx):
         dataad = self.db.execute(f'SELECT * FROM Admin')
         dataad = dataad.fetchall()
         if dataad[0][4] == 1:
-            msg = "# - Points - User\n"
+            msg = "#  - Points  - Cookies - User\n"
             database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
             database_table = database_table.fetchall()
             if database_table:
@@ -472,9 +472,9 @@ class Coms(commands.Cog):
                 for row in database_table:
                     points = row[2]
                     points = f'{points:,}'
-                    msg += (f'#{i:02} {str(points).ljust(7)}  - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+                    msg += (f'{i:02} - {str(points).ljust(7)} - {str(row[3]-1).ljust(6)}  - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
                     i += 1
-                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```',thumb=ctx.guild.icon).setup_embed()
                 await ctx.send(embed=embed)
         else:
             await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")

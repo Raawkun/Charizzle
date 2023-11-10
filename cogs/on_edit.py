@@ -35,7 +35,7 @@ class On_Edit(commands.Cog):
                 befembed = before.embeds[0]
                 if befembed.description:
                     if "captcha" in befembed.description:
-                        print("Captcha, rude")
+                        #print("Captcha, rude")
                         return
                     else:
                         try:
@@ -226,43 +226,128 @@ class On_Edit(commands.Cog):
                                             embed.set_image(_embed.image.url)
                                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                             await announce.send(embed=embed)
-                            channels = [1028441789448867880, 1079152774622744726]
+
+
+                            lb_role = "Leaderboard Helper"
+                            staff_role = "Management"
+                            # 1079152774622744726
+                            channels = [1028441789448867880]
+                            try:
+                                sender = before.guild.get_member(sender.id)
+                            except:
+                                None
+                            #print(sender.roles)
+                            
                             if before.channel.id in channels:
-                                if "clan member information" in befembed.description.lower():
-                                    #print("Member Info")
-                                    i = 1
-                                    while i <= 15:
-                                        for field in befembed.fields:
-                                            if field.name == "User":
-                                                userid = field.value.split("\n")[i-1]
-                                                rang = userid.split(" <@")[0]
-                                                rang = int(rang.replace("**",""))
-                                                #print(rang)
-                                                userid = userid.split(" ")[1]
-                                                userid = userid.split("@")[1]
-                                                userid = int(userid.split(">")[0])
-                                                #print(userid)
-                                                username = self.client.get_user(userid)
-                                                #print(username)
-                                            if field.name == "Contributions":
-                                                catches = field.value.split("\n")[i-1]
-                                                catches = catches.split(" ")[1]
-                                                catches = catches.replace(",", "")
-                                                catches = int(catches.replace("**", ""))
-                                        old = 0
-                                        datamem = self.db.execute(f'SELECT * FROM Leaderboard WHERE User_ID = {userid}')
-                                        datamem = datamem.fetchall()
-                                        count = 0
-                                        if datamem:
-                                            if catches == datamem[0][2]:
-                                                count = datamem[0][4]+1
-                                            if catches != datamem[0][2]:
-                                                old = datamem[0][2]
-                                        self.db.execute(f'INSERT or REPLACE INTO Leaderboard (User_ID, Username, ThisWeek, LastWeek, SameWeek) VALUES ({userid},"{username}", {catches}, {old}, {count})')
-                                        self.db.commit()
-                                        self.db.execute(f'INSERT or REPLACE INTO Memberlist (Rang ,User_ID) VALUES ({rang}, {userid})')
-                                        self.db.commit()
-                                        i+=1
+                                if "clan member information" in befembed.description.lower() or "Page 3/3" in _embed.footer.text:
+                                    print(_embed.footer.text)
+                                    if any(lb_role for role in sender.roles) or any(staff_role for role in sender.roles):
+                                        print("Member Info")
+                                        if "1/3" in befembed.footer.text:
+                                            rang = 0
+                                            i = 1
+                                            while i <= 15:
+                                                for field in befembed.fields:
+                                                    if field.name == "User":
+                                                        userid = field.value.split("\n")[i-1]
+                                                        rang = userid.split(" <@")[0]
+                                                        rang = int(rang.replace("**",""))
+                                                        #print(rang)
+                                                        userid = userid.split(" ")[1]
+                                                        userid = userid.split("@")[1]
+                                                        userid = int(userid.split(">")[0])
+                                                        #print(userid)
+                                                        username = self.client.get_user(userid)
+                                                        #print(username)
+                                                    if field.name == "Contributions":
+                                                        catches = field.value.split("\n")[i-1]
+                                                        catches = catches.split(" ")[1]
+                                                        catches = catches.replace(",", "")
+                                                        catches = int(catches.replace("**", ""))
+                                                old = 0
+                                                datamem = self.db.execute(f'SELECT * FROM Leaderboard WHERE User_ID = {userid}')
+                                                datamem = datamem.fetchall()
+                                                count = 0
+                                                if datamem:
+                                                    if catches == datamem[0][2]:
+                                                        count = datamem[0][4]+1
+                                                        old = int(datamem[0][2])
+                                                    if catches != datamem[0][2]:
+                                                        old = int(datamem[0][2])
+                                                diff = catches - old
+                                                self.db.execute(f'INSERT or REPLACE INTO Leaderboard (User_ID, Username, ThisWeek, LastWeek, SameWeek, Difference) VALUES ({userid},"{username}", {catches}, {old}, {count}, {diff})')
+                                                self.db.commit()
+                                                self.db.execute(f'INSERT or REPLACE INTO Memberlist (Rang ,User_ID) VALUES ({rang}, {userid})')
+                                                self.db.commit()
+                                                i+=1
+                                        if "2/3" in _embed.footer.text or "3/3" in _embed.footer.text:
+                                            print("2/3 or 3/3")
+                                            rang = 0
+                                            i = 1
+                                            while i <= 15:
+                                                for field in _embed.fields:
+                                                    if field.name == "User":
+                                                        userid = field.value.split("\n")[i-1]
+                                                        rang = userid.split(" <@")[0]
+                                                        rang = int(rang.replace("**",""))
+                                                        #print(rang)
+                                                        userid = userid.split(" ")[1]
+                                                        userid = userid.split("@")[1]
+                                                        userid = int(userid.split(">")[0])
+                                                        #print(userid)
+                                                        username = self.client.get_user(userid)
+                                                        #print(username)
+                                                    if field.name == "Contributions":
+                                                        catches = field.value.split("\n")[i-1]
+                                                        catches = catches.split(" ")[1]
+                                                        catches = catches.replace(",", "")
+                                                        catches = int(catches.replace("**", ""))
+                                                old = 0
+                                                datamem = self.db.execute(f'SELECT * FROM Leaderboard WHERE User_ID = {userid}')
+                                                datamem = datamem.fetchall()
+                                                count = 0
+                                                if datamem:
+                                                    if catches == datamem[0][2]:
+                                                        count = datamem[0][4]+1
+                                                        old = int(datamem[0][2])
+                                                    if catches != datamem[0][2]:
+                                                        old = int(datamem[0][2])
+                                                diff = catches - old
+                                                self.db.execute(f'INSERT or REPLACE INTO Leaderboard (User_ID, Username, ThisWeek, LastWeek, SameWeek, Difference) VALUES ({userid},"{username}", {catches}, {old}, {count}, {diff})')
+                                                self.db.commit()
+                                                self.db.execute(f'INSERT or REPLACE INTO Memberlist (Rang ,User_ID) VALUES ({rang}, {userid})')
+                                                self.db.commit()
+                                                i+=1
+                                        if "3/3" in _embed.footer.text:
+                                            if rang == 45:
+                                                datalead = self.db.execute(f'SELECT User_ID FROM Leaderboard')
+                                                datalead = datalead.fetchall()
+                                                datamem = self.db.execute(f'SELECT User_ID FROM Memberlist')
+                                                datamem = datamem.fetchall()
+                                                #print(datalead)
+                                                #print(datamem)
+                                                left = [entry for entry in datalead if entry not in datamem]
+                                                #print(left)
+
+                                                for entry in left:
+                                                    #print(entry[0])
+                                                    self.db.execute(f'DELETE FROM Leaderboard WHERE User_ID = {entry[0]}')
+                                                    self.db.commit()
+                                                msg = "# - Catches - User\n"
+                                                database_table = self.db.execute(f"SELECT * FROM Leaderboard WHERE NOT ThisWeek = LastWeek ORDER BY Difference DESC")
+                                                database_table = database_table.fetchall()
+                                                if database_table:
+                                                    i = 1
+                                                    for row in database_table:
+                                                        points = row[5]
+                                                        points = f'{points:,}'
+                                                        msg += (f'#{i:02} {str(points).ljust(7)} - {str(before.guild.get_member(row[0])).ljust(7)}\n')
+                                                        i += 1
+                                                    embed = await Custom_embed(self.client, title="Clan Leaderboard",description=f'```{msg}```',thumb=after.guild.icon).setup_embed()
+                                                    await before.channel.send(embed=embed)
+                                            
+                                        
+                                    else: await before.channel.send("You're not an active Leaderboard Helper, please get the fitting role first.")
 
 
 
