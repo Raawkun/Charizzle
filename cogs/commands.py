@@ -33,7 +33,7 @@ class Coms(commands.Cog):
     @commands.command()
     async def toggle(self, ctx):
         current_time = datetime.datetime.now()
-        timestamp = str("<t:"+{int(current_time.timestamp)}+":R>")
+        timestamp = current_time.strftime('%Y-%m-%d %H:%M')
         user_id = ctx.author.id
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
         database = database.fetchall()
@@ -41,9 +41,11 @@ class Coms(commands.Cog):
         author_name = ctx.author.display_name
         gengar_bot = self.client.get_user(1161011648585285652)
         footer_icon = gengar_bot.display_avatar.url
-        footer_name = "Mega Gengar "+timestamp
+        footer_name = gengar_bot.display_name+" I "+timestamp
         emo_yes = ":white_check_mark:"
         emo_no = ":x:"
+        emo_ping = ":bell:"
+        emo_sile = ":no_bell:"
         color = 0x807ba6
         if database:
             if database[0][2] == 1:
@@ -63,16 +65,16 @@ class Coms(commands.Cog):
             else:
                 value_priv = emo_no
             if database[0][6] == 0:
-                value_rem = "Off"
+                value_rem = emo_no
             elif database[0][6] == 1:
-                value_rem = "On, no ping"
+                value_rem = emo_yes + emo_sile
             else:
-                value_rem = "On, with ping"
+                value_rem = emo_yes + emo_ping
             embed = disnake.Embed(
                 title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
             )
             embed.set_author(icon_url=author_url,name=author_name)
-            embed.set_footer(icon_url=footer_icon,text=(footer_name+" I "+timestamp))
+            embed.set_footer(icon_url=footer_icon,text=footer_name)
             embed.add_field(name="Golden Razz Berry: ",inline=True, value=value_grazz)
             embed.add_field(name="Repel: ",inline=True, value=value_repel)
             embed.add_field(name="Starter: ",inline=True, value=value_start)
@@ -468,7 +470,9 @@ class Coms(commands.Cog):
             if database_table:
                 i = 1
                 for row in database_table:
-                    msg += (f'#{i:02} {str(row[2]).ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+                    points = row[2]
+                    points = f'{points:,}'
+                    msg += (f'#{i:02} {str(points).ljust(7)}  - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
                     i += 1
                 embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
                 await ctx.send(embed=embed)
@@ -513,6 +517,23 @@ class Coms(commands.Cog):
                 #print("Channel is ok")
                 message = ref_msg
                 await message.unpin()
+    
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def cleanup(self, ctx):
+        datalead = self.db.execute(f'SELECT User_ID FROM Leaderboard')
+        datalead = datalead.fetchall()
+        datamem = self.db.execute(f'SELECT User_ID FROM Memberlist')
+        datamem = datamem.fetchall()
+        #print(datalead)
+        #print(datamem)
+        left = [entry for entry in datalead if entry not in datamem]
+        #print(left)
+
+        for entry in left:
+            #print(entry[0])
+            self.db.execute(f'DELETE FROM Leaderboard WHERE User_ID = {entry[0]}')
+            self.db.commit()
 
 
 def setup(client):

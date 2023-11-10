@@ -17,7 +17,7 @@ class Info_Cmd(commands.Cog):
     current_time = datetime.datetime.utcnow()
     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
 
-    @commands.command()
+    @commands.command(aliases = ["Info"])
     async def info(self, ctx, message = None):
         embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = 0x807ba6)
         embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
@@ -31,9 +31,10 @@ class Info_Cmd(commands.Cog):
                 embed.add_field(name=" ", value=" ",inline=False)
                 embed.add_field(name="Miscellanous Cmds", value="> ``calc`` - enter a formula to get a result.\n> ``joined`` - find out when you entered the server.\n> ``test`` - Well, a test command.\n> ``pin`` - When given a message ID (same channel) or used as an answer to as message, will pin that message.\n> ``unpin`` - Same procedure as ``pin``, but will unpin.",inline=False)
                 await ctx.send(embed=embed)
-            elif message in ["functions","Functions"]:
+            elif message in ["functions","Functions","funct"]:
                 embed.add_field(name="**__Boost notifier__**",value="> Offers different kinds of notifiers when boosts (Repels, Grazz, Honey) are expired in a spawn.\n> You can toggle them on/off via ``/toggle``.",inline=False)
                 embed.add_field(name="**__Rare Spawns__**",value="> Posts rare spawns, exclusive hatches and much more into <#825950637958234133> - go check it out!",inline=False)
+                embed.add_field(name="**__Remindes__**",value="> If enabled, will tell you when the cooldown for certain PokeMeow commands is over.", inline=False)
                 embed.add_field(name=" ", value=" ",inline=False)
                 embed.add_field(name="Miscellanous Functions",value="> This bot is a fun project. That's why there are fun responses to certain catchphrases, right now these catchphrases are 'lol', 'stfu' and the names of the kanto starters.\n> Last one can be disabled via ``/toggle`` ")
                 await ctx.send(embed=embed)

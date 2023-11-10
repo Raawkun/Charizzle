@@ -226,6 +226,44 @@ class On_Edit(commands.Cog):
                                             embed.set_image(_embed.image.url)
                                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                             await announce.send(embed=embed)
+                            channels = [1028441789448867880, 1079152774622744726]
+                            if before.channel.id in channels:
+                                if "clan member information" in befembed.description.lower():
+                                    #print("Member Info")
+                                    i = 1
+                                    while i <= 15:
+                                        for field in befembed.fields:
+                                            if field.name == "User":
+                                                userid = field.value.split("\n")[i-1]
+                                                rang = userid.split(" <@")[0]
+                                                rang = int(rang.replace("**",""))
+                                                #print(rang)
+                                                userid = userid.split(" ")[1]
+                                                userid = userid.split("@")[1]
+                                                userid = int(userid.split(">")[0])
+                                                #print(userid)
+                                                username = self.client.get_user(userid)
+                                                #print(username)
+                                            if field.name == "Contributions":
+                                                catches = field.value.split("\n")[i-1]
+                                                catches = catches.split(" ")[1]
+                                                catches = catches.replace(",", "")
+                                                catches = int(catches.replace("**", ""))
+                                        old = 0
+                                        datamem = self.db.execute(f'SELECT * FROM Leaderboard WHERE User_ID = {userid}')
+                                        datamem = datamem.fetchall()
+                                        count = 0
+                                        if datamem:
+                                            if catches == datamem[0][2]:
+                                                count = datamem[0][4]+1
+                                            if catches != datamem[0][2]:
+                                                old = datamem[0][2]
+                                        self.db.execute(f'INSERT or REPLACE INTO Leaderboard (User_ID, Username, ThisWeek, LastWeek, SameWeek) VALUES ({userid},"{username}", {catches}, {old}, {count})')
+                                        self.db.commit()
+                                        self.db.execute(f'INSERT or REPLACE INTO Memberlist (Rang ,User_ID) VALUES ({rang}, {userid})')
+                                        self.db.commit()
+                                        i+=1
+
 
 
             if ":map: Map:" in before.content:
