@@ -9,6 +9,7 @@ from disnake import Message, Option, OptionChoice, OptionType, ApplicationComman
 import json
 import sqlite3
 import datetime
+import time
 from utility.all_checks import Basic_checker
 from utility.embed import Custom_embed
 from utility.rarity_db import counts, countnumber
@@ -85,99 +86,119 @@ class Coms(commands.Cog):
 
     @commands.check(Basic_checker().check_management)
     @commands.command()
-    async def huntadd(self, ctx):
-        def check(m):
-            return m.author == ctx.author
-        await ctx.send("Please enter the Pokémon ID.")
-        try:
-            first_response = await self.client.wait_for('message', check=check, timeout=30)
-            first_integer = int(first_response.content)
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to respond.")
-            return
-        except ValueError:
-            await ctx.send("That's not a valid integer.")
-            return
-        
-        await ctx.send("Please enter threshold.")
-        try:
-            second_response = await self.client.wait_for('message', check=check, timeout=30)
-            second_integer = int(second_response.content)
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to respond.")
-            return
-        except ValueError:
-            await ctx.send("That's not a valid integer.")
-            return
-        
-        data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {first_integer}')
-        data = data.fetchall()
-        embed = disnake.Embed(title="Chosen Hunt Pokémon:", description="**"+str(data[0][1])+"**\nDex #"+str(first_integer)+"\n\nThreshold: "+str(second_integer), color=0x807ba6)
-        embed.set_image(data[0][15])
+    async def huntev(self, ctx, message: str == None):
+        announce = self.client.get_channel(917890289652346911)
+        log = self.client.get_channel(1166470108068188200)
+        if message == None:
+            msg = "**Possible Commands are:**\n\n**__Add__** - Starts a dialogue to add a mon to a hunt event.\n**__Remove__** - Starts a dialogue to remove a mon from a hunt event.\n**__Clear__** - Clears the whole hunt table.\n**__Start__** - Starts the Event.\n**__End__** - Ends the event"
+            embed = await Custom_embed(self.client, title="Hunt Events", description=msg)
+            await ctx.send(embed=embed)
+        if "add" == message.lower():
+            def check(m):
+                return m.author == ctx.author
+            await ctx.send("Please enter the Pokémon ID.")
+            try:
+                first_response = await self.client.wait_for('message', check=check, timeout=30)
+                first_integer = int(first_response.content)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond.")
+                return
+            except ValueError:
+                await ctx.send("That's not a valid integer.")
+                return
+            
+            await ctx.send("Please enter threshold.")
+            try:
+                second_response = await self.client.wait_for('message', check=check, timeout=30)
+                second_integer = int(second_response.content)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond.")
+                return
+            except ValueError:
+                await ctx.send("That's not a valid integer.")
+                return
+            
+            data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {first_integer}')
+            data = data.fetchall()
+            embed = disnake.Embed(title="Chosen Hunt Pokémon:", description="**"+str(data[0][1])+"**\nDex #"+str(first_integer)+"\n\nThreshold: "+str(second_integer), color=0x807ba6)
+            embed.set_image(data[0][15])
 
-        await ctx.send("Is this correct? yes/no", embed=embed)
-        try:
-            third_response = await self.client.wait_for('message',check=check, timeout=30)
-            third_answer = str(third_response)
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to respond.")
-            return
-        if "yes" in third_response.content.lower():
-            self.db.execute(f'INSERT INTO Hunt (DexID, Name, Threshold) VALUES ({first_integer}, "{data[0][1]}", {second_integer})')
-            self.db.commit()
-            await ctx.send("Pokémon added. Check ``hunt`` for your current hunt goals")
-        if "no" in third_response.content.lower():
-            await ctx.send("Wow. Start again & this time do it better.")
-
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
-    async def huntremove(self, ctx):
-        def check(m):
-            return m.author == ctx.author
-        await ctx.send("Please enter the Pokémon ID of the hunt you want to remove")
-        try:
-            first_response = await self.client.wait_for('message', check=check, timeout=30)
-            first_integer = int(first_response.content)
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to respond.")
-            return
-        except ValueError:
-            await ctx.send("That's not a valid integer.")
-            return
-        
-        await ctx.send(str(first_integer)+" should really be removed? Yes/No")
-        try:
-            second_response = await self.client.wait_for('message', check=check, timeout=30)
-            second_answer = str(first_response.content)
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to respond.")
-            return
-        
-        if "yes" in second_response.content.lower():
-            self.db.execute(f'DELETE FROM Hunt WHERE DexID = {first_integer}')
-            self.db.commit()
-            await ctx.send("Entry cleared.")
-        if "no" in second_response.content.lower():
-            await ctx.send("Smh. Make up your mind.")
-
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
-    async def huntclear(self, ctx):
-        def check(m):
-            return m.author == ctx.author
-        await ctx.send("Do you really want to reset **the whole** hunt table? Yes/No")
-        try:
-            first_response = await self.client.wait_for('message', check=check, timeout=30)
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to respond.")
-            return
-        if "yes" in first_response.content.lower():
-            self.db.execute(F'DELETE FROM Hunt')
-            self.db.commit()
-            await ctx.send("Hunt table cleared.")
-        if "no" in first_response.content.lower():
-            await ctx.send("Knew it.")
-
+            await ctx.send("Is this correct? yes/no", embed=embed)
+            try:
+                third_response = await self.client.wait_for('message',check=check, timeout=30)
+                third_answer = str(third_response)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond.")
+                return
+            if "yes" in third_response.content.lower():
+                self.db.execute(f'INSERT INTO Hunt (DexID, Name, Threshold) VALUES ({first_integer}, "{data[0][1]}", {second_integer})')
+                self.db.commit()
+                await ctx.send("Pokémon added. Check ``hunt`` for your current hunt goals")
+            if "no" in third_response.content.lower():
+                await ctx.send("Wow. Start again & this time do it better.")
+        elif "remove" == message.lower():
+            def check(m):
+                return m.author == ctx.author
+            await ctx.send("Please enter the Pokémon ID of the hunt you want to remove")
+            try:
+                first_response = await self.client.wait_for('message', check=check, timeout=30)
+                first_integer = int(first_response.content)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond.")
+                return
+            except ValueError:
+                await ctx.send("That's not a valid integer.")
+                return
+            
+            await ctx.send(str(first_integer)+" should really be removed? Yes/No")
+            try:
+                second_response = await self.client.wait_for('message', check=check, timeout=30)
+                second_answer = str(first_response.content)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond.")
+                return
+            
+            if "yes" in second_response.content.lower():
+                self.db.execute(f'DELETE FROM Hunt WHERE DexID = {first_integer}')
+                self.db.commit()
+                await ctx.send("Entry cleared.")
+            if "no" in second_response.content.lower():
+                await ctx.send("Smh. Make up your mind.")
+        elif "clear" == message.lower():
+            def check(m):
+                return m.author == ctx.author
+            await ctx.send("Do you really want to reset **the whole** hunt table? Yes/No")
+            try:
+                first_response = await self.client.wait_for('message', check=check, timeout=30)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond.")
+                return
+            if "yes" in first_response.content.lower():
+                self.db.execute(F'DELETE FROM Hunt')
+                self.db.commit()
+                await ctx.send("Hunt table cleared.")
+            if "no" in first_response.content.lower():
+                await ctx.send("Knew it.")
+        # elif "start" == message.lower():
+        #     dataad = self.db.execute(f'SELECT * FROM Admin')
+        #     dataad = dataad.fetchall()
+        #     datahu = self.db.execute(f'SELECT * FROM Hunt')
+        #     datahu = datahu.fetchall()
+        #     if datahu:
+        #         if dataad[0][6] == 0:
+        #             self.db.execute(f'UPDATE Admin SET Huntevent = 1')
+        #             self.db.commit()
+        #             data = self.db.execute(f'SELECT * FROM Hunt')
+        #             data = data.fetchall()
+        #             max = self.db.execute(f'SELECT Count(*) FROM Hunt')
+        #             max = max.fetchone()[0]
+        #             #max = max.rowcount
+        #             #print(max)
+        #             if data:
+        #                 msg = "Out current hunts are: "
+        #                 for row in data:
+        #                     msg = msg+str(row[1])+" with a threshold of "+str(row[2])+""
+        #             await announce.send("<@825817829453463572> <@995852464735662160>\nHunt is now starting! ")
 
     @commands.command()
     async def hunt(self, ctx):
@@ -364,7 +385,7 @@ class Coms(commands.Cog):
             self.db.execute(f'UPDATE Admin SET Event = 1')
             self.db.commit()
             await ctx.send(f'{self.client.user.display_name}'+"'s Event is now active!")
-            await announce.send("Ignore me, thats a test")
+            await announce.send(f'{self.client.user.display_name}'+"'s Event is now active! Please refer to ``info event`` for additional information.")
             await log.send("**Event started**")
         if data[0][4] == 1:
             self.db.execute(f'UPDATE Admin SET Event = 0')

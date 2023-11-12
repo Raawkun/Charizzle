@@ -4,7 +4,7 @@ import asyncio
 from disnake.ext import commands
 import datetime
 from utility.embed import Custom_embed
-from utility.drop_chance import drop_pos
+from utility.drop_chance import drop_pos, buyin
 
 class Info_Cmd(commands.Cog):
 
@@ -38,8 +38,8 @@ class Info_Cmd(commands.Cog):
                 embed.add_field(name=" ", value=" ",inline=False)
                 embed.add_field(name="Miscellanous Functions",value="> This bot is a fun project. That's why there are fun responses to certain catchphrases, right now these catchphrases are 'lol', 'stfu' and the names of the kanto starters.\n> Last one can be disabled via ``/toggle`` ")
                 await ctx.send(embed=embed)
-            elif message in ["event", "events","ev"]:
-                embed.add_field(name="**__Events__**",value="> "f'{self.client.user.display_name}'" is hungry. If you've bought in, you'll have the chance to find some Lava Cookies <:lavacookie:1167592527570935922> from various activites and feed them to "f'{self.client.user.display_name}'".",inline=False)
+            elif message in ["event", "events","ev","Event","Events", "Ev"]:
+                embed.add_field(name="**__Events__**",value="> "f'{self.client.user.display_name}'" is hungry. If you've bought in for at least "f'{buyin:,}'" <:pokecoin:835054000063381516>, you'll have the chance to find some Lava Cookies <:lavacookie:1167592527570935922> from various activites and feed them to "f'{self.client.user.display_name}'".",inline=False)
                 embed.add_field(name="**__Possible Activites__**",value="> You can get <:lavacookie:1167592527570935922> from:\n> - Catching Pokémon (1/"f'{drop_pos["hunt"]}'")\n> - Fishing (1/"f'{drop_pos["fish"]}'")\n> - Battling (1/"f'{drop_pos["battle"]}'")\n> - Hatching Eggs (1/"f'{drop_pos["egg"]}'")\n",inline=False)
                 embed.add_field(name="**__Point System__**",value="> Your aim will be to get as many points as possible from catching Pokémon (also fishing). The rarity of the Pokémon and the ball used are playing an important role in points earned.",inline=False)
                 embed.add_field(name="**__Feeding__**",value="> Feeding "f'{self.client.user.display_name}'" with ``feed`` will yield some bonus for your point calculation when catching a Pokémon.",inline=False)
