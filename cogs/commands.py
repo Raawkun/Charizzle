@@ -535,6 +535,17 @@ class Coms(commands.Cog):
             self.db.execute(f'DELETE FROM Leaderboard WHERE User_ID = {entry[0]}')
             self.db.commit()
 
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def funds(self, ctx, money: int = None):
+        if money == None:
+            await ctx.send("Please add a money value next time.")
+        else:
+            self.db.execute(f'UPDATE Admin SET Funds = {money}')
+            self.db.commit()
+            await ctx.send("Set the current event funds to "+f'{money:,}')
+
+
 
 def setup(client):
     client.add_cog(Coms(client))

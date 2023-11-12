@@ -333,15 +333,29 @@ class On_Edit(commands.Cog):
                                                     #print(entry[0])
                                                     self.db.execute(f'DELETE FROM Leaderboard WHERE User_ID = {entry[0]}')
                                                     self.db.commit()
-                                                msg = "# - Catches - User\n"
-                                                database_table = self.db.execute(f"SELECT * FROM Leaderboard WHERE NOT ThisWeek = LastWeek ORDER BY Difference DESC")
-                                                database_table = database_table.fetchall()
+                                                dataad = self.db.execute(f'SELECT * FROM Admin')
+                                                dataad = dataad.fetchall()
+                                                if dataad[0][5] != 0:
+                                                    msg = "# - Catches - User - Payout\n"
+                                                    database_table = self.db.execute(f"SELECT * FROM Leaderboard WHERE Difference >= 300 ORDER BY Difference DESC")
+                                                    database_table = database_table.fetchall()
+                                                else:
+                                                    msg = "# - Catches - User\n"
+                                                    database_table = self.db.execute(f"SELECT * FROM Leaderboard WHERE NOT ThisWeek = LastWeek ORDER BY Difference DESC")
+                                                    database_table = database_table.fetchall()
                                                 if database_table:
                                                     i = 1
+                                                    catchamount = self.db.execute(f'SELECT SUM(Difference) FROM Leaderboard')
+                                                    catchamount = catchamount.fetchone()
+                                                    catchamount = catchamount[0]
+                                                    coinpercatch = int(dataad[0][5])/int(catchamount)
                                                     for row in database_table:
                                                         points = row[5]
                                                         points = f'{points:,}'
-                                                        msg += (f'#{i:02} {str(points).ljust(7)} - {str(before.guild.get_member(row[0])).ljust(7)}\n')
+                                                        if dataad[0][5] != 0:
+                                                            msg += (f'#{i:02} {str(points).ljust(7)} - {str(before.guild.get_member(row[0])).ljust(7)} - {str(coinpercatch*row[5])}\n')
+                                                        else:
+                                                            msg += (f'#{i:02} {str(points).ljust(7)} - {str(before.guild.get_member(row[0])).ljust(7)}\n')
                                                         i += 1
                                                     embed = await Custom_embed(self.client, title="Clan Leaderboard",description=f'```{msg}```',thumb=after.guild.icon).setup_embed()
                                                     await before.channel.send(embed=embed)
