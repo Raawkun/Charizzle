@@ -425,6 +425,8 @@ class Coms(commands.Cog):
             await announce.send(embed=embed)
             await ctx.send("Ended the event. Check <#917890289652346911> for the leaderboard table.")
             await log.send("**Event ended**")
+            self.db.execute(f'DELETE FROM Events')
+            self.db.commiot()
             # self.db.execute(f'DELETE FROM Events')
             # self.cb.commit()
     
