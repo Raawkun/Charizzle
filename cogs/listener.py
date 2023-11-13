@@ -553,7 +553,7 @@ class Listener(commands.Cog):
             data = data.fetchall()
             log = 1166470108068188200
             #Bot-testing = 825958388349272106, buy-in-sponsoring = 920260648045273088, Meow-grind 1 = 1037323228961579049
-            if message.channel.id == 825958388349272106:  #Checks for the Bot-testing channel
+            if message.channel.id == 920260648045273088:  #Checks for the Bot-testing channel
                 log = self.client.get_channel(1166470108068188200) #Setting up my log channel ^^
                 if data[0][4] == 1: #If "Event" is turned on
                     #print("Its active")
