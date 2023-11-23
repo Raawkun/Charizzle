@@ -6,6 +6,7 @@ import asyncio
 from utility.embed import Custom_embed
 from utility.all_checks import Basic_checker
 from utility.rarity_db import counts, countnumber
+from utility.info_dict import embed_color,cmds,functions,info,events
 
 class SlashComs(commands.Cog):
 
@@ -280,6 +281,51 @@ class SlashComs(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.send("There is no hunt event at the moment.")
+        
+    @commands.slash_command(name="info", description="Important informations about the bot and its functions.",options=
+                [Option(
+                name="switch",
+                description="Choose a switch to know more.",
+                type=3,
+                choices=[
+                    OptionChoice("Commands", "cmnds"),
+                    OptionChoice("Functions", "functions"),
+                    OptionChoice("Event", "event")
+                ],
+                required=False
+            ), ],
+            )
+    async def _info(self,ctx,switch = None):
+        await ctx.response.defer()
+        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
+        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+        embed.set_thumbnail(url=embed.footer.icon_url)
+        if switch == "cmnds":
+            embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)
+            embed.add_field(name="**__Random__**", value=cmds["random"],inline=False)
+            embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
+            embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
+            embed.add_field(name=" ", value=" ",inline=False)
+            embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
+            await ctx.send(embed=embed)
+        elif switch == "functions":
+            embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
+            embed.add_field(name="**__Rare Spawns__**",value=functions["rare"],inline=False)
+            embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
+            embed.add_field(name=" ", value=" ",inline=False)
+            embed.add_field(name="Miscellanous Functions",value=functions["misc"], inline=False)
+            await ctx.send(embed=embed)
+        elif switch == "event":
+            embed.add_field(name="**__Events__**",value=events["event"],inline=False)
+            embed.add_field(name="**__Possible Activites__**",value=events["active"],inline=False)
+            embed.add_field(name="**__Point System__**",value=events["points"],inline=False)
+            embed.add_field(name="**__Feeding__**",value=events["feed"],inline=False)
+            embed.add_field(name=" ", value=" ",inline=False)
+            embed.add_field(name="Commands",value=events["cmd"])
+            await ctx.send(embed=embed)
+        else:
+            embed.add_field(name="**__Info Panel__**",value=info["text"])
+            await ctx.send(embed=embed)
 
             
 def setup(client):

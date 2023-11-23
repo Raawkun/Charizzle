@@ -95,47 +95,48 @@ class Listener(commands.Cog):
             log_channel = 1164544776985653319
             if message.author.id == meow:
                 announce_channel = self.client.get_channel(receiver_channel)
+                log_chn = self.client.get_channel(log_channel)
                 if "s trainer icon!" in message.content:
                     iconname = message.content.split("unlocked ")[1]
                     iconname = iconname.split(":")[1]
                     iconname = iconname.replace("_"," ")
                     iconname = iconname.title()
                     authorid = message.content.split("@")[1]
-                    authorid = authorid.split(">")[0]
+                    authorid = int(authorid.split(">")[0])
+                    user = self.client.get_user(authorid)
+                    await log_chn.send(user+" found an icon")
+                    await log_chn.send("Its "+iconname)
                     embed = await Custom_embed().setup_embed()
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                    embed.set_author(name=f'{self.client.get_user(int(authorid))}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
+                    embed.set_author(name=f'{self.client.get_user(authorid)}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                     await announce_channel.send(embed=embed)
                 if "won the battle!" in message.content:
                     #print("Battle won")
-                    try:
-                        dataev = self.db.execute(f'SELECT * FROM Admin')
-                        dataev = dataev.fetchall()
-                        if dataev[0][4] == 1:
-                            username = message.content.split("**")[1]
-                            username = message.guild.get_member_named(username)
-                            #print(username)
-                            #print(username.id)
-                            data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {username.id}')
-                            data = data.fetchall()
-                            if data:
+                    dataev = self.db.execute(f'SELECT * FROM Admin')
+                    dataev = dataev.fetchall()
+                    if dataev[0][4] == 1:
+                        username = message.content.split("**")[1]
+                        username = message.guild.get_member_named(username)
+                        #print(username)
+                        #print(username.id)
+                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {username.id}')
+                        data = data.fetchall()
+                        if data:
 
-                                item_count = data[0][3]
-                                battle_odds = ((1/(drop_pos["battle"])) * (1 + (0.01 * item_count)))
-                                odds = 0
-                                # if coin_type == "battle":
-                                odds = battle_odds
+                            item_count = data[0][3]
+                            battle_odds = ((1/(drop_pos["battle"])) * (1 + (0.01 * item_count)))
+                            odds = 0
+                            # if coin_type == "battle":
+                            odds = battle_odds
 
-                                roll = random.random()
+                            roll = random.random()
 
-                                if odds > roll:
-                                    await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                                    old_amount = data[0][4]
-                                    new_amount = 1+old_amount
-                                    self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {username.id}')
-                                    self.db.commit()
-                    except: 
-                        print("User not bought in")
+                            if odds > roll:
+                                await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
+                                old_amount = data[0][4]
+                                new_amount = 1+old_amount
+                                self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {username.id}')
+                                self.db.commit()
                 if message.reference:
                     ref_msg = await message.channel.fetch_message(message.reference.message_id)
                     sender = ref_msg.author
@@ -267,7 +268,7 @@ class Listener(commands.Cog):
                                 self.db.execute(f'INSERT INTO Toggle (USER_ID) VALUES ({sender.id})')
                                 self.db.commit()
                                 await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
-                                await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ``<toggle`` for more info.")
+                                await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check </info: for more info.")
                             ######## Repel/Grazz notifier 
                             databaserep = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             databaserep = databaserep.fetchall()
@@ -291,7 +292,7 @@ class Listener(commands.Cog):
                                 else: return
 
                         
-                            await asyncio.sleep(8.3)
+                            await asyncio.sleep(8.4)
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][6] == 1:
@@ -585,6 +586,7 @@ class Listener(commands.Cog):
                                     print(newamount)
                                     self.db.execute(f'UPDATE Events SET Buyin = {newamount} WHERE User_ID = {sender.id}') #Updating that dude
                                     self.db.commit()
+                                    await message.channel.send("You were already bought in, your total is now "f'{newamount:,}')
                                     await log.send(f'{sender}'+"'s entry got updated, +"+f'{amount}'+", now: "+f'{newamount}'+" -- "+f'{sender.id}')
                                 else: #Not in the db? Must be new then
                                     #print("Someone new")
