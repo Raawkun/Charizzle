@@ -292,7 +292,7 @@ class Listener(commands.Cog):
                                 else: return
 
                         
-                            await asyncio.sleep(8.4)
+                            await asyncio.sleep(8.5)
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][6] == 1:
