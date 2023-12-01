@@ -31,7 +31,8 @@ class Listener(commands.Cog):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
         print("Time do to ghost stuff!")
-        print(time.time())
+        print(datetime.datetime.now())
+        print(datetime.datetime.timestamp(datetime.datetime.now()))
         # await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
         # reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime != 0 ORDER BY QuestTime ASC')
         # reminders = reminders.fetchall()
@@ -390,7 +391,7 @@ class Listener(commands.Cog):
                                     datarem = datarem.fetchall()
                                     if datarem[0][6] != 0:
                                         print("Oh, a new timer")
-                                        q_time = int(time.time())
+                                        q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
                                         print(q_time)
                                         q_time = q_time+waiter
                                         channelid = message.channel.id
