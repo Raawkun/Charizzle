@@ -6,7 +6,6 @@ from disnake.ext import commands
 import asyncio
 import re
 import main
-import json
 from sqlite3 import connect
 from main import client
 from utility.rarity_db import poke_rarity
@@ -32,7 +31,21 @@ class Listener(commands.Cog):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
         print("Time do to ghost stuff!")
-        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
+        print(time.time())
+        # await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
+        # reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime != 0 ORDER BY QuestTime ASC')
+        # reminders = reminders.fetchall()
+        # for row in reminders:
+        #     channelid = reminders[0][8]
+        #     channel = self.client.get_channel(channelid)
+        #     waiter = reminders[0][7]
+        #     if waiter != 1:
+        #         userid = reminders[0][1]
+        #         current_time = time.time()
+        #         waiter = waiter-current_time
+        #         await asyncio.sleep(waiter)
+        #         await channel.send("<@"+f'{userid}'+"> - your next quest is ready!")
+            
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -40,14 +53,16 @@ class Listener(commands.Cog):
         # You can add your custom logic here.
         if message.author == self.client.user:
             return  # Ignore messages sent by the bot itself.
-        meow = 664508672713424926     #Meow ID
+        meow = 664508672713424926
+        #Meow ID & KarpGuru
+        karp = 922248409350549564
         celadon = 1080049677518508032
         
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         servers = [825813023716540426, 1037320778393321592]
         if message.guild.id == 825813023716540426:
-            if message.author.bot and message.author.id != meow:
+            if message.author.bot and message.author.id != meow and message.author.id != karp:
                 return
             
             if message.content.lower() == "trygoogle":
@@ -71,6 +86,16 @@ class Listener(commands.Cog):
                     if database[0][0] == 1:
                         await message.channel.send("Rofl.")
                     else: return
+
+            if message.author.id == 922248409350549564:
+                if "our general chat" in message.content.lower():
+                    username = message.content
+                    username = username.split(">")[0]
+                    username = int(username.split("@")[1])
+                    username = self.client.get_user(username)
+                    username = username.displayname
+                    await message.channel.send("Hey, "+username)
+                    await message.channel.send("<a:welcome1:1130245046025846814><a:welcome2:1130245098983137323>")
 
             database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {message.author.id}')
             database = database.fetchall()
@@ -168,9 +193,27 @@ class Listener(commands.Cog):
                     color = _embed.color
                     #print(_embed.author.name)
                     Rare_Spawned = ["Event", "Legendary", "Shiny", "Golden"]
-                    
-                        #print(referenced_message)
                     if _embed.author:
+                        if "pokemeow global market -" in _embed.author.name.lower():
+                            #print("Market going on")
+                            number = _embed.footer.text.split("#")[1]
+                            number = int(number.split(" ")[0])
+                            #print(number)
+                            datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
+                            datdex = datdex.fetchall()
+                            #print(datdex[0][1])
+                            current_time = int(time.time())
+                            for field in _embed.fields:
+                                if field.name.lower() == "price each":
+                                    lowprice = field.value.split("`")[1]
+                                    lowprice = int(lowprice.replace(",",""))
+                                    #print(lowprice)
+                                if field.name.lower() == "amount remaining":
+                                    amount = field.value.split("`")[1]
+                                    amount = int(amount.split(" ")[0])
+                                    #print(amount)
+                            self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
+                            self.db.commit()
                         if "Counters" in _embed.author.name:
                             if _embed.fields:
                                 for field in _embed.fields:
@@ -319,6 +362,7 @@ class Listener(commands.Cog):
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now swap again.")
                     if _embed.title:
                         if "quests for rewards!" in _embed.title:
+                            #print("Quest screen from "+sender.display_name)
                             await asyncio.sleep(6)
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
@@ -326,37 +370,41 @@ class Listener(commands.Cog):
                                 await message.channel.send("You can now check your quests again.")
                             elif datarem[0][6] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can check your quests again.")
-                        if "next quest in" in _embed.footer.text.lower():
-                            #print("Oh, a quest?")
-                            msg = _embed.footer.text
-                            msg = msg.split(": ")[1]
-                            #print(msg)
-                            hours = int(msg.split(" H")[0])*60*60
-                            #print(hours)
-                            minutes = msg.split("H ")[1]
-                            minutes = int(minutes.split(" M")[0])*60
-                            #print(minutes)
-                            seconds = msg.split("M ")[1]
-                            seconds = int(seconds.split(" S")[0])
-                            #print(seconds)
-                            waiter = hours+minutes+seconds
-                            #print(waiter)
-                            datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                            datarem = datarem.fetchall()
-                            if datarem[0][7] == 0 and datarem[0][6] != 0:
-                                print("Oh, a new timer")
-                                q_time = time.time()
-                                print(q_time)
-                                q_time = q_time+waiter
-                                self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time} WHERE User_ID = {sender.id}')
-                                self.db.commit()
-                                await asyncio.sleep(waiter)
-                                self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {sender.id}')
-                                self.db.commit()
-                                if datarem[0][6] == 1:
-                                    await message.channel.send("Your next quest is ready.")
-                                elif datarem[0][6] == 2:
-                                    await message.channel.send("<@"+str(sender.id)+"> - You can get a new quest.")
+                            if _embed.footer:
+                                if "Next quest in" in _embed.footer.text:
+                                    #print("Oh, a quest?")
+                                    msg = _embed.footer.text
+                                    msg = msg.split(": ")[1]
+                                    #print(msg)
+                                    hours = int(msg.split(" H")[0])*60*60
+                                    #print(hours)
+                                    minutes = msg.split("H ")[1]
+                                    minutes = int(minutes.split(" M")[0])*60
+                                    #print(minutes)
+                                    seconds = msg.split("M ")[1]
+                                    seconds = int(seconds.split(" S")[0])
+                                    #print(seconds)
+                                    waiter = hours+minutes+seconds
+                                    #print(waiter)
+                                    datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                                    datarem = datarem.fetchall()
+                                    if datarem[0][6] != 0:
+                                        print("Oh, a new timer")
+                                        q_time = int(time.time())
+                                        print(q_time)
+                                        q_time = q_time+waiter
+                                        channelid = message.channel.id
+                                        self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time}, Channel = {channelid} WHERE User_ID = {sender.id}')
+                                        self.db.commit()
+                                        q_time = str(q_time)
+                                        await message.channel.send("Your next quest is ready at <t:"+q_time+":f>")
+                                        await asyncio.sleep(waiter)
+                                        self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {sender.id}')
+                                        self.db.commit()
+                                        if datarem[0][6] == 1:
+                                            await message.channel.send("Your next quest is ready.")
+                                        elif datarem[0][6] == 2:
+                                            await message.channel.send("<@"+str(sender.id)+"> - You can get a new quest.")
                     if _embed.author.name:
                         if "catchbot" in _embed.author.name.lower():
                             #print("Aha, catchbotting in name")
@@ -602,12 +650,28 @@ class Listener(commands.Cog):
                     _embed=message.embeds[0]
                     try:
                         if "version" in _embed.description:
-                            #print("Version in it")
+                            print("Version in it")
                             dex=_embed.author.name.split("#")[1]
                             #print(dex)
                             name=_embed.author.name.split("#")[0]
                             #print(name)
+                            try:
+                                data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
+                                data = data.fetchall()
+                                val = data[0][17]
+                                time = data[0][18]
+                                amount = data[0][19]
+                            except:
+                                val = 0
+                                time = 0
+                                amount = 0
                             for field in _embed.fields:
+                                if field.name == "Dex Number":
+                                    #print(field.value)
+                                    region = field.value.split("> ")[1]
+                                    #print(region)
+                                    region = region.split(" ")[0]
+                                    #print(region)
                                 if field.name == "Type":
                                     type1= field.value.split()[0]
                                     #print(type1)
@@ -657,9 +721,22 @@ class Listener(commands.Cog):
                                         mega = True
                                 imageurl = _embed.image.url
                                 #print(imageurl)
-                            self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}")')
+                            self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}","{region}",{val},{time},{amount})')
                             self.db.commit()
                             #print("Its in the dex now")
+                    except Exception as e: 
+                        print(e)
+                    
+                    try:
+                        dexdat = self.db.execute(f'SELETE * FROM Dex WHERE DexID = {dex}')
+                        dexdat = dexdat.fetchall()
+                        if dexdat[0][18] >=1:
+                            lowest = f'{dexdat[0][17]:,}'
+                            amount = f'{dexdat[0][19]:,}'
+                            time = str(dexdat[0][18])
+                            msg = "Lowest Price: "+lowest+"\nAmount: "+amount+"\nLast Update: <t:"+time+":f>"
+                            embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0])).setup_embed()
+                            await message.channel.send(embed=embed)
                     except: return
             # Only works in specific channels!
             # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
@@ -674,72 +751,73 @@ class Listener(commands.Cog):
 
 
 #1037323228961579049     825958388349272106 bot testing
-        channel_ids = [1083131761451606096, 827510854467584002] #test-spawns
-        receiver_channel = 827510854467584002 #flaming hell
-        if message.channel.id in channel_ids:
-            await message.channel.send("Message received: "+message.author.display_name)
-            log = self.client.get_channel(receiver_channel)
-            
-            if message.author.id == meow:
-                if (len(message.embeds) > 0):
-                    _embed = message.embeds[0]
-                    if message.content != None:
-                        await message.channel.send("Text: "+message.content)
-                    if _embed.author != None:
-                        await message.channel.send("Author:")
-                        await message.channel.send(f"```{_embed.author}```")
-                    if _embed.title != None:
-                        await message.channel.send("Title:")
-                        await message.channel.send(f"```{_embed.title}```")
-                    if _embed.description != None:
-                        await message.channel.send("Description:")
-                        await message.channel.send(f"```{_embed.description}```")
-                    if _embed.fields != None:
-                        await message.channel.send("Fields:")
-                        await message.channel.send(f"```{_embed.fields}```")
-                    if _embed.footer != None:
-                        await message.channel.send("Footer:")
-                        await message.channel.send(f"```{_embed.footer}```")
-                    if _embed.image != None:
-                        await message.channel.send("Image:")
-                        await message.channel.send(f"```{_embed.image.url}```")
-                        await message.channel.send(f"```{_embed.image.proxy_url}```")
-                    if _embed.thumbnail != None:
-                        await message.channel.send("Thumnbail:")
-                        await message.channel.send(f"```{_embed.thumbnail}```")
-                    for field in _embed.fields:
-                        if field.name == "Base Attack":
-                            b_atk = field.value.split()[1]
-                            await message.channel.send(b_atk)
-                        if field.name == "Base Defense":
-                            b_def = field.value.split()[1]
-                            await message.channel.send(b_def)
-                        if field.name == "Base HP":
-                            b_hp = field.value.split()[1]
-                            await message.channel.send(b_hp)
-                        if field.name == "Base Sp. Atk":
-                            b_spatk = field.value.split()[1]
-                            await message.channel.send(b_spatk)
-                        if field.name == "Base Sp. Def":
-                            b_spdef = field.value.split()[1]
-                            await message.channel.send(b_spdef)
-                        if field.name == "Base Speed":
-                            b_spd = field.value.split()[1]
-                            await message.channel.send(b_spd)
-                    
+            channel_ids = [1083131761451606096, 827510854467584002] #test-spawns
+            receiver_channel = 827510854467584002 #flaming hell
+            if message.channel.id == receiver_channel:
+                if message.author.id == meow:
+                    await message.channel.send("Message received: "+message.author.display_name)
+                    log = self.client.get_channel(receiver_channel)
+                    print("message")
+                    if (len(message.embeds) > 0):
+                        print("embed")
+                        _embed = message.embeds[0]
+                        if message.content != None:
+                            await message.channel.send("Text: "+message.content)
+                        if _embed.author != None:
+                            await message.channel.send("Author:")
+                            await message.channel.send(f"```{_embed.author}```")
+                        if _embed.title != None:
+                            await message.channel.send("Title:")
+                            await message.channel.send(f"```{_embed.title}```")
+                        if _embed.description != None:
+                            await message.channel.send("Description:")
+                            await message.channel.send(f"```{_embed.description}```")
+                        if _embed.fields != None:
+                            await message.channel.send("Fields:")
+                            await message.channel.send(f"```{_embed.fields}```")
+                        if _embed.footer != None:
+                            await message.channel.send("Footer:")
+                            await message.channel.send(f"```{_embed.footer}```")
+                        if _embed.image != None:
+                            await message.channel.send("Image:")
+                            await message.channel.send(f"```{_embed.image.url}```")
+                            await message.channel.send(f"```{_embed.image.proxy_url}```")
+                        if _embed.thumbnail != None:
+                            await message.channel.send("Thumbnail:")
+                            await message.channel.send(f"```{_embed.thumbnail}```")
+                        for field in _embed.fields:
+                            if field.name == "Base Attack":
+                                b_atk = field.value.split()[1]
+                                await message.channel.send(b_atk)
+                            if field.name == "Base Defense":
+                                b_def = field.value.split()[1]
+                                await message.channel.send(b_def)
+                            if field.name == "Base HP":
+                                b_hp = field.value.split()[1]
+                                await message.channel.send(b_hp)
+                            if field.name == "Base Sp. Atk":
+                                b_spatk = field.value.split()[1]
+                                await message.channel.send(b_spatk)
+                            if field.name == "Base Sp. Def":
+                                b_spdef = field.value.split()[1]
+                                await message.channel.send(b_spdef)
+                            if field.name == "Base Speed":
+                                b_spd = field.value.split()[1]
+                                await message.channel.send(b_spd)
+                        
 
-                    if _embed.image.url:
-                        if "xyani" in _embed.image.url:
-                            await message.channel.send("Regular")
-                        elif "shiny" in _embed.image.url:
-                            await message.channel.send("Shiny")
-                        elif "golden" in _embed.image.url:
-                            await message.channel.send("Golden")
+                        if _embed.image.url:
+                            if "xyani" in _embed.image.url:
+                                await message.channel.send("Regular")
+                            elif "shiny" in _embed.image.url:
+                                await message.channel.send("Shiny")
+                            elif "golden" in _embed.image.url:
+                                await message.channel.send("Golden")
+                            else: return
+                            name = _embed.image.url.split("/")[5]
+                            real_name = name.split(".")[0]
+                            await message.channel.send(real_name)
                         else: return
-                        name = _embed.image.url.split("/")[5]
-                        real_name = name.split(".")[0]
-                        await message.channel.send(real_name)
-                    else: return
 
 
 def setup(client):

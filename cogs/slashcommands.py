@@ -254,33 +254,37 @@ class SlashComs(commands.Cog):
             embed.add_field(name="__Aliases:__",value="``topc`` or ``tc``",inline=False)
             await ctx.send(embed=embed)
 
-    @commands.slash_command(name="hunt",description="Shows you the current hunt targets during a hunt event.")
-    async def hunt(self, ctx):
-        data = self.db.execute(f'SELECT * FROM Hunt')
-        data = data.fetchall()
-        max = self.db.execute(f'SELECT Count(*) FROM Hunt')
-        max = max.fetchone()[0]
-        #max = max.rowcount
-        #print(max)
-        if data:
-            embed = disnake.Embed(description="Current Hunt Pokémon",color=0x807ba6)
-            embed.set_author(name="ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ Hunt System")
-            embed.set_footer(text=f'{self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
-            guild = ctx.guild
-            embed.set_thumbnail(url=guild.icon)
-            #print("0x807ba6")
-            i = 0
-            while i < (max):
-                #print("First i is:"+str(i))
-                embed.add_field(name=("**"+str(data[i][1])+"**with threshold of "+str(data[i][2])),value="",inline=False)
-                #embed.add_field(name=" ",value=" ",inline=True)
-                #print("Added embed")
-                i+=1
-                #print(i)
+    # @commands.slash_command(name="hunt",description="Shows you the current hunt targets during a hunt event.")
+    # async def hunt(self, ctx):
+        # data = self.db.execute(f'SELECT * FROM Hunt')
+        # data = data.fetchall()
+        # max = self.db.execute(f'SELECT Count(*) FROM Hunt')
+        # max = max.fetchone()[0]
+        # #max = max.rowcount
+        # #print(max)
+        # if data:
+        #     embed = disnake.Embed(description="Current Hunt Pokémon",color=0x807ba6)
+        #     embed.set_author(name="ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ Hunt System")
+        #     embed.set_footer(text=f'{self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
+        #     guild = ctx.guild
+        #     embed.set_thumbnail(url=guild.icon)
+        #     #print("0x807ba6")
+        #     i = 0
+        #     while i < (max):
+        #         #print("First i is:"+str(i))
+        #         embed.add_field(name=("**"+str(data[i][1])+"**with threshold of "+str(data[i][2])),value="",inline=False)
+        #         #embed.add_field(name=" ",value=" ",inline=True)
+        #         #print("Added embed")
+        #         i+=1
+        #         #print(i)
             
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send("There is no hunt event at the moment.")
+        #     await ctx.send(embed=embed)
+        # else:
+        #     await ctx.send("There is no hunt event at the moment.")
+        
+    @commands.slash_command(name="faq", description="Quickest way to the faq")
+    async def _faq(self, ctx):
+        await ctx.send("The FAQ Channel is here: <#1161686361091350608>",ephemeral=True)
         
     @commands.slash_command(name="info", description="Important informations about the bot and its functions.",options=
                 [Option(
