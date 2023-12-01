@@ -398,7 +398,7 @@ class Listener(commands.Cog):
                                         self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time}, Channel = {channelid} WHERE User_ID = {sender.id}')
                                         self.db.commit()
                                         q_time = str(q_time)
-                                        await message.channel.send("Your next quest is ready at <t:"+q_time+":f>")
+                                        #await message.channel.send("Your next quest is ready at <t:"+q_time+":f>")
                                         await asyncio.sleep(waiter)
                                         self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {sender.id}')
                                         self.db.commit()
