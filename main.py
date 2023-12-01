@@ -11,9 +11,8 @@ intents = disnake.Intents.all()
 
 def __init__(self, client):
     self.client = client
-    
-command_sync_flags = commands.CommandSyncFlags.from_string('all')
-client = commands.AutoShardedBot(intents = intents, command_prefix =commands.when_mentioned_or("m","M"), reload = True, command_sync_flags=command_sync_flags)
+
+client = commands.AutoShardedBot(intents = intents, command_prefix =commands.when_mentioned_or("m"), reload = True, sync_commands_debug=True)
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
