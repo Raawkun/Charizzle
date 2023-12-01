@@ -543,23 +543,6 @@ class Coms(commands.Cog):
                 #print("Channel is ok")
                 message = ref_msg
                 await message.unpin()
-    
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
-    async def cleanup(self, ctx):
-        datalead = self.db.execute(f'SELECT User_ID FROM Leaderboard')
-        datalead = datalead.fetchall()
-        datamem = self.db.execute(f'SELECT User_ID FROM Memberlist')
-        datamem = datamem.fetchall()
-        #print(datalead)
-        #print(datamem)
-        left = [entry for entry in datalead if entry not in datamem]
-        #print(left)
-
-        for entry in left:
-            #print(entry[0])
-            self.db.execute(f'DELETE FROM Leaderboard WHERE User_ID = {entry[0]}')
-            self.db.commit()
 
     @commands.check(Basic_checker().check_management)
     @commands.command()

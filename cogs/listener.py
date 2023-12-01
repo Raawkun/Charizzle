@@ -94,7 +94,8 @@ class Listener(commands.Cog):
                     username = username.split(">")[0]
                     username = int(username.split("@")[1])
                     username = self.client.get_user(username)
-                    username = username.displayname
+                    username = username.display_name
+                    print(username+" welcomed")
                     await message.channel.send("Hey, "+username)
                     await message.channel.send("<a:welcome1:1130245046025846814><a:welcome2:1130245098983137323>")
 
@@ -203,7 +204,7 @@ class Listener(commands.Cog):
                             datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
                             datdex = datdex.fetchall()
                             #print(datdex[0][1])
-                            current_time = int(time.time())
+                            current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
                             for field in _embed.fields:
                                 if field.name.lower() == "price each":
                                     lowprice = field.value.split("`")[1]
@@ -649,6 +650,14 @@ class Listener(commands.Cog):
             if message.author.id == meow:
                 if (len(message.embeds) > 0):
                     _embed=message.embeds[0]
+                    if message.reference:
+                        try:
+                            ref_msg = await message.channel.fetch_message(message.reference.message_id)  # Command with ;
+                            sender = ref_msg.author
+                            #print("Ref")
+                        except:
+                            ref_msg = message.interaction #Command with /
+                            sender = ref_msg.author
                     try:
                         if "version" in _embed.description:
                             print("Version in it")
@@ -726,19 +735,32 @@ class Listener(commands.Cog):
                             self.db.commit()
                             #print("Its in the dex now")
                     except Exception as e: 
+                        print("Dex for db: ")
                         print(e)
                     
                     try:
-                        dexdat = self.db.execute(f'SELETE * FROM Dex WHERE DexID = {dex}')
-                        dexdat = dexdat.fetchall()
-                        if dexdat[0][18] >=1:
-                            lowest = f'{dexdat[0][17]:,}'
-                            amount = f'{dexdat[0][19]:,}'
-                            time = str(dexdat[0][18])
-                            msg = "Lowest Price: "+lowest+"\nAmount: "+amount+"\nLast Update: <t:"+time+":f>"
-                            embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0])).setup_embed()
-                            await message.channel.send(embed=embed)
-                    except: return
+                        if "version" in _embed.description:
+                            _embed=message.embeds[0]
+                            dex=_embed.author.name.split("#")[1]
+                            #print(dex)
+                            dexdat = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
+                            dexdat = dexdat.fetchall()
+                            if dexdat[0][17] >=2:
+                                #print("Was updated.")
+                                lowest = f'{dexdat[0][17]:,}'
+                                #print(lowest)
+                                amount = f'{dexdat[0][19]:,}'
+                                #print(amount)
+                                time = str(dexdat[0][18])
+                                #print(time)
+                                msg = "Lowest Price: "+lowest+"\nAmount: "+amount+"\nLast Update: <t:"+time+":f>"
+                                #print(msg)
+                                embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0]),description=msg).setup_embed()
+                                await message.channel.send(embed=embed)
+                    except Exception as e: 
+                        dex=_embed.author.name.split("#")[1]
+                        print("Market after dex: "+str(dex)+" - "+sender.display_name)
+                        print(e)
             # Only works in specific channels!
             # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
             # if message.channel.id in channel_ids:
