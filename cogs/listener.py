@@ -95,7 +95,7 @@ class Listener(commands.Cog):
                     username = int(username.split("@")[1])
                     username = self.client.get_user(username)
                     username = username.display_name
-                    print(username+" welcomed")
+                    #print(username+" welcomed")
                     await message.channel.send("Hey, "+username)
                     await message.channel.send("<a:welcome1:1130245046025846814><a:welcome2:1130245098983137323>")
 
