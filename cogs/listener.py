@@ -23,6 +23,13 @@ class Listener(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
+    
+    async def _quest_reminder(self,channelid, user_id, waiter):
+        print("quest_reminder started for "+str(user_id)+" waiting for "+str(waiter)+" seconds.")
+        await asyncio.sleep(waiter)
+        print("slept enough.")
+        channel = self.client.get_channel(channelid)
+        await channel.send("<@"+f'{(user_id)}'+"> - your next quest is ready!")
 
     
     #events
@@ -33,19 +40,20 @@ class Listener(commands.Cog):
         print("Time do to ghost stuff!")
         print(datetime.datetime.now())
         print(datetime.datetime.timestamp(datetime.datetime.now()))
-        # await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
-        # reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime != 0 ORDER BY QuestTime ASC')
-        # reminders = reminders.fetchall()
-        # for row in reminders:
-        #     channelid = reminders[0][8]
-        #     channel = self.client.get_channel(channelid)
-        #     waiter = reminders[0][7]
-        #     if waiter != 1:
-        #         userid = reminders[0][1]
-        #         current_time = time.time()
-        #         waiter = waiter-current_time
-        #         await asyncio.sleep(waiter)
-        #         await channel.send("<@"+f'{userid}'+"> - your next quest is ready!")
+        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
+        reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime != 0 ORDER BY QuestTime ASC')
+        reminders = reminders.fetchall()
+        for row in reminders:
+            print("theres at least one row")
+            channelid = reminders[0][8]
+            print(channelid)
+            waiter = reminders[0][7]
+            if waiter != 1:
+                userid = reminders[0][1]
+                current_time = datetime.datetime.timestamp(datetime.datetime.now())
+                waiter = waiter-current_time
+                print(waiter)
+                await asyncio.create_task(self._quest_reminder(channelid, userid, waiter))
             
 
     @commands.Cog.listener()
