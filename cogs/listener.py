@@ -410,13 +410,8 @@ class Listener(commands.Cog):
                                         self.db.commit()
                                         q_time = str(q_time)
                                         #await message.channel.send("Your next quest is ready at <t:"+q_time+":f>")
-                                        await asyncio.sleep(waiter)
-                                        self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {sender.id}')
-                                        self.db.commit()
-                                        if datarem[0][6] == 1:
-                                            await message.channel.send("Your next quest is ready.")
-                                        elif datarem[0][6] == 2:
-                                            await message.channel.send("<@"+str(sender.id)+"> - You can get a new quest.")
+                                        await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter))
+                                        
                     if _embed.author.name:
                         if "catchbot" in _embed.author.name.lower():
                             #print("Aha, catchbotting in name")
