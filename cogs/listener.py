@@ -30,6 +30,8 @@ class Listener(commands.Cog):
         print("slept enough.")
         channel = self.client.get_channel(channelid)
         await channel.send("<@"+f'{(user_id)}'+"> - your next quest is ready!")
+        self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {user_id}')
+        self.db.commit()
 
     
     #events
@@ -321,7 +323,7 @@ class Listener(commands.Cog):
                                 self.db.execute(f'INSERT INTO Toggle (USER_ID) VALUES ({sender.id})')
                                 self.db.commit()
                                 await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
-                                await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check </info: for more info.")
+                                await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ``/info`` for more info.")
                             ######## Repel/Grazz notifier 
                             databaserep = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             databaserep = databaserep.fetchall()

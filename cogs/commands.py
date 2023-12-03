@@ -13,7 +13,9 @@ import time
 from utility.all_checks import Basic_checker
 from utility.embed import Custom_embed
 from utility.rarity_db import counts, countnumber
+from utility.rarity_db import poke_rarity, embed_color
 from utility.id_lists import unpinnables
+from googlesearch import search
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -553,6 +555,48 @@ class Coms(commands.Cog):
             self.db.execute(f'UPDATE Admin SET Funds = {money}')
             self.db.commit()
             await ctx.send("Set the current event funds to "+f'{money:,}')
+
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def rare(self, ctx, id: int):
+        receiver_channel = 825950637958234133
+        announce = self.client.get_channel(receiver_channel)
+        overseen = await ctx.channel.fetch_message(id)
+        if overseen:
+            Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
+            
+            _embed = overseen.embeds[0]
+            print(overseen)
+            user = _embed.author.name.split(" ")[1]
+            print(user)
+            user = user.split("!")[0]
+            print(user)
+            user = ctx.guild.get_member_named(user)
+            print(user)
+
+            data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
+            data = data.fetchall()
+            raremon = data[0][14]
+            print(raremon)
+            ball = _embed.description.split(" with a")[1]
+            ball = ball.split("!")[0]
+            ball = ball.split(" ")[1]
+            print(ball)
+            if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                raremon = poke_rarity[(data[0][14])]
+                current_time = overseen.created_at
+                timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
+                print(timestamp)
+                description_text = f"Original message: [Click here]({overseen.jump_url})\n"
+                embed = await Custom_embed(self.client, title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]),description=description_text).setup_embed()
+                embed.set_author(name=(user.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
+                embed.set_image(_embed.image.url)
+                embed.set_thumbnail(url=None)
+                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                await announce.send(embed=embed)
+                await ctx.send("Check <#:825950637958234133>",embed=embed)
+        else:
+            await ctx.send("Please reply to a message.")    
 
 
 
