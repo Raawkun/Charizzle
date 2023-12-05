@@ -24,12 +24,16 @@ class Listener(commands.Cog):
         self.client = client
         self.db = connect("database.db")
     
-    async def _quest_reminder(self,channelid, user_id, waiter):
+    async def _quest_reminder(self,channelid, user_id, waiter,reminder):
         print("quest_reminder started for "+str(user_id)+" waiting for "+str(waiter)+" seconds.")
         await asyncio.sleep(waiter)
         print("slept enough.")
         channel = self.client.get_channel(channelid)
-        await channel.send("<@"+f'{(user_id)}'+"> - your next quest is ready!")
+        if reminder == 1:
+            username = self.guild.get_member(user_id).display_name
+            await channel.send(username+" your next quest is ready!")
+        elif reminder == 2:
+            await channel.send("<@"+f'{(user_id)}'+"> - your next quest is ready!")
         self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
@@ -55,7 +59,11 @@ class Listener(commands.Cog):
                 current_time = datetime.datetime.timestamp(datetime.datetime.now())
                 waiter = waiter-current_time
                 print(waiter)
-                await asyncio.create_task(self._quest_reminder(channelid, userid, waiter))
+                if reminders[0][6] == 1:
+                    reminder = 1
+                elif reminders[0][6] == 2:
+                    reminder = 2
+                await asyncio.create_task(self._quest_reminder(channelid, userid, waiter,reminder))
             
 
     @commands.Cog.listener()
@@ -401,16 +409,23 @@ class Listener(commands.Cog):
                                     datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                                     datarem = datarem.fetchall()
                                     if datarem[0][6] != 0:
-                                        print("Oh, a new timer")
-                                        q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
-                                        print(q_time)
-                                        q_time = q_time+waiter
-                                        channelid = message.channel.id
-                                        self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time}, Channel = {channelid} WHERE User_ID = {sender.id}')
-                                        self.db.commit()
-                                        q_time = str(q_time)
-                                        #await message.channel.send("Your next quest is ready at <t:"+q_time+":f>")
-                                        await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter))
+                                        if datarem[0][7] != 0:
+                                            print("Already a timer running")
+                                        else:
+                                            print("Oh, a new timer")
+                                            q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
+                                            print(q_time)
+                                            q_time = q_time+waiter
+                                            channelid = message.channel.id
+                                            self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time}, Channel = {channelid} WHERE User_ID = {sender.id}')
+                                            self.db.commit()
+                                            q_time = str(q_time)
+                                            if datarem[0][6] == 1:
+                                                remind = 1
+                                            elif datarem[0][6] == 2:
+                                                remind = 2
+                                            #await message.channel.send("Your next quest is ready at <t:"+q_time+":f>")
+                                            await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
                                         
                     if _embed.author.name:
                         if "catchbot" in _embed.author.name.lower():
