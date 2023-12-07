@@ -598,6 +598,48 @@ class Coms(commands.Cog):
         else:
             await ctx.send("Please reply to a message.")    
 
+    @commands.check(Basic_checker().check_admin)
+    @commands.command(aliases=["bl", "blackl"])
+    async def blacklist(self, ctx, action: str = None, userid: int = None):
+        if userid != None:
+            db = self.db.execute(f'SELECT * FROM Blacklist WHERE UserID = {userid}')
+            db = db.fetchall()
+            user = await self.client.getch_user(userid)
+        if action == "add":
+            if db:
+                await ctx.send(user.name+" is already on the blacklist.")
+            elif userid == None:
+                await ctx.send("Please mention a valid user id next time.")
+            elif not db:
+                self.db.execute(f'INSERT INTO Blacklist VALUES ({userid})')
+                self.db.commit()
+                await ctx.send(user.name+" was added to the blacklist.")
+        if action == "remove":
+            if db:
+                self.db.execute(f'DELETE FROM Blacklist WHERE UserID = {userid}')
+                self.db.commit()
+                await ctx.send(user.name+" was removed from the blacklist.")
+            elif userid == None:
+                await ctx.send("Not sure who to remove here - maybe add a user id next time?")
+            elif not db:
+                await ctx.send("Sorry, but "+user.name+" isn't on the blacklist.")
+        if action == None:
+            db = self.db.execute(f'SELECT * FROM Blacklist')
+            db = db.fetchall()
+            if len(db) >= 1:
+                print(len(db))
+                msg = "**Usernames:**\n"
+                i = 1
+                for row in db:
+                    print(i)
+                    user = await self.client.getch_user(db[i-1][0])
+                    print(user)
+                    msg += user.name+"\n"
+                    i+=1
+            else:
+                msg = "{Empty}"
+            embed = await Custom_embed(self.client,title="Blacklist", description=msg,thumb=None).setup_embed()
+            await ctx.send(embed=embed)
 
 
 def setup(client):

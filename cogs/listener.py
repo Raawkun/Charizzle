@@ -26,15 +26,19 @@ class Listener(commands.Cog):
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder):
         print("quest_reminder started for "+str(user_id)+" waiting for "+str(waiter)+" seconds.")
+        channel = self.client.get_channel(channelid)
+        minutes = int(waiter/60)
+        await channel.send("Set a timer for "+str(minutes)+" minutes.")
+        self.db.execute(f'UPDATE Toggle SET Timer = 1 WHERE User_ID = {user_id}')
+        self.db.commit()
         await asyncio.sleep(waiter)
         print("slept enough.")
-        channel = self.client.get_channel(channelid)
         if reminder == 1:
-            username = self.guild.get_member(user_id).display_name
+            username = self.client.get_user(user_id).display_name
             await channel.send(username+" your next quest is ready!")
         elif reminder == 2:
             await channel.send("<@"+f'{(user_id)}'+"> - your next quest is ready!")
-        self.db.execute(f'UPDATE Toggle SET QuestTime = 0 WHERE User_ID = {user_id}')
+        self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
     
@@ -53,10 +57,10 @@ class Listener(commands.Cog):
             print("theres at least one row")
             channelid = reminders[0][8]
             print(channelid)
+            current_time = datetime.datetime.timestamp(datetime.datetime.now())
             waiter = reminders[0][7]
-            if waiter != 1:
+            if waiter > current_time:
                 userid = reminders[0][1]
-                current_time = datetime.datetime.timestamp(datetime.datetime.now())
                 waiter = waiter-current_time
                 print(waiter)
                 if reminders[0][6] == 1:
@@ -65,6 +69,20 @@ class Listener(commands.Cog):
                     reminder = 2
                 await asyncio.create_task(self._quest_reminder(channelid, userid, waiter,reminder))
             
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        
+        db = self.db.execute(f'SELECT * FROM Blacklist WHERE UserID = {member.id}')
+        db = db.fetchall()
+        print(member.id)
+        print(member.name)
+        if db:
+            try:
+                await member.send("Sorry, the server you were trying to join blacklisted you.\nThat's probably because you broke some server rules.")
+                await member.kick(reason="You're blacklisted on this server, because you broke the law.")
+            except Exception as e:
+                print(e)
+                print(member.display_name+" "+str(member.id))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -141,6 +159,18 @@ class Listener(commands.Cog):
             if message.author.id == meow:
                 announce_channel = self.client.get_channel(receiver_channel)
                 log_chn = self.client.get_channel(log_channel)
+                if "you ate a" in message.content:
+                    if message.reference:
+                        sender = message.reference.author
+                    elif message.interaction:
+                        sender = message.interaction.author
+                    await asyncio.sleep(3)
+                    datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                    datarem = datarem.fetchall()
+                    if datarem[0][6] == 1:
+                        await message.channel.send("You can now use </give fun-item:1015311084812501028> again.")
+                    elif datarem[0][6] == 2:
+                        await message.channel.send("<@"+str(sender.id)+"> - You can now use </give fun-item:1015311084812501028> again.")
                 if "s trainer icon!" in message.content:
                     iconname = message.content.split("unlocked ")[1]
                     iconname = iconname.split(":")[1]
@@ -424,8 +454,8 @@ class Listener(commands.Cog):
                                                 remind = 1
                                             elif datarem[0][6] == 2:
                                                 remind = 2
-                                            #await message.channel.send("Your next quest is ready at <t:"+q_time+":f>")
-                                            await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
+                                            if datarem[0][9] == 0:
+                                                await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
                                         
                     if _embed.author.name:
                         if "catchbot" in _embed.author.name.lower():
@@ -449,6 +479,23 @@ class Listener(commands.Cog):
                                 await message.channel.send("You can now battle again.")
                             elif datarem[0][6] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
+                        if "buddy help" in _embed.footer.text:
+                            print("Buddy Window")
+                            await asyncio.sleep(5)
+                            datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                            datarem = datarem.fetchall()
+                            if datarem[0][6] == 1:
+                                if _embed.fields:
+                                    for field in _embed.fields:
+                                        if field.name == "Friendship":
+                                            await message.channel.send("You can now use </buddy current-buddy:1015311084422434823> again.")
+                                if _embed.author:
+                                    if "Buddy Moves" in _embed.author.name:
+                                        await message.channel.send("You can now use </moves view:1015311085441654817> again.")
+                                await message.channel.send("You can now use </buddy current-buddy:1015311084422434823> again.")
+                            elif datarem[0][6] == 2:
+                                await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
+
                             
 
                     if _embed.author.name:
