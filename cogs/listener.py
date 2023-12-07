@@ -725,109 +725,110 @@ class Listener(commands.Cog):
                         except:
                             ref_msg = message.interaction #Command with /
                             sender = ref_msg.author
-                    try:
-                        if "version" in _embed.description:
-                            print("Version in it")
-                            dex=_embed.author.name.split("#")[1]
-                            #print(dex)
-                            name=_embed.author.name.split("#")[0]
-                            #print(name)
-                            try:
-                                data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
-                                data = data.fetchall()
-                                val = data[0][17]
-                                time = data[0][18]
-                                amount = data[0][19]
-                            except:
-                                val = 0
-                                time = 0
-                                amount = 0
-                            for field in _embed.fields:
-                                if field.name == "Dex Number":
-                                    #print(field.value)
-                                    region = field.value.split("> ")[1]
-                                    #print(region)
-                                    region = region.split(" ")[0]
-                                    #print(region)
-                                if field.name == "Type":
-                                    type1= field.value.split()[0]
-                                    #print(type1)
-                                    type1_semi = type1.split(":")[1]
-                                    #print(type1_semi)
-                                    try:
-                                        type2 = field.value.split()[1]
-                                        #print(type2)
-                                        type2_semi = type2.split(":")[1]
-                                        #print(type2_semi)
-                                    except: type2_semi = None
-                                if field.name == "Base Attack":
-                                    b_atk = field.value.split()[1]
-                                    #print(b_atk)
-                                if field.name == "Base Defense":
-                                    b_def = field.value.split()[1]
-                                    #print(b_def)
-                                if field.name == "Base HP":
-                                    b_hp = field.value.split()[1]
-                                    #print(b_hp)
-                                if field.name == "Base Sp. Atk":
-                                    b_spatk = field.value.split()[1]
-                                    #print(b_spatk)
-                                if field.name == "Base Sp. Def":
-                                    b_spdef = field.value.split()[1]
-                                    #print(b_spdef)
-                                if field.name == "Base Speed":
-                                    b_spd = field.value.split()[1]
-                                    #print(b_spd)
-                                if field.name == "Rarity":
-                                    rarity = field.value.split(":")[1]
-                                    #print(rarity)
-                                    if rarity.lower() == "legendary":
-                                        legendary = True
-                                    else: legendary = False
-                                    if rarity.lower() == "shiny":
-                                        shiny = True
-                                    else: shiny = False
-                                    if rarity.lower() == "golden":
-                                        golden = True
-                                    else: golden = False
-                                    if rarity.lower() == "mega":
-                                        mega = True
-                                    else: mega = False
-                                    if rarity.lower() == "shinymega":
-                                        shiny = True
-                                        mega = True
-                                imageurl = _embed.image.url
-                                #print(imageurl)
-                            self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}","{region}",{val},{time},{amount})')
-                            self.db.commit()
-                            #print("Its in the dex now")
-                    except Exception as e: 
-                        print("Dex for db: ")
-                        print(e)
+                    if _embed.description:
+                        try:
+                            if "version" in _embed.description:
+                                print("Version in it")
+                                dex=_embed.author.name.split("#")[1]
+                                #print(dex)
+                                name=_embed.author.name.split("#")[0]
+                                #print(name)
+                                try:
+                                    data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
+                                    data = data.fetchall()
+                                    val = data[0][17]
+                                    time = data[0][18]
+                                    amount = data[0][19]
+                                except:
+                                    val = 0
+                                    time = 0
+                                    amount = 0
+                                for field in _embed.fields:
+                                    if field.name == "Dex Number":
+                                        #print(field.value)
+                                        region = field.value.split("> ")[1]
+                                        #print(region)
+                                        region = region.split(" ")[0]
+                                        #print(region)
+                                    if field.name == "Type":
+                                        type1= field.value.split()[0]
+                                        #print(type1)
+                                        type1_semi = type1.split(":")[1]
+                                        #print(type1_semi)
+                                        try:
+                                            type2 = field.value.split()[1]
+                                            #print(type2)
+                                            type2_semi = type2.split(":")[1]
+                                            #print(type2_semi)
+                                        except: type2_semi = None
+                                    if field.name == "Base Attack":
+                                        b_atk = field.value.split()[1]
+                                        #print(b_atk)
+                                    if field.name == "Base Defense":
+                                        b_def = field.value.split()[1]
+                                        #print(b_def)
+                                    if field.name == "Base HP":
+                                        b_hp = field.value.split()[1]
+                                        #print(b_hp)
+                                    if field.name == "Base Sp. Atk":
+                                        b_spatk = field.value.split()[1]
+                                        #print(b_spatk)
+                                    if field.name == "Base Sp. Def":
+                                        b_spdef = field.value.split()[1]
+                                        #print(b_spdef)
+                                    if field.name == "Base Speed":
+                                        b_spd = field.value.split()[1]
+                                        #print(b_spd)
+                                    if field.name == "Rarity":
+                                        rarity = field.value.split(":")[1]
+                                        #print(rarity)
+                                        if rarity.lower() == "legendary":
+                                            legendary = True
+                                        else: legendary = False
+                                        if rarity.lower() == "shiny":
+                                            shiny = True
+                                        else: shiny = False
+                                        if rarity.lower() == "golden":
+                                            golden = True
+                                        else: golden = False
+                                        if rarity.lower() == "mega":
+                                            mega = True
+                                        else: mega = False
+                                        if rarity.lower() == "shinymega":
+                                            shiny = True
+                                            mega = True
+                                    imageurl = _embed.image.url
+                                    #print(imageurl)
+                                self.db.execute(f'INSERT or REPLACE INTO Dex VALUES ({dex},"{name}","{type1_semi}","{type2_semi}",{b_hp},{b_atk},{b_def},{b_spatk},{b_spdef},{b_spd},{legendary},{shiny},{golden},{mega},"{rarity}","{imageurl}","{region}",{val},{time},{amount})')
+                                self.db.commit()
+                                #print("Its in the dex now")
+                        except Exception as e: 
+                            print("Dex for db: ")
+                            print(e)
                     
-                    try:
-                        if "version" in _embed.description:
-                            _embed=message.embeds[0]
+                        try:
+                            if "version" in _embed.description:
+                                _embed=message.embeds[0]
+                                dex=_embed.author.name.split("#")[1]
+                                #print(dex)
+                                dexdat = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
+                                dexdat = dexdat.fetchall()
+                                if dexdat[0][17] >=2:
+                                    #print("Was updated.")
+                                    lowest = f'{dexdat[0][17]:,}'
+                                    #print(lowest)
+                                    amount = f'{dexdat[0][19]:,}'
+                                    #print(amount)
+                                    time = str(dexdat[0][18])
+                                    #print(time)
+                                    msg = "Lowest Price: "+lowest+"\nAmount: "+amount+"\nLast Update: <t:"+time+":f>"
+                                    #print(msg)
+                                    embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0]),description=msg).setup_embed()
+                                    await message.channel.send(embed=embed)
+                        except Exception as e: 
                             dex=_embed.author.name.split("#")[1]
-                            #print(dex)
-                            dexdat = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
-                            dexdat = dexdat.fetchall()
-                            if dexdat[0][17] >=2:
-                                #print("Was updated.")
-                                lowest = f'{dexdat[0][17]:,}'
-                                #print(lowest)
-                                amount = f'{dexdat[0][19]:,}'
-                                #print(amount)
-                                time = str(dexdat[0][18])
-                                #print(time)
-                                msg = "Lowest Price: "+lowest+"\nAmount: "+amount+"\nLast Update: <t:"+time+":f>"
-                                #print(msg)
-                                embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0]),description=msg).setup_embed()
-                                await message.channel.send(embed=embed)
-                    except Exception as e: 
-                        dex=_embed.author.name.split("#")[1]
-                        print("Market after dex: "+str(dex)+" - "+sender.display_name)
-                        print(e)
+                            print("Market after dex: "+str(dex)+" - "+sender.display_name)
+                            print(e)
             # Only works in specific channels!
             # channel_ids = [825817765432131615, 825813023716540429, 890255606219431946, 1161018942555422792, 827510854467584002]
             # if message.channel.id in channel_ids:
