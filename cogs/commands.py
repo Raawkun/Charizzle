@@ -72,37 +72,37 @@ class Coms(commands.Cog):
             else:
                 value_rem = emo_yes + emo_ping
             if database[0][10] == 1:
-                value_spawn = emo_yes
+                value_spawn = emo_yes + emo_sile
             elif database[0][10] == 0: 
                 value_spawn = emo_no
             else:
                 value_spawn = emo_yes + emo_ping
             if database[0][11] == 1:
-                value_fish = emo_yes
+                value_fish = emo_yes + emo_sile
             elif database[0][11] == 0: 
                 value_fish = emo_no
             else:
                 value_fish = emo_yes + emo_ping
             if database[0][12] == 1:
-                value_battle = emo_yes
+                value_battle = emo_yes + emo_sile
             elif database[0][12] == 0: 
                 value_battle = emo_no
             else:
                 value_battle = emo_yes + emo_ping
             if database[0][13] == 1:
-                value_quest = emo_yes
+                value_quest = emo_yes + emo_sile
             elif database[0][13] == 0: 
                 value_quest = emo_no
             else:
                 value_quest = emo_yes + emo_ping
             if database[0][14] == 1:
-                value_questr = emo_yes
+                value_questr = emo_yes + emo_sile
             elif database[0][14] == 0: 
                 value_quest = emo_no
             else:
                 value_questr = emo_yes + emo_ping
             if database[0][15] == 1:
-                value_other = emo_yes
+                value_other = emo_yes + emo_sile
             elif database[0][15] == 0: 
                 value_other = emo_no
             else:
