@@ -16,6 +16,8 @@ from utility.rarity_db import counts, countnumber
 from utility.rarity_db import poke_rarity, embed_color
 from utility.id_lists import unpinnables
 from googlesearch import search
+from PIL import Image
+from io import BytesIO
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -63,16 +65,48 @@ class Coms(commands.Cog):
                 value_start = emo_yes
             else: 
                 value_start = emo_no
-            if database[0][5] == 1:
-                value_priv = emo_yes
-            else:
-                value_priv = emo_no
             if database[0][6] == 0:
                 value_rem = emo_no
             elif database[0][6] == 1:
                 value_rem = emo_yes + emo_sile
             else:
                 value_rem = emo_yes + emo_ping
+            if database[0][10] == 1:
+                value_spawn = emo_yes
+            elif database[0][10] == 0: 
+                value_spawn = emo_no
+            else:
+                value_spawn = emo_yes + emo_ping
+            if database[0][11] == 1:
+                value_fish = emo_yes
+            elif database[0][11] == 0: 
+                value_fish = emo_no
+            else:
+                value_fish = emo_yes + emo_ping
+            if database[0][12] == 1:
+                value_battle = emo_yes
+            elif database[0][12] == 0: 
+                value_battle = emo_no
+            else:
+                value_battle = emo_yes + emo_ping
+            if database[0][13] == 1:
+                value_quest = emo_yes
+            elif database[0][13] == 0: 
+                value_quest = emo_no
+            else:
+                value_quest = emo_yes + emo_ping
+            if database[0][14] == 1:
+                value_questr = emo_yes
+            elif database[0][14] == 0: 
+                value_quest = emo_no
+            else:
+                value_questr = emo_yes + emo_ping
+            if database[0][15] == 1:
+                value_other = emo_yes
+            elif database[0][15] == 0: 
+                value_other = emo_no
+            else:
+                value_other = emo_yes + emo_ping
             embed = disnake.Embed(
                 title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
             )
@@ -82,7 +116,14 @@ class Coms(commands.Cog):
             embed.add_field(name="Repel: ",inline=True, value=value_repel)
             embed.add_field(name="Starter: ",inline=True, value=value_start)
             embed.add_field(name="Reminders: ", inline=True, value=value_rem)
-            embed.add_field(name="Privacy: ",inline=True, value=value_priv)
+            embed.add_field(name="",inline=True, value="")
+            embed.add_field(name="Spawn: ", inline=True, value=value_spawn)
+            embed.add_field(name="Fish: ", inline=True, value=value_fish)
+            embed.add_field(name="Battle: ", inline=True, value=value_battle)
+            embed.add_field(name="Quest Command: ", inline=True, value=value_quest)
+            embed.add_field(name="Next Quest: ", inline=True, value=value_questr)
+            embed.add_field(name="Other Commands: ", inline=True, value=value_other)
+
             embed.set_thumbnail(footer_icon)
             await ctx.send(embed=embed)
 
@@ -640,6 +681,32 @@ class Coms(commands.Cog):
                 msg = "{Empty}"
             embed = await Custom_embed(self.client,title="Blacklist", description=msg,thumb=None).setup_embed()
             await ctx.send(embed=embed)
+
+    #484x484 pfp
+    #start 0 321 or 4 326
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def pic(self, ctx, userid: int = None):
+        if userid == None:
+            userid = ctx.author
+        else:
+            userid = await self.client.getch_user(userid)
+        
+        victory = Image.open("pictures/victory_hall.png")
+
+        asset = userid.avatar.with_size(128)
+        print(asset)
+        asset = await asset.read()
+        data = BytesIO(asset)
+        pfp = Image.open(data)
+
+        pfp = pfp.resize((484,484))
+        victory.paste(pfp, (326,4))
+        victory.save("pictures/victory.png")
+
+        await ctx.send(file=disnake.File("pictures/victory.png"))
+
+
 
 
 def setup(client):
