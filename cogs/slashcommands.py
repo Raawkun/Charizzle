@@ -78,7 +78,24 @@ class SlashComs(commands.Cog):
                     OptionChoice("Reminder Off","reminder0"),
                     OptionChoice("Reminder On, no Ping","reminder1"),
                     OptionChoice("Reminder On, with Ping","reminder2"),
-                    OptionChoice("Privacy", "privacy")
+                    OptionChoice("Spawn Reminder Off","spreminder0"),
+                    OptionChoice("Spawn Reminder On, no Ping","spreminder1"),
+                    OptionChoice("Spawn Reminder On, with Ping","spreminder2"),
+                    OptionChoice("Fish Reminder Off","fireminder0"),
+                    OptionChoice("Fish Reminder On, no Ping","fireminder1"),
+                    OptionChoice("Fish Reminder On, with Ping","fireminder2"),
+                    OptionChoice("Battle Reminder Off","bareminder0"),
+                    OptionChoice("Battle Reminder On, no Ping","bareminder1"),
+                    OptionChoice("Battle Reminder On, with Ping","bareminder2"),
+                    OptionChoice("Quest Command Reminder Off","qureminder0"),
+                    OptionChoice("Quest Command Reminder On, no Ping","qureminder1"),
+                    OptionChoice("Quest COmmand Reminder On, with Ping","qureminder2"),
+                    OptionChoice("New Quest Reminder Off","qtreminder0"),
+                    OptionChoice("New Quest Reminder On, no Ping","qtreminder1"),
+                    OptionChoice("New Quest Reminder On, with Ping","qtreminder2"),
+                    OptionChoice("Other Reminder Off","otreminder0"),
+                    OptionChoice("Other Reminder On, no Ping","otreminder1"),
+                    OptionChoice("Other Reminder On, with Ping","otreminder2")
                 ],
                 required=True
             ),   
@@ -126,14 +143,78 @@ class SlashComs(commands.Cog):
                 self.db.execute(f'UPDATE Toggle SET Reminder = 2 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled reminders on, and I will ping you.", ephemeral= True)
-            elif switch == "privacy" and row[5] == 0:
-                self.db.execute(f'UPDATE Toggle SET Privacy = 1 WHERE User_ID = {ctx.author.id}')
+            elif switch == "spreminder0":
+                self.db.execute(f'UPDATE Toggle SET ToggleSpawn = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
-                await ctx.send("Toggled on.", ephemeral= True)
-            elif switch == "privacy" and row[5] == 1:
-                self.db.execute(f'UPDATE Toggle SET Privacy = 0 WHERE User_ID = {ctx.author.id}')
+                await ctx.send("Toggled your spawn reminders off.", ephemeral= True)
+            elif switch == "spreminder1":
+                self.db.execute(f'UPDATE Toggle SET ToggleSpawn = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
-                await ctx.send("Toggled off.", ephemeral= True)
+                await ctx.send("Toggled spawn reminders on, but I wont ping you.", ephemeral= True)
+            elif switch == "spreminder2":
+                self.db.execute(f'UPDATE Toggle SET ToggleSpawn = 2 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled spawn reminders on, and I will ping you.", ephemeral= True)
+            elif switch == "fireminder0":
+                self.db.execute(f'UPDATE Toggle SET ToggleFish = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled your fish reminders off.", ephemeral= True)
+            elif switch == "fireminder1":
+                self.db.execute(f'UPDATE Toggle SET ToggleFish = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled fish reminders on, but I wont ping you.", ephemeral= True)
+            elif switch == "fireminder2":
+                self.db.execute(f'UPDATE Toggle SET ToggleFish = 2 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled fish reminders on, and I will ping you.", ephemeral= True)
+            elif switch == "bareminder0":
+                self.db.execute(f'UPDATE Toggle SET ToggleBattle = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled your battle reminders off.", ephemeral= True)
+            elif switch == "bareminder1":
+                self.db.execute(f'UPDATE Toggle SET ToggleBattle = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled battle reminders on, but I wont ping you.", ephemeral= True)
+            elif switch == "bareminder2":
+                self.db.execute(f'UPDATE Toggle SET ToggleBattle = 2 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled battle reminders on, and I will ping you.", ephemeral= True)
+            elif switch == "qureminder0":
+                self.db.execute(f'UPDATE Toggle SET ToggleQuest = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled your quest command reminders off.", ephemeral= True)
+            elif switch == "qureminder1":
+                self.db.execute(f'UPDATE Toggle SET ToggleQuest = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled quest command reminders on, but I wont ping you.", ephemeral= True)
+            elif switch == "qureminder2":
+                self.db.execute(f'UPDATE Toggle SET ToggleQuest = 2 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled quest command reminders on, and I will ping you.", ephemeral= True)
+            elif switch == "qtreminder0":
+                self.db.execute(f'UPDATE Toggle SET ToggleQuestTimer = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled your new quest reminders off.", ephemeral= True)
+            elif switch == "qtreminder1":
+                self.db.execute(f'UPDATE Toggle SET ToggleQuestTimer = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled new quest reminders on, but I wont ping you.", ephemeral= True)
+            elif switch == "qtreminder2":
+                self.db.execute(f'UPDATE Toggle SET ToggleQuestTimer = 2 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled new quest reminders on, and I will ping you.", ephemeral= True)
+            elif switch == "otreminder0":
+                self.db.execute(f'UPDATE Toggle SET ToggleOthers = 0 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled your other reminders off.", ephemeral= True)
+            elif switch == "otreminder1":
+                self.db.execute(f'UPDATE Toggle SET ToggleOthers = 1 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled other reminders on, but I wont ping you.", ephemeral= True)
+            elif switch == "otreminder2":
+                self.db.execute(f'UPDATE Toggle SET ToggleOthers = 2 WHERE User_ID = {ctx.author.id}')
+                self.db.commit()
+                await ctx.send("Toggled other reminders on, and I will ping you.", ephemeral= True)
 
 
     @commands.slash_command(name="event", description="Shows the current Leaderboard, if there's an event.")
