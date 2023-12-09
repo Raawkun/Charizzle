@@ -421,6 +421,11 @@ class Listener(commands.Cog):
                             #print("Quest screen from "+sender.display_name)
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
+                            await asyncio.sleep(6)
+                            if datarem[0][13] == 1:
+                                await message.channel.send("You can now check your quests again.")
+                            elif datarem[0][13] == 2:
+                                await message.channel.send("<@"+str(sender.id)+"> - You can check your quests again.")
                             if _embed.footer:
                                 if "Next quest in" in _embed.footer.text:
                                     #print("Oh, a quest?")
@@ -459,11 +464,6 @@ class Listener(commands.Cog):
                                                 minutes = int(waiter/60)
                                                 await message.channel.send("Set a timer for "+str(minutes)+" minutes.")
                                                 await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
-                            await asyncio.sleep(6)
-                            if datarem[0][13] == 1:
-                                await message.channel.send("You can now check your quests again.")
-                            elif datarem[0][13] == 2:
-                                await message.channel.send("<@"+str(sender.id)+"> - You can check your quests again.")
                             
                     if _embed.author.name:
                         if "catchbot" in _embed.author.name.lower():
