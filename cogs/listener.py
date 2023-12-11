@@ -39,7 +39,6 @@ class Listener(commands.Cog):
         self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
-    
     #events
     @commands.Cog.listener()
     async def on_ready(self):
@@ -102,7 +101,7 @@ class Listener(commands.Cog):
                 return
             
             if message.content.lower() == "trygoogle":
-                message.delete()
+                await message.delete()
                 await message.channel.send("https://tenor.com/bUYzH.gif")
             #Open to every Channel!
             if message.content == "^-^":

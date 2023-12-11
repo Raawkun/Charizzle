@@ -729,6 +729,31 @@ class Coms(commands.Cog):
 
         await ctx.send(file=disnake.File("pictures/victory.png"))
 
+    @commands.check(Basic_checker().check_admin)
+    @commands.command()
+    async def dbcleaner(self, ctx):
+        servermem = ctx.guild.members
+        #print(servermem[1])
+        db = self.db.execute(f'SELECT * FROM Toggle')
+        db = db.fetchall()
+        for row in db:
+            username = await self.client.getch_user(row[1])
+            #print(username)
+            if username not in servermem:
+                print(str(username)+" not longer in the server.")
+                self.db.execute(f'DELETE FROM Toggle WHERE User_ID = {username.id}')
+                self.db.commit()
+        db = self.db.execute(f'SELECT * FROM Counter')
+        db = db.fetchall()
+        for row in db:
+            username = await self.client.getch_user(row[0])
+            #print(username)
+            if username not in servermem:
+                print(str(username)+" not longer in the server.")
+                self.db.execute(f'DELETE FROM Counter WHERE User_ID = {username.id}')
+                self.db.commit()
+
+
 
 
 
