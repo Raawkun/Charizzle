@@ -832,7 +832,8 @@ class Listener(commands.Cog):
                                     #print(time)
                                     msg = "Lowest Price: "+lowest+"\nAmount: "+amount+"\nLast Update: <t:"+time+":f>"
                                     #print(msg)
-                                    embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0]),description=msg).setup_embed()
+                                    thumb = _embed.thumbnail.url
+                                    embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0]),description=msg,thumb=thumb).setup_embed()
                                     await message.channel.send(embed=embed)
                         except Exception as e: 
                             dex=_embed.author.name.split("#")[1]
