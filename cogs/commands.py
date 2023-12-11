@@ -33,6 +33,29 @@ class Coms(commands.Cog):
     current_time = datetime.datetime.utcnow()
     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         
+    @commands.command()
+    async def dm(self, ctx, userid, *args):
+        try:
+            int(userid)
+            print(userid)
+        except ValueError:
+            print("ValueError")
+        if userid.startswith("<@") and userid.endswith(">"):
+            print("Starting with mention, "+userid)
+            userid = userid.split("<@")[1]
+            userid = userid.split(">")[0]
+            userid = int(userid)
+            print(userid)
+        else:
+            print(userid)
+            userid = ctx.guild.get_member_named(userid)
+            print(userid)
+            userid = userid.id
+            print("Its a name...")
+
+        user = ctx.guild.get_member(userid)
+        msg = " ".join(args)
+        await user.send(msg)
 
 
     @commands.command()
