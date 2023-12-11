@@ -222,7 +222,7 @@ class Listener(commands.Cog):
                     #print("Aha, some content")
                     if "your catch bot" in message.content.lower():
                         #print("Aha, catchbotting in message")
-                        await asyncio.sleep(5)
+                        await asyncio.sleep(6)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
