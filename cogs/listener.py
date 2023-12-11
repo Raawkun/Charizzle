@@ -102,6 +102,7 @@ class Listener(commands.Cog):
                 return
             
             if message.content.lower() == "trygoogle":
+                message.delete()
                 await message.channel.send("https://tenor.com/bUYzH.gif")
             #Open to every Channel!
             if message.content == "^-^":
