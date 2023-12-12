@@ -629,47 +629,62 @@ class Coms(commands.Cog):
         if overseen:
             Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
             
-            _embed = overseen.embeds[0]
-            print(overseen)
-            user = _embed.author.name.split(" ")[1]
-            print(user)
-            user = user.split("!")[0]
-            print(user)
-            user = ctx.guild.get_member_named(user)
-            print(user)
-            if "broke out" or "caught a " in _embed.description:
-                data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                data = data.fetchall()
-                raremon = data[0][14]
-                print(raremon)
-                ball = _embed.description.split(" with a")[1]
-                ball = ball.split("!")[0]
-                ball = ball.split(" ")[1]
-                print(ball)
-                if raremon in Rare_Spawns or _embed.color == 0xe9270b:
-                    raremon = poke_rarity[(data[0][14])]
-                    current_time = overseen.created_at
-                    timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                    print(timestamp)
-                    description_text = f"Original message: [Click here]({overseen.jump_url})\n"
-                    embed = await Custom_embed(self.client, title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]),description=description_text).setup_embed()
-                    embed.set_author(name=(user.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
-                    embed.set_image(_embed.image.url)
-                    embed.set_thumbnail(url=None)
-                    embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                    await announce.send(embed=embed)
-                    await ctx.send("Check <#:825950637958234133>",embed=embed)
-                else:
-                    await ctx.send(f'{data[0][1]} is not rare enough to be posted. If you think this is wrong, ping Blue Flame.')
+            if len(overseen.embeds) > 0:
+                _embed = overseen.embeds[0]
+                print(overseen)
+                user = _embed.author.name.split(" ")[1]
+                print(user)
+                user = user.split("!")[0]
+                print(user)
+                user = ctx.guild.get_member_named(user)
+                print(user)
+                if "broke out" or "caught a " in _embed.description:
+                    data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
+                    data = data.fetchall()
+                    raremon = data[0][14]
+                    print(raremon)
+                    ball = _embed.description.split(" with a")[1]
+                    ball = ball.split("!")[0]
+                    ball = ball.split(" ")[1]
+                    print(ball)
+                    if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                        raremon = poke_rarity[(data[0][14])]
+                        current_time = overseen.created_at
+                        timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
+                        print(timestamp)
+                        description_text = f"Original message: [Click here]({overseen.jump_url})\n"
+                        embed = await Custom_embed(self.client, title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]),description=description_text).setup_embed()
+                        embed.set_author(name=(user.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
+                        embed.set_image(_embed.image.url)
+                        embed.set_thumbnail(url=None)
+                        embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                        await announce.send(embed=embed)
+                        await ctx.send("Check <#:825950637958234133>",embed=embed)
+                    else:
+                        await ctx.send(f'{data[0][1]} is not rare enough to be posted. If you think this is wrong, ping Blue Flame.')
+            
             elif "'s trainer icon!" in overseen.content:
+                print(overseen.content)
+                current_time = overseen.created_at
+                timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
                 iconname = overseen.content.split("unlocked ")[1]
+                icon = iconname.split(":")[2]
+                icon = icon.split(">")[0]
+                print(icon)
                 iconname = iconname.split(":")[1]
+                print(iconname)
                 iconname = iconname.replace("_"," ")
                 iconname = iconname.title()
+                print(iconname)
                 authorid = overseen.content.split("@")[1]
                 authorid = int(authorid.split(">")[0])
                 user = self.client.get_user(authorid)
-                embed = await Custom_embed().setup_embed()
+                thumburl = "https://cdn.discordapp.com/emojis/"
+                icon = str(icon)
+                thumburl = thumburl+icon
+                thumburl = thumburl+".webp?size=96&quality=lossless"
+                print(thumburl)
+                embed = await Custom_embed(self.client,thumb=thumburl).setup_embed()
                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                 embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                 await announce.send(embed=embed)

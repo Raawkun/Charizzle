@@ -172,18 +172,28 @@ class Listener(commands.Cog):
                         await message.channel.send("<@"+str(sender.id)+"> - You can now use </give fun-item:1015311084812501028> again.")
                 if "s trainer icon!" in message.content:
                     iconname = message.content.split("unlocked ")[1]
+                    icon = iconname.split(":")[2]
+                    icon = icon.split(">")[0]
+                    print(icon)
                     iconname = iconname.split(":")[1]
+                    print(iconname)
                     iconname = iconname.replace("_"," ")
                     iconname = iconname.title()
+                    print(iconname)
                     authorid = message.content.split("@")[1]
                     authorid = int(authorid.split(">")[0])
                     user = self.client.get_user(authorid)
-                    await log_chn.send(user+" found an icon")
-                    await log_chn.send("Its "+iconname)
-                    embed = await Custom_embed().setup_embed()
+                    thumburl = "https://cdn.discordapp.com/emojis/"
+                    icon = str(icon)
+                    thumburl = thumburl+icon
+                    thumburl = thumburl+".webp?size=96&quality=lossless"
+                    print(thumburl)
+                    embed = await Custom_embed(self.client,thumb=thumburl).setup_embed()
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                     embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                     await announce_channel.send(embed=embed)
+                    await log_chn.send(user+" found an icon")
+                    await log_chn.send("Its "+iconname)
                 if "won the battle!" in message.content:
                     #print("Battle won")
                     dataev = self.db.execute(f'SELECT * FROM Admin')
