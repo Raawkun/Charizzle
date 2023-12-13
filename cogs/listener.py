@@ -33,10 +33,10 @@ class Listener(commands.Cog):
         print("slept enough.")
         if reminder == 1:
             username = self.client.get_user(user_id).display_name
-            await channel.send(username+" your next quest is ready!")
+            await channel.send(username+", your next quest is ready!")
         elif reminder == 2:
             await channel.send("<@"+f'{(user_id)}'+"> - your next quest is ready!")
-        self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Timer = 0 WHERE User_ID = {user_id}')
+        self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Channel = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
     #events
@@ -47,25 +47,33 @@ class Listener(commands.Cog):
         print("Time do to ghost stuff!")
         print(datetime.datetime.timestamp(datetime.datetime.now()))
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
-        self.db.execute(f'UPDATE Toggle SET Timer = 0')
-        self.db.commit()
-        reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime != 0 ORDER BY QuestTime ASC')
+        reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
         reminders = reminders.fetchall()
+        print(reminders)
         for row in reminders:
+            channelid = row[8]
+            self.db.execute(f'UPDATE Toggle SET Timer = 0 WHERE Channel = {channelid}')
+            self.db.commit()
+            print(row[9])
             print("theres at least one row")
-            channelid = reminders[0][8]
             print(channelid)
             current_time = datetime.datetime.timestamp(datetime.datetime.now())
-            waiter = reminders[0][7]
+            print(current_time)
+            waiter = row[7]
+            print(waiter)
+            userid = row[1]
             if waiter > current_time:
-                userid = reminders[0][1]
                 waiter = waiter-current_time
                 print(waiter)
-                if reminders[0][14] == 1:
+                print(waiter)
+                if row[14] == 1:
                     reminder = 1
-                elif reminders[0][14] == 2:
+                elif row[14] == 2:
                     reminder = 2
-                await asyncio.create_task(self._quest_reminder(channelid, userid, waiter,reminder))
+                await asyncio.create_task(self._quest_reminder(channelid, userid, waiter, reminder))
+            elif waiter < current_time:
+                self.db.execute(f'UPDATE Toggle SET Channel = 0, QuestTime = 0, Timer = 0 WHERE User_ID = {userid}')
+                self.db.commit()
             
     @commands.Cog.listener()
     async def on_member_join(self, member):
