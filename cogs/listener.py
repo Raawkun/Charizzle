@@ -236,7 +236,7 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            await message.channel.send("You can now use your catchbot again.")
+                            await message.channel.send(str(sender.display_name)+", you can now use your catchbot again.")
                         elif datarem[0][15] == 2:
                             await message.channel.send("<@"+str(sender.id)+"> - You can now use your catchbot again.")
                     if "holding an egg" in message.content.lower() or "egg is not ready" in message.content.lower():
@@ -244,7 +244,7 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            await message.channel.send("You can use ;egg again.")
+                            await message.channel.send(str(sender.display_name)+", you can use ;egg again.")
                         elif datarem[0][15] == 2:
                             await message.channel.send("<@"+str(sender.id)+"> - You can use ;egg again.")
                 if (len(message.embeds) > 0):
@@ -277,7 +277,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][15] == 1:
-                                await message.channel.send("You can use ;market again.")
+                                await message.channel.send(str(sender.display_name)+", you can use ;market again.")
                             elif datarem[0][15] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can use ;market again.")
                         if "Counters" in _embed.author.name:
@@ -405,7 +405,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][10] == 1:
-                                await message.channel.send("You can now use </pokemon:1015311085441654824> again.")
+                                await message.channel.send(str(sender.display_name)+", you can now use </pokemon:1015311085441654824> again.")
                             elif datarem[0][10] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now use </pokemon:1015311085441654824> again.")
                     if _embed.description:
@@ -414,7 +414,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][11] == 1:
-                                await message.channel.send("You can now use </fish spawn:1015311084812501026> again.")
+                                await message.channel.send(str(sender.display_name)+", you can now use </fish spawn:1015311084812501026> again.")
                             elif datarem[0][11] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now use </fish spawn:1015311084812501026> again.")
                         
@@ -423,7 +423,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][15] == 1:
-                                await message.channel.send("You can now swap again.")
+                                await message.channel.send(str(sender.display_name)+", you can now swap again.")
                             elif datarem[0][15] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now swap again.")
                     if _embed.title:
@@ -433,7 +433,7 @@ class Listener(commands.Cog):
                             datarem = datarem.fetchall()
                             await asyncio.sleep(6)
                             if datarem[0][13] == 1:
-                                await message.channel.send("You can now check your quests again.")
+                                await message.channel.send(str(sender.display_name)+", you can now check your quests again.")
                             elif datarem[0][13] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can check your quests again.")
                             if _embed.footer:
@@ -472,7 +472,7 @@ class Listener(commands.Cog):
                                                 remind = 2
                                             if datarem[0][9] == 0:
                                                 minutes = int(waiter/60)
-                                                await message.channel.send("Set a timer for "+str(minutes)+" minutes.")
+                                                await message.channel.send(str(sender.display_name)+", I've set a timer for "+str(minutes)+" minutes.")
                                                 await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
                             
                     if _embed.author.name:
@@ -482,7 +482,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][15] == 1:
-                                await message.channel.send("You can now use your catchbot again.")
+                                await message.channel.send(str(sender.display_name)+", you can now use your catchbot again.")
                             elif datarem[0][15] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now use your catchbot again.")
                     
@@ -494,7 +494,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][12] == 1:
-                                await message.channel.send("You can now battle again.")
+                                await message.channel.send(str(sender.display_name)+", you can now battle again.")
                             elif datarem[0][12] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
                         if "buddy help" in _embed.footer.text:
@@ -506,11 +506,11 @@ class Listener(commands.Cog):
                                 if _embed.fields:
                                     for field in _embed.fields:
                                         if field.name == "Friendship":
-                                            await message.channel.send("You can now use </buddy current-buddy:1015311084422434823> again.")
+                                            await message.channel.send(str(sender.display_name)+", you can now use </buddy current-buddy:1015311084422434823> again.")
                                 if _embed.author:
                                     if "Buddy Moves" in _embed.author.name:
-                                        await message.channel.send("You can now use </moves view:1015311085441654817> again.")
-                                await message.channel.send("You can now use </buddy current-buddy:1015311084422434823> again.")
+                                        await message.channel.send(str(sender.display_name)+", you can now use </moves view:1015311085441654817> again.")
+                                await message.channel.send(str(sender.display_name)+", you can now use </buddy current-buddy:1015311084422434823> again.")
                             elif datarem[0][15] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can now use </buddy current-buddy:1015311084422434823> again.")
 
@@ -522,7 +522,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][15] == 1:
-                                await message.channel.send("You can use ;egg again.")
+                                await message.channel.send(str(sender.display_name)+", you can use ;egg again.")
                             elif datarem[0][15] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can use ;egg again.")
                         if "hatched" in _embed.author.name:
@@ -559,7 +559,7 @@ class Listener(commands.Cog):
                                     data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
                                     data = data.fetchall()
                                     if data:
-                                        await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
+                                        await message.channel.send(str(sender.display_name)+", you've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
                                         old_amount = data[0][4]
                                         new_amount = 1+old_amount
                                         self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
@@ -568,7 +568,7 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][15] == 1:
-                                await message.channel.send("You can use ;egg again.")
+                                await message.channel.send(str(sender.display_name)+", you can use ;egg again.")
                             elif datarem[0][15] == 2:
                                 await message.channel.send("<@"+str(sender.id)+"> - You can use ;egg again.")
 
