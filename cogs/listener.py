@@ -196,7 +196,7 @@ class Listener(commands.Cog):
                     thumburl = thumburl+icon
                     thumburl = thumburl+".webp?size=96&quality=lossless"
                     print(thumburl)
-                    embed = await Custom_embed(self.client,thumb=thumburl,description="Icon name: "+iconname).setup_embed()
+                    embed = await Custom_embed(self.client,thumb=thumburl,description="**"+iconname+"++ was viciously defeated and dropped their icon.").setup_embed()
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                     embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                     await announce_channel.send(embed=embed)
