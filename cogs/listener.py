@@ -166,6 +166,19 @@ class Listener(commands.Cog):
             if message.author.id == meow:
                 announce_channel = self.client.get_channel(receiver_channel)
                 log_chn = self.client.get_channel(log_channel)
+                if "used a code to claim" in message.content:
+                    if message.reference:
+                        sender = message.reference.author
+                    elif message.interaction:
+                        sender = message.interaction.author
+                    monname = message.content.split("**")[1]
+                    data = self.db.execute(f'SELECT * FROM Dex WHERE Name = {monname}')
+                    data = data.fetchall()
+                    url = data[0][15]
+                    embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.").setup_embed()
+                    embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                    embed.set_author(name=f'{sender.display_name}'" just redeemed a code!", icon_url="https://cdn.discordapp.com/emojis/671852541729832964.webp?size=240&quality=lossless")
+                    await receiver_channel.send(embed=embed)
                 if "you ate a" in message.content:
                     if message.reference:
                         sender = message.reference.author
