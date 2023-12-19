@@ -16,8 +16,10 @@ from utility.rarity_db import counts, countnumber
 from utility.rarity_db import poke_rarity, embed_color
 from utility.id_lists import unpinnables
 from googlesearch import search
-from PIL import Image
+from PIL import Image, ImageDraw, ImageSequence
 from io import BytesIO
+import imageio
+import aiohttp
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -684,9 +686,35 @@ class Coms(commands.Cog):
                 thumburl = thumburl+icon
                 thumburl = thumburl+".webp?size=96&quality=lossless"
                 print(thumburl)
+                current_time = overseen.created_at
+                timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
                 embed = await Custom_embed(self.client,description="**"+iconname+"++ was viciously defeated and dropped their icon.",thumb=thumburl).setup_embed()
                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                 embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
+                await announce.send(embed=embed)
+
+            elif "used a code to claim" in overseen.content:
+                if overseen.reference:
+                    ref_msg = await overseen.channel.fetch_message(overseen.reference.message_id)
+                    sender = ref_msg.author
+                elif overseen.interaction:
+                    sender = overseen.interaction.author
+                monname = overseen.content.split(":")[3]
+                monname = monname.split(":")[0]
+                await ctx.send('``'+monname+'``')
+                print(monname)
+                data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monname}')
+                data = data.fetchall()
+                #print(data)
+                url = data[0][15]
+                #print(url)
+                monname = data[0][1]
+                print(monname)
+                current_time = overseen.created_at
+                timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
+                embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.").setup_embed()
+                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                embed.set_author(name=f'{sender.display_name}'" just redeemed a code!", icon_url="https://cdn.discordapp.com/emojis/671852541729832964.webp?size=240&quality=lossless")
                 await announce.send(embed=embed)
 
         else:
@@ -748,7 +776,7 @@ class Coms(commands.Cog):
         victory = Image.open("pictures/victory_hall.png")
 
         asset = userid.avatar.with_size(128)
-        print(asset)
+        #print(asset)
         asset = await asset.read()
         data = BytesIO(asset)
         pfp = Image.open(data)
@@ -783,6 +811,54 @@ class Coms(commands.Cog):
                 self.db.execute(f'DELETE FROM Counter WHERE User_ID = {username.id}')
                 self.db.commit()
 
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def tester(self, ctx, number: int):
+        data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
+        data = data.fetchall()
+        print(data[0][15])
+        msg = data[0][15]
+
+        pic = Image.open("pictures/tester.png",'r')
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(msg) as response:
+                gif_data = await response.read()
+        
+        new_gif_frame = []
+
+        gif_data = imageio.get_reader(BytesIO(gif_data), 'GIF')
+
+        for gif_frame in gif_data:
+            new_frame = pic.copy()
+            new_frame.paste(Image.fromarray(gif_frame).resize((250,250)), (530,50), Image.fromarray(gif_frame).resize((250,250)).convert('RGBA'))
+            new_gif_frame.append(new_frame)
+        
+        print(gif_data.get_meta_data())
+
+        new_gif_byte_array = BytesIO()
+        new_gif_frame[0].save(
+            new_gif_byte_array, 
+            save_all=True, 
+            append_images=new_gif_frame[1:], 
+            format='GIF',
+            duration=gif_data.get_meta_data()["duration"]
+        )
+
+        new_gif_byte_array.seek(0)
+        await ctx.send(file=disnake.File(new_gif_byte_array, 'combined_image.gif'))
+
+
+        # first_frame = Image.fromarray(gif_data[0])
+
+
+
+        # tester = Image.open("pictures/tester.png")
+        # monframe = first_frame.resize((250, 250))
+        # tester.paste(monframe, (530, 50))
+        # tester.save("pictures/tested.png")
+
+        # await ctx.send(file=disnake.File("pictures/tested.png"))
 
 
 

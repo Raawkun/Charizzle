@@ -168,20 +168,30 @@ class Listener(commands.Cog):
                 log_chn = self.client.get_channel(log_channel)
                 if "used a code to claim" in message.content:
                     if message.reference:
-                        sender = message.reference.author
+                        ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                        sender = ref_msg.author
                     elif message.interaction:
                         sender = message.interaction.author
-                    monname = message.content.split("**")[1]
-                    data = self.db.execute(f'SELECT * FROM Dex WHERE Name = {monname}')
+                    monname = message.content.split(":")[3]
+                    monname = monname.split(":")[0]
+                    print(monname)
+                    data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monname}')
                     data = data.fetchall()
+                    #print(data)
                     url = data[0][15]
+                    #print(url)
+                    monname = data[0][1]
+                    print(monname)
+                    current_time = message.created_at
+                    timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
                     embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.").setup_embed()
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                     embed.set_author(name=f'{sender.display_name}'" just redeemed a code!", icon_url="https://cdn.discordapp.com/emojis/671852541729832964.webp?size=240&quality=lossless")
                     await receiver_channel.send(embed=embed)
                 if "you ate a" in message.content:
                     if message.reference:
-                        sender = message.reference.author
+                        ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                        sender = ref_msg.author
                     elif message.interaction:
                         sender = message.interaction.author
                     await asyncio.sleep(3)

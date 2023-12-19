@@ -131,9 +131,6 @@ class On_Edit(commands.Cog):
                                             await announce.send(embed=embed)
                                     if "ran away" in _embed.description:
                                         raremon = data[0][14]
-                                        total = "Total"
-                                        self.db.execute(f'UPDATE Stats SET Fled = Fled + 1 WHERE Ball = ?',(total))
-                                        self.db.commit()
                                         if raremon in Rare_Spawns or _embed.color == 0xe9270b:
                                             raremon = poke_rarity[(data[0][14])]
                                             description_text = f"Original message: [Click here]({before.jump_url})\n"
