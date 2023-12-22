@@ -688,7 +688,7 @@ class Coms(commands.Cog):
                 print(thumburl)
                 current_time = overseen.created_at
                 timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                embed = await Custom_embed(self.client,description="**"+iconname+"++ was viciously defeated and dropped their icon.",thumb=thumburl).setup_embed()
+                embed = await Custom_embed(self.client,description="**"+iconname+"** was viciously defeated and dropped their icon.",thumb=thumburl).setup_embed()
                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                 embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                 await announce.send(embed=embed)
