@@ -187,7 +187,7 @@ class Listener(commands.Cog):
                     embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.").setup_embed()
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                     embed.set_author(name=f'{sender.display_name}'" just redeemed a code!", icon_url="https://cdn.discordapp.com/emojis/671852541729832964.webp?size=240&quality=lossless")
-                    await receiver_channel.send(embed=embed)
+                    await announce_channel.send(embed=embed)
                 if "you ate a" in message.content:
                     if message.reference:
                         ref_msg = await message.channel.fetch_message(message.reference.message_id)
