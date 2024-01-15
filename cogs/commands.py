@@ -688,7 +688,8 @@ class Coms(commands.Cog):
                 print(thumburl)
                 current_time = overseen.created_at
                 timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                embed = await Custom_embed(self.client,description="**"+iconname+"** was viciously defeated and dropped their icon.",thumb=thumburl).setup_embed()
+                description_text = f"Original message: [Click here]({overseen.jump_url})\n"
+                embed = await Custom_embed(self.client,description="**"+iconname+"** was viciously defeated and dropped their icon.\n"+description_text,thumb=thumburl).setup_embed()
                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                 embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                 await announce.send(embed=embed)
@@ -699,11 +700,11 @@ class Coms(commands.Cog):
                     sender = ref_msg.author
                 elif overseen.interaction:
                     sender = overseen.interaction.author
-                monname = overseen.content.split(":")[3]
-                monname = monname.split(":")[0]
+                monname = overseen.content.split("**")[1]
+                monname = monname+" "
                 await ctx.send('``'+monname+'``')
                 print(monname)
-                data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monname}')
+                data = self.db.execute(f'SELECT * FROM Dex WHERE Name LIKE "{monname}"')
                 data = data.fetchall()
                 #print(data)
                 url = data[0][15]
@@ -712,7 +713,8 @@ class Coms(commands.Cog):
                 print(monname)
                 current_time = overseen.created_at
                 timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.").setup_embed()
+                description_text = f"Original message: [Click here]({overseen.jump_url})\n"
+                embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.\n"+description_text).setup_embed()
                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                 embed.set_author(name=f'{sender.display_name}'" just redeemed a code!", icon_url="https://cdn.discordapp.com/emojis/671852541729832964.webp?size=240&quality=lossless")
                 await announce.send(embed=embed)

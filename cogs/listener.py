@@ -100,6 +100,7 @@ class Listener(commands.Cog):
         #Meow ID & KarpGuru
         karp = 922248409350549564
         celadon = 1080049677518508032
+        myself = 352224989367369729
         
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -172,10 +173,10 @@ class Listener(commands.Cog):
                         sender = ref_msg.author
                     elif message.interaction:
                         sender = message.interaction.author
-                    monname = message.content.split(":")[3]
-                    monname = monname.split(":")[0]
+                    monname = message.content.split("**")[1]
+                    monname = monname+" "
                     print(monname)
-                    data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monname}')
+                    data = self.db.execute(f'SELECT * FROM Dex WHERE Name LIKE "{monname}"')
                     data = data.fetchall()
                     #print(data)
                     url = data[0][15]
@@ -184,11 +185,12 @@ class Listener(commands.Cog):
                     print(monname)
                     current_time = message.created_at
                     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                    embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.").setup_embed()
+                    desc_text = f"\nOriginal message: [Click here]({message.jump_url})\n"
+                    embed = await Custom_embed(self.client,thumb=url,description=sender.display_name+" just claimed a **"+monname+"** from a code.\n"+desc_text).setup_embed()
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                     embed.set_author(name=f'{sender.display_name}'" just redeemed a code!", icon_url="https://cdn.discordapp.com/emojis/671852541729832964.webp?size=240&quality=lossless")
                     await announce_channel.send(embed=embed)
-                if "you ate a" in message.content:
+                if "You ate a" in message.content:
                     if message.reference:
                         ref_msg = await message.channel.fetch_message(message.reference.message_id)
                         sender = ref_msg.author
@@ -219,7 +221,8 @@ class Listener(commands.Cog):
                     thumburl = thumburl+icon
                     thumburl = thumburl+".webp?size=96&quality=lossless"
                     print(thumburl)
-                    embed = await Custom_embed(self.client,thumb=thumburl,description="**"+iconname+"** was viciously defeated and dropped their icon.").setup_embed()
+                    desc_text = f"Original message: [Click here]({message.jump_url})\n"
+                    embed = await Custom_embed(self.client,thumb=thumburl,description="**"+iconname+"** was viciously defeated and dropped their icon.\n"+desc_text).setup_embed()
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                     embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                     await announce_channel.send(embed=embed)
@@ -263,7 +266,7 @@ class Listener(commands.Cog):
                     #print("Aha, some content")
                     if "your catch bot" in message.content.lower():
                         #print("Aha, catchbotting in message")
-                        await asyncio.sleep(6.5)
+                        await asyncio.sleep(7)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
@@ -432,7 +435,7 @@ class Listener(commands.Cog):
                                 else: return
 
                         
-                            await asyncio.sleep(8.5)
+                            await asyncio.sleep(8.8)
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                             if datarem[0][10] == 1:
