@@ -373,15 +373,18 @@ class On_Edit(commands.Cog):
                             sender = "A User"
                         #print("Theres a pokemon")
                         monrare = before.content.split("found a ")[1]
+                        monname = monrare.split("**")[1]
                         monnumber = monrare.split(":")[3]
                         monrare = monrare.split(":")[1]
-                        print(f'{monnumber}'", "f'{monrare}')
+                        print(f'{monnumber}'", "f'{monrare}'", "f'{monname}')
                         #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden","Uncommon"]
                         if monrare in Rare_Spawns:
+                            monnumber = int(monnumber)
                             if monrare == "Shiny":
                                 monnumber += 1000
                             if monrare == "Golden":
                                 monnumber += 9000
+                            monnumber = str(monnumber)
                             data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monnumber}')
                             data = data.fetchall()
                             if "just caught a " in after.content:

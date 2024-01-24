@@ -871,14 +871,14 @@ class Coms(commands.Cog):
             user = int(user)
             #print(user)
             buddy = ctx.guild.get_member(user)
-            print(buddy)
+            #print(buddy)
             roles = buddy.roles
             leng = len(roles)
             leng = leng-1
             tr = roles[leng]
-            print(tr)
+            #print(tr)
             col = tr.colour
-            print(col)
+            #print(col)
             exp = random.randint(0,1250000)
             level = int(((4*exp)/5)**(1/3))
             embed = await Custom_embed(self.client, thumb=None, colour=col,title="**Level**: "+str(level)+"\n**Total EXP**: "+str(exp)+"\n**Item**: None").setup_embed()
@@ -888,7 +888,7 @@ class Coms(commands.Cog):
             deff = random.randint(0,14)
             hp = random.randint(0,14)
             spe = random.randint(0,14)
-            print(roles)
+            #print(roles)
             for role in roles:
                 if role.name == "Management":
                     atk = 20
@@ -933,7 +933,7 @@ class Coms(commands.Cog):
             embed.add_field(name="Buddy IVs",value=msg,inline=False)
             embed.set_image(buddy.display_avatar.url)
             await ctx.send(embed=embed)
-            print(buddy)
+            #print(buddy)
         elif user == int:
             print(user)
             buddy = ctx.guild.get_member(user)
