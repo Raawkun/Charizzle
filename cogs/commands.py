@@ -862,6 +862,90 @@ class Coms(commands.Cog):
 
         # await ctx.send(file=disnake.File("pictures/tested.png"))
 
+    @commands.command(aliases=["stats"])
+    async def bud(self, ctx, user = None):
+        if "@" in user:
+            #print(user)
+            user = user.split("@")[1]
+            user = user.split(">")[0]
+            user = int(user)
+            #print(user)
+            buddy = ctx.guild.get_member(user)
+            print(buddy)
+            roles = buddy.roles
+            leng = len(roles)
+            leng = leng-1
+            tr = roles[leng]
+            print(tr)
+            col = tr.colour
+            print(col)
+            exp = random.randint(0,1250000)
+            level = int(((4*exp)/5)**(1/3))
+            embed = await Custom_embed(self.client, thumb=None, colour=col,title="**Level**: "+str(level)+"\n**Total EXP**: "+str(exp)+"\n**Item**: None").setup_embed()
+            embed.add_field(name="Type",value="*Coming Soon*")
+            embed.add_field(name="Friendship",value="<:fullheart:1197574322907250708><:fullheart:1197574322907250708><:fullheart:1197574322907250708><:fullheart:1197574322907250708><:fullheart:1197574322907250708>")
+            atk = random.randint(0,14)
+            deff = random.randint(0,14)
+            hp = random.randint(0,14)
+            spe = random.randint(0,14)
+            print(roles)
+            for role in roles:
+                if role.name == "Management":
+                    atk = 20
+                    deff = 20
+                    hp = 20
+                    spe = 20
+            
+            if atk > 0 and atk < 5:
+                starsatk = "<:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif atk >= 5 and atk < 10:
+                starsatk = "<:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif atk >= 10 and atk < 15:
+                starsatk = "<:star1:1197574299553366188><:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672>"
+            else:
+                starsatk = "<:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188>"
+            if deff > 0 and deff < 5:
+                starsdef = "<:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif deff >= 5 and deff < 10:
+                starsdef = "<:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif deff >= 10 and deff < 15:
+                starsdef = "<:star1:1197574299553366188><:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672>"
+            else:
+                starsdef = "<:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188>"
+            if hp > 0 and hp < 5:
+                starshp = "<:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif hp >= 5 and hp < 10:
+                starshp = "<:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif hp >= 10 and hp < 15:
+                starshp = "<:star1:1197574299553366188><:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672>"
+            else:
+                starshp = "<:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188>"
+            if spe > 0 and spe < 5:
+                starsspe = "<:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif spe >= 5 and spe < 10:
+                starsspe = "<:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
+            elif spe >= 10 and spe < 15:
+                starsspe = "<:star1:1197574299553366188><:star1:1197574299553366188><:star0:1197574311200960672><:star0:1197574311200960672>"
+            else:
+                starsspe = "<:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188><:star1:1197574299553366188>"
+            msg = ("ATK ["+str(atk)+"] "+starsatk+" DEF ["+str(deff)+"] "+starsdef+"\nHP ["+str(hp)+"] "+starshp+" SPE ["+str(spe)+"] "+starsspe)
+            msg = msg+("\nSPA ["+str(atk)+"] "+starsatk+" SPD ["+str(deff)+"] "+starsdef)
+            embed.add_field(name="Buddy IVs",value=msg,inline=False)
+            embed.set_image(buddy.display_avatar.url)
+            await ctx.send(embed=embed)
+            print(buddy)
+        elif user == int:
+            print(user)
+            buddy = ctx.guild.get_member(user)
+            print(buddy)
+            print(buddy.roles)
+        elif user == None:
+            print(user)
+        else:
+            print(user)
+
+        
+
 
 
 
