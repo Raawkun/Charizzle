@@ -823,14 +823,14 @@ class Coms(commands.Cog):
                 spawn = await ctx.channel.fetch_message(spawn)
                 _embed = spawn.embeds[0]
                 await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
-                await flexchannel.send(embed=_embed)
+                await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
             else:
                 await ctx.send("Please answer to a message or use its ID.")
         elif number != None:
             spawn = await ctx.channel.fetch_message(number)
             _embed = spawn.embeds[0]
             await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
-            await flexchannel.send(embed=_embed)
+            await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
 
     @commands.check(Basic_checker().check_management)
     @commands.command()
