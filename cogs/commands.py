@@ -813,6 +813,25 @@ class Coms(commands.Cog):
                 self.db.execute(f'DELETE FROM Counter WHERE User_ID = {username.id}')
                 self.db.commit()
 
+    @commands.command()
+    async def flex(self, ctx, number: int = None):
+        flexchannel = 1200435380256788610
+        flexchannel = self.client.get_channel(flexchannel)
+        if number == None:
+            if ctx.message.reference:
+                spawn = ctx.message.reference.message_id
+                spawn = await ctx.channel.fetch_message(spawn)
+                _embed = spawn.embeds[0]
+                await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
+                await flexchannel.send(embed=_embed)
+            else:
+                await ctx.send("Please answer to a message or use its ID.")
+        elif number != None:
+            spawn = await ctx.channel.fetch_message(number)
+            _embed = spawn.embeds[0]
+            await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
+            await flexchannel.send(embed=_embed)
+
     @commands.check(Basic_checker().check_management)
     @commands.command()
     async def tester(self, ctx, number: int):
