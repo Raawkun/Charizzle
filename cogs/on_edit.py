@@ -147,7 +147,8 @@ class On_Edit(commands.Cog):
                                         ball = ball.split("!")[0]
                                         ball = ball.split(" ")[1]
                                         #print("Caught a mon")
-                                        if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                                        color = str(_embed.color)
+                                        if raremon in Rare_Spawns or color == '#ea260b':
                                             raremon = poke_rarity[(data[0][14])]
                                             description_text = f"Original message: [Click here]({before.jump_url})\n"
                                             embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
