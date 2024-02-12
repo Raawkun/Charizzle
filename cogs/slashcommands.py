@@ -89,7 +89,7 @@ class SlashComs(commands.Cog):
                     OptionChoice("Battle Reminder On, with Ping","bareminder2"),
                     OptionChoice("Quest Command Reminder Off","qureminder0"),
                     OptionChoice("Quest Command Reminder On, no Ping","qureminder1"),
-                    OptionChoice("Quest COmmand Reminder On, with Ping","qureminder2"),
+                    OptionChoice("Quest Command Reminder On, with Ping","qureminder2"),
                     OptionChoice("New Quest Reminder Off","qtreminder0"),
                     OptionChoice("New Quest Reminder On, no Ping","qtreminder1"),
                     OptionChoice("New Quest Reminder On, with Ping","qtreminder2"),

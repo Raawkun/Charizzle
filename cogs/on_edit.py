@@ -59,7 +59,11 @@ class On_Edit(commands.Cog):
                         if _embed.description:
                             if _embed.footer.text:
                                 #print("Oh, a footer!")
-                                
+                                if "fished out a" in _embed.description:
+                                    if "shiny" in _embed.description.lower():
+                                        await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
+                                    elif "golden" in _embed.description.lower():
+                                        await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
                                 if "token" in _embed.footer.text:
                                     #print("Token")
                                     if "caught a" in _embed.description:

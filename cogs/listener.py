@@ -425,6 +425,12 @@ class Listener(commands.Cog):
                                         await message.channel.send("<@"+str(sender.id)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
                                     if ":repel" in message.content and "boost" in message.content:
                                         await message.channel.send("<@"+str(sender.id)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                                    if ":fluffy" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:fluffytail:1206495940572225557> boost expired!")
+                                    if ":pokedoll" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:pokedoll:1206496050450403358> boost expired!")
+                                    if ":poketoy" in message.content:
+                                        await message.channel.send("<@"+str(sender.id)+"> Hey, your <:poketoy:1206496067865022464> boost expired!")
                                 else: return
                                 if databaserep[0][2] == 1:
                                     #print("grazz activated"+str(database[0][2]))
