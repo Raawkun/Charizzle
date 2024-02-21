@@ -264,7 +264,7 @@ class Listener(commands.Cog):
                     #print("Aha, some content")
                     if "your catch bot" in message.content.lower():
                         #print("Aha, catchbotting in message")
-                        await asyncio.sleep(7)
+                        await asyncio.sleep(8)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
@@ -497,7 +497,7 @@ class Listener(commands.Cog):
                                             print("Already a timer running")
                                         else:
                                             print("Oh, a new timer")
-                                            q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
+                                            q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))-6
                                             print(q_time)
                                             q_time = q_time+waiter
                                             channelid = message.channel.id
