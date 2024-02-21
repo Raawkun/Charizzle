@@ -1,6 +1,4 @@
 import random
-import sqlite3
-import time
 import disnake
 from disnake.ext import commands
 import asyncio

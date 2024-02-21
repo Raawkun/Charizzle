@@ -7,7 +7,6 @@ import asyncio
 from sqlite3 import connect
 from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
 import json
-import sqlite3
 import datetime
 import time
 from utility.all_checks import Basic_checker
