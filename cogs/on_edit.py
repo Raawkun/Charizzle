@@ -26,6 +26,7 @@ class On_Edit(commands.Cog):
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         announce = self.client.get_channel(receiver_channel)
+        log = self.client.get_channel(1210143608355823647)
         if before.author.id == 664508672713424926:
             
             ##### Rare Spawn #####
@@ -149,8 +150,8 @@ class On_Edit(commands.Cog):
                                         try:
                                             raremon = data[0][14]
                                         except Exception as e:
-                                            await receiver_channel.send(embed=_embed)
-                                            await receiver_channel.send(f"Error: {e}")
+                                            await log.send(embed=_embed)
+                                            await log.send(f"Error: {e}")
                                         ball = _embed.description.split(" with a")[1]
                                         ball = ball.split("!")[0]
                                         ball = ball.split(" ")[1]
@@ -213,8 +214,9 @@ class On_Edit(commands.Cog):
                                         try:
                                             raremon = data[0][14]
                                         except Exception as e:
-                                            await receiver_channel.send(embed=_embed)
-                                            await receiver_channel.send(f"Error: {e}")
+                                            await log.send(embed=_embed)
+                                            await log.send(f"Error: {e}")
+                                            
                                         ball = _embed.description.split(" out of the")[1]
                                         ball = ball.split("!")[0]
                                         ball = ball.split(" ")[1]
