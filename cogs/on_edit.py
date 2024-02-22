@@ -221,7 +221,11 @@ class On_Edit(commands.Cog):
                                         except Exception as e:
                                             await log.send(embed=_embed)
                                             await log.send(f"Error: {e}, {data}, {before.jump_url}")
-                                            
+                                            monname = _embed.description.split("**")[1]
+                                            data = self.db.execute(f"SELECT * FROM Dex WHERE Name = "{monname}")
+                                            data = data.fetchone()
+                                            print(data[1])
+                                            raremon = data[14]
                                         ball = _embed.description.split(" out of the")[1]
                                         ball = ball.split("!")[0]
                                         ball = ball.split(" ")[1]
