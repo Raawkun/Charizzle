@@ -150,7 +150,7 @@ class On_Edit(commands.Cog):
                                             raremon = data[0][14]
                                         except Exception as e:
                                             await receiver_channel.send(embed=_embed)
-                                            await receiver_channel.send(f"Error: "e)
+                                            await receiver_channel.send(f"Error: {e}")
                                         ball = _embed.description.split(" with a")[1]
                                         ball = ball.split("!")[0]
                                         ball = ball.split(" ")[1]
@@ -210,7 +210,11 @@ class On_Edit(commands.Cog):
                                                     self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
                                                     self.db.commit()
                                     if "broke out" in _embed.description:
-                                        raremon = data[0][14]
+                                        try:
+                                            raremon = data[0][14]
+                                        except Exception as e:
+                                            await receiver_channel.send(embed=_embed)
+                                            await receiver_channel.send(f"Error: {e}")
                                         ball = _embed.description.split(" out of the")[1]
                                         ball = ball.split("!")[0]
                                         ball = ball.split(" ")[1]
