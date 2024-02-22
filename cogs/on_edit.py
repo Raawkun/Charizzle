@@ -215,7 +215,7 @@ class On_Edit(commands.Cog):
                                             raremon = data[0][14]
                                         except Exception as e:
                                             await log.send(embed=_embed)
-                                            await log.send(f"Error: {e}, {data}, {before.jump_url})
+                                            await log.send(f"Error: {e}, {data}, {before.jump_url}")
                                             
                                         ball = _embed.description.split(" out of the")[1]
                                         ball = ball.split("!")[0]
