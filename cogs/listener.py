@@ -770,6 +770,7 @@ class Listener(commands.Cog):
 
 
             log_channel = 1164544776985653319
+            log = self.client.get_channel(log_channel)
             if message.author.id == meow:
                 if (len(message.embeds) > 0):
                     _embed=message.embeds[0]
@@ -792,10 +793,12 @@ class Listener(commands.Cog):
                                 try:
                                     data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
                                     data = data.fetchall()
+                                    await log.send(data)
                                     val = data[0][17]
                                     time = data[0][18]
                                     amount = data[0][19]
                                 except:
+                                    await log.send(data)
                                     val = 0
                                     time = 0
                                     amount = 0
