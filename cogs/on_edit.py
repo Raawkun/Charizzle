@@ -222,7 +222,7 @@ class On_Edit(commands.Cog):
                                         except Exception as e:
                                             await log.send(embed=_embed)
                                             await log.send(f"Error: {e}, {data}, {before.jump_url}")
-                                            monname = _embed.description.split("**")[1]
+                                            monname = _embed.description.split("**")[1]+" "
                                             data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
                                             data = data.fetchone()
                                             print(data[1])
