@@ -793,12 +793,12 @@ class Listener(commands.Cog):
                                 try:
                                     data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
                                     data = data.fetchall()
-                                    await log.send(data)
+                                    #await log.send(data)
                                     val = data[0][17]
                                     time = data[0][18]
                                     amount = data[0][19]
                                 except:
-                                    await log.send(data)
+                                    #await log.send(data)
                                     val = 0
                                     time = 0
                                     amount = 0
