@@ -903,7 +903,7 @@ class Listener(commands.Cog):
 
 #1037323228961579049     825958388349272106 bot testing
             channel_ids = [1083131761451606096, 827510854467584002] #test-spawns
-            receiver_channel = 827510854467584002 #flaming hell
+            receiver_channel = 1211296331717410856 #debug
             if message.channel.id == receiver_channel:
                 if message.author.id == meow:
                     await message.channel.send("Message received: "+message.author.display_name)

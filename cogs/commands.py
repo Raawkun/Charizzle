@@ -967,8 +967,17 @@ class Coms(commands.Cog):
             print(user)
 
         
-
-
+    @commands.check(Basic_checker().check_management())
+    @commands.command()
+    async def auc(self, ctx, monid:int, time:int, autobuy:int = None):
+        dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monid}')
+        dex = dex.fetchone()
+        autob = True
+        if autobuy == None:
+            autob = False
+        tit = f"{ctx.author.display_name}'s Auction"
+        _embed = await Custom_embed(self.client, title=tit)
+        
 
 
 def setup(client):
