@@ -47,3 +47,39 @@ class Custom_embed:
             embed.set_thumbnail(url = f'{self.client.user.avatar}')
         
         return(embed)
+    
+class Auction_embed:
+
+    def __init__(self, client, title = None, description = None, colour = None, footer = None):
+        # bot
+        self.client = client
+
+        # embed
+        self.title = title
+        self.description = description
+        self.colour = colour
+        self.footer = footer
+
+    async def setup_embed(self):
+        # init
+        embed = Embed()
+
+        # setting up
+        if(self.title != None):
+            embed.title = self.title
+        
+        if(self.description != None):
+            embed.description = self.description
+        
+        if(self.colour != None):
+            embed.colour = self.colour
+        else:
+            embed.colour = 0x807ba6
+        
+        if(self.footer != None):
+            embed.set_footer(text=self.footer)
+        else:
+            embed.set_footer(text=f'Auctions provided by {self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
+        
+        
+        return(embed)

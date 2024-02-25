@@ -10,8 +10,8 @@ import json
 import datetime
 import time
 from utility.all_checks import Basic_checker
-from utility.embed import Custom_embed
-from utility.rarity_db import counts, countnumber
+from utility.embed import Custom_embed, Auction_embed
+from utility.rarity_db import counts, countnumber, min_increase
 from utility.rarity_db import poke_rarity, embed_color
 from utility.id_lists import unpinnables
 from googlesearch import search
@@ -967,17 +967,132 @@ class Coms(commands.Cog):
             print(user)
 
         
-    @commands.check(Basic_checker().check_management())
+    @commands.check(Basic_checker().check_management)
     @commands.command()
-    async def auc(self, ctx, monid:int, time:int, autobuy:int = None):
-        dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monid}')
-        dex = dex.fetchone()
-        autob = True
-        if autobuy == None:
-            autob = False
-        tit = f"{ctx.author.display_name}'s Auction"
-        _embed = await Custom_embed(self.client, title=tit)
-        
+    async def auc(self, ctx, amount:int, monid:int, time:int, autobuy:int = None):
+        aucs = self.db.execute(f'SELECT * FROM Auctions WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
+        aucs = aucs.fetchone()
+        if aucs:
+            await ctx.send("Seems like there's already an auction running here.")
+        else:
+            dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monid}')
+            dex = dex.fetchone()
+            remaining = (datetime.datetime.timestamp(datetime.datetime.now())+(time*60))
+            remaining = int(remaining)
+            autob = True
+            if autobuy == None:
+                autob = False
+                autobuy = 0
+            tit = f"**{ctx.author.display_name}'s Auction**"
+            desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
+            desc += f"**Current Offer:**\n0\n\n"
+            if autob == True:
+                desc += f"**Auto-buy:**\n{autobuy:,}\n\n"
+            else:
+                desc += f"**Auto-buy:**\nN/A\n\n"
+            desc += f"**Highest Bidder:**\nN/A\n\n"
+            desc += f"**Remaining Time:**\n<t:{remaining}:R>"
+            _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
+            _embed.set_image(url=dex[15])
+            self.db.execute(f'INSERT INTO Auctions (MonID, Amount, Rarity, SellerID, Timestamp, Autobuy, CO, ChannelID) VALUES ({monid}, {amount}, "{dex[14]}", {ctx.author.id}, {remaining}, {autobuy},0, {ctx.message.channel.id})')
+            self.db.commit()
+            await ctx.send(embed=_embed)
+    
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def bid(self, ctx, amount:int):
+        auc = self.db.execute(f'SELECT * FROM Auctions WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
+        auc = auc.fetchone()
+        if auc:
+            dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {auc[1]}')
+            dex = dex.fetchone()
+            if auc[6] == 0:
+                if amount >= min_increase[auc[3]]+auc[7]:
+                    user = await self.client.fetch_user(auc[4])
+                    tit = f"**{user.display_name}'s Auction**"
+                    desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
+                    desc += f"**Current Offer:**\n{amount:,}\n\n"
+                    desc += f"**Auto-buy:**\nN/A\n\n"
+                    desc += f"**Highest Bidder:**\n<@{ctx.author.id}>\n\n"
+                    desc += f"**Remaining Time:**\n<t:{auc[5]}:R>"
+                    _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
+                    _embed.set_image(url=dex[15])
+                    now = datetime.datetime.timestamp(datetime.datetime.now())
+                    if auc[5]-int(now) > 300:
+                        stamp = auc[5]
+                    else:
+                        stamp = auc[5]+300
+                    if auc[8] != None:
+                        await ctx.send(f"<@{auc[8]}> you have been outbid!")
+                    self.db.execute(f'UPDATE Auctions SET Timestamp = {stamp}, CO = {amount}, BidderID = {ctx.author.id} WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
+                    self.db.commit()
+                    await ctx.send(embed=_embed)
+                else:
+                    await ctx.send(f"Sorry, but your offer isn't high enough! The minimal increase is {min_increase[auc[3]]:,}.")
+            else:
+                if amount > min_increase[auc[3]]+auc[7] and amount < auc[6]:
+                    user = self.client.fetch_user(auc[4])
+                    tit = f"**{user.display_name}'s Auction**"
+                    
+                    desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
+                    desc += f"**Current Offer:*\n{auc[7]:,}\n\n"
+                    desc += f"**Auto-buy:**\n{auc[6]:,}\n\n"
+                    desc += f"**Highest Bidder:**\n<@{ctx.author.id}>\n\n"
+                    desc += f"**Remaining Time:**\n<t:{auc[5]}:R>"
+                    _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
+                    _embed.set_image(url=dex[15])
+                    now = datetime.datetime.timestamp(datetime.datetime.now)
+                    if auc[5]-int(now) > 300:
+                        stamp = auc[5]
+                    else:
+                        stamp = auc[5]+300
+                    if auc[8] != None:
+                        await ctx.send(f"<@{auc[8]}> you have been outbid!")
+                    self.db.execute(f'UPDATE Auctions SET Timestamp = {stamp}, CO = {amount}, BidderID = {ctx.author.id} WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
+                    self.db.commit()
+                    await ctx.send(embed=_embed)
+                elif amount < min_increase[auc[3]]+auc[7] and amount < auc[6]:
+                    await ctx.send(f"Sorry, but your offer isn't high enough! The minimal increase is {min_increase[auc[3]]}.")
+                elif amount > auc[6]:
+                    user = self.client.fetch_user(auc[4])
+                    tit = f"**{user.display_name}'s Auction**"
+                    desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
+                    desc += f"**Current Offer:*\n{auc[6]:,}\n\n"
+                    desc += f"**Auto-buy:**\n{auc[6]:,}\n\n"
+                    desc += f"**Highest Bidder:**\n<@{ctx.author.id}>\n\n"
+                    desc += f"**Remaining Time:**\nAuction completed!"
+                    _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
+                    _embed.set_image(url=dex[15])
+                    
+                    self.db.execute(f'UPDATE Auctions SET CO = {auc[6]}, BidderID = {ctx.author.id}, Active = 0 WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
+                    self.db.commit()
+                    _embed.set_footer(text=f"Auction has ended!")
+                    await ctx.send(embed=_embed)
+                    await ctx.send(f"The Auction has ended! <@{ctx.author.id}> please meet <@{auc[4]}> at SELLROOM1 or SELLROOM2")
+        else:
+            await ctx.send("No auction running at the moment.")
+
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def status(self, ctx):
+        auc = self.db.execute(f'SELECT * FROM Auctions WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
+        auc = auc.fetchone()
+        if auc:
+            dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {auc[1]}')
+            dex = dex.fetchone()
+            user = self.client.fetch_user(auc[4])
+            tit = f"**{user.display_name}'s Auction**"
+            desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
+            desc += f"**Current Offer:*\n{auc[7]:,}\n\n"
+            desc += f"**Auto-buy:**\n{auc[6]:,}\n\n"
+            desc += f"**Highest Bidder:**\n<@{auc[8]}>\n\n"
+            desc += f"**Remaining Time:**\n{auc[5]}"
+            _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
+            _embed.set_image(url=dex[15])
+            await ctx.send(embed=_embed)
+        else:
+            await ctx.send("No auction running at the moment.")
+            
 
 
 def setup(client):
