@@ -1080,7 +1080,7 @@ class Coms(commands.Cog):
         if auc:
             dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {auc[1]}')
             dex = dex.fetchone()
-            user = self.client.fetch_user(auc[4])
+            user = await self.client.fetch_user(auc[4])
             tit = f"**{user.display_name}'s Auction**"
             desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
             desc += f"**Current Offer:*\n{auc[7]:,}\n\n"
