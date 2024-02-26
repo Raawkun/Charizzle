@@ -997,6 +997,7 @@ class Coms(commands.Cog):
             self.db.execute(f'INSERT INTO Auctions (MonID, Amount, Rarity, SellerID, Timestamp, Autobuy, CO, ChannelID) VALUES ({monid}, {amount}, "{dex[14]}", {ctx.author.id}, {remaining}, {autobuy},0, {ctx.message.channel.id})')
             self.db.commit()
             await ctx.send(embed=_embed)
+            await ctx.send(f"@Auctioneer :blushyblushy:")
     
     @commands.check(Basic_checker().check_management)
     @commands.command()
@@ -1027,6 +1028,7 @@ class Coms(commands.Cog):
                     self.db.execute(f'UPDATE Auctions SET Timestamp = {stamp}, CO = {amount}, BidderID = {ctx.author.id} WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
                     self.db.commit()
                     await ctx.send(embed=_embed)
+                    await ctx.send(f"{ctx.author.id} don't forget to show your ``;bal``.")
                 else:
                     await ctx.send(f"Sorry, but your offer isn't high enough! The minimal increase is {min_increase[auc[3]]:,}.")
             else:
@@ -1051,6 +1053,7 @@ class Coms(commands.Cog):
                     self.db.execute(f'UPDATE Auctions SET Timestamp = {stamp}, CO = {amount}, BidderID = {ctx.author.id} WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
                     self.db.commit()
                     await ctx.send(embed=_embed)
+                    await ctx.send(f"{ctx.author.id} don't forget to show your ``;bal``.")
                 elif amount < min_increase[auc[3]]+auc[7] and amount < auc[6]:
                     await ctx.send(f"Sorry, but your offer isn't high enough! The minimal increase is {min_increase[auc[3]]}.")
                 elif amount > auc[6]:
@@ -1083,10 +1086,10 @@ class Coms(commands.Cog):
             user = await self.client.fetch_user(auc[4])
             tit = f"**{user.display_name}'s Auction**"
             desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
-            desc += f"**Current Offer:*\n{auc[7]:,}\n\n"
+            desc += f"**Current Offer:**\n{auc[7]:,}\n\n"
             desc += f"**Auto-buy:**\n{auc[6]:,}\n\n"
             desc += f"**Highest Bidder:**\n<@{auc[8]}>\n\n"
-            desc += f"**Remaining Time:**\n{auc[5]}"
+            desc += f"**Remaining Time:**\n<t:{auc[5]}:R>"
             _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
             _embed.set_image(url=dex[15])
             await ctx.send(embed=_embed)
