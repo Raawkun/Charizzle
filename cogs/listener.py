@@ -661,16 +661,14 @@ class Listener(commands.Cog):
                                 embed.set_image(_embed.image.url)
                                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                 await announce_channel.send(embed=embed)
-                            elif "from a challenge" in _embed.description:
+                            elif "from completing challenge" in _embed.description:
                                 nite = _embed.description.split("<:")[1]
                                 item = nite.split(":")[0]
                                 number = nite.split(":")[1]
                                 number = number.split(">")[0]
-                                number = f"https://cdn.discordapp.com/emojis/{number}.webp"
                                 description_text = f"Original message: [Click here]({message.jump_url})\n"
                                 embed = disnake.Embed(title=f"{sender.display_name} was able to claim a **{item.capitalize()}**", color=color,description=description_text)
-                                embed.set_author(name=(f'{sender.display_name}'+" won in a megachamber!"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
-                                embed.set_thumbnail(url=number)
+                                embed.set_author(name=(f'{sender.display_name}'+" won in a megachamber!"),icon_url=f"https://cdn.discordapp.com/emojis/{number}.webp?size=96&quality=lossless")
                                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                 await announce_channel.send(embed=embed)
                         if "returned with" in _embed.description:
