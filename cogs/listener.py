@@ -6,7 +6,7 @@ import re
 import main
 from sqlite3 import connect
 from main import client
-from utility.rarity_db import poke_rarity
+from utility.rarity_db import poke_rarity, chambers
 from utility.egglist import eggexcl
 from utility.drop_chance import drop_pos, buyin
 from utility.all_checks import Basic_checker
@@ -666,10 +666,13 @@ class Listener(commands.Cog):
                                 item = nite.split(":")[0]
                                 number = nite.split(":")[1]
                                 number = number.split(">")[0]
+                                dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {chambers["{item}"]}')
+                                dex = dex.fetchone()
                                 description_text = f"Original message: [Click here]({message.jump_url})\n"
                                 embed = disnake.Embed(title=f"{sender.display_name} was able to claim a **{item.capitalize()}**", color=color,description=description_text)
                                 embed.set_author(name=(f'{sender.display_name}'+" won in a megachamber!"),icon_url=f"https://cdn.discordapp.com/emojis/{number}.webp?size=96&quality=lossless")
                                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                embed.set_image(dex[15])
                                 await announce_channel.send(embed=embed)
                         if "returned with" in _embed.description:
                             # await message.channel.send(_embed.description)
