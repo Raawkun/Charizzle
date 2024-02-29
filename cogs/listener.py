@@ -253,6 +253,27 @@ class Listener(commands.Cog):
                                 new_amount = 1+old_amount
                                 self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {username.id}')
                                 self.db.commit()
+                if "from completing challenge" in message.content:
+                    if message.reference:
+                        ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                        sender = ref_msg.author
+                    elif message.interaction:
+                        sender = message.interaction.author
+                    print(f'{sender.display_name} won a chamber.')
+                    nite = message.content.split("<:")[1]
+                    item = nite.split(":")[0]
+                    print(item)
+                    number = nite.split(":")[1]
+                    number = number.split(">")[0]
+                    dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {chambers["{item}"]}')
+                    dex = dex.fetchone()
+                    print(dex[1])
+                    description_text = f"Original message: [Click here]({message.jump_url})\n"
+                    embed = disnake.Embed(title=f"{sender.display_name} was able to claim a **{item.capitalize()}**", color=color,description=description_text)
+                    embed.set_author(name=(f'{sender.display_name}'+" won in a megachamber!"),icon_url=f"https://cdn.discordapp.com/emojis/{number}.webp?size=96&quality=lossless")
+                    embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                    embed.set_image(dex[15])
+                    await announce_channel.send(embed=embed)
                 if message.reference:
                     ref_msg = await message.channel.fetch_message(message.reference.message_id)
                     sender = ref_msg.author
@@ -639,41 +660,27 @@ class Listener(commands.Cog):
                                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                 await announce_channel.send(embed=embed)
                     if _embed.description:
-                        if "claimed a <:" in _embed.description:
-                            if "Golden:" in _embed.description:
-                                data_pr = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                                data_pr = data_pr.fetchall()
-                                logging = 1083131761451606096
-                                logging = self.client.get_channel(logging)
-                                try:
-                                    await logging.send(message)
-                                except:
-                                    logging.send("NO message to log")
-                                try:
-                                    await logging.send(_embed.description)
-                                except:
-                                    logging.send("How's there no description???")
-                                print(data_pr[0][14])
-                                raremon = poke_rarity[(data_pr[0][14])]
-                                description_text = f"Original message: [Click here]({message.jump_url})\n"
-                                embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
-                                embed.set_author(name=(f'{sender.display_name}'+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
-                                embed.set_image(_embed.image.url)
-                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                await announce_channel.send(embed=embed)
-                            elif "from completing challenge" in _embed.description:
-                                nite = _embed.description.split("<:")[1]
-                                item = nite.split(":")[0]
-                                number = nite.split(":")[1]
-                                number = number.split(">")[0]
-                                dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {chambers["{item}"]}')
-                                dex = dex.fetchone()
-                                description_text = f"Original message: [Click here]({message.jump_url})\n"
-                                embed = disnake.Embed(title=f"{sender.display_name} was able to claim a **{item.capitalize()}**", color=color,description=description_text)
-                                embed.set_author(name=(f'{sender.display_name}'+" won in a megachamber!"),icon_url=f"https://cdn.discordapp.com/emojis/{number}.webp?size=96&quality=lossless")
-                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                embed.set_image(dex[15])
-                                await announce_channel.send(embed=embed)
+                        if "claimed a <:Golden" in _embed.description:
+                            data_pr = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
+                            data_pr = data_pr.fetchall()
+                            logging = 1083131761451606096
+                            logging = self.client.get_channel(logging)
+                            try:
+                                await logging.send(message)
+                            except:
+                                logging.send("NO message to log")
+                            try:
+                                await logging.send(_embed.description)
+                            except:
+                                logging.send("How's there no description???")
+                            print(data_pr[0][14])
+                            raremon = poke_rarity[(data_pr[0][14])]
+                            description_text = f"Original message: [Click here]({message.jump_url})\n"
+                            embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
+                            embed.set_author(name=(f'{sender.display_name}'+" just claimed a:"),icon_url="https://cdn.discordapp.com/emojis/676623920711073793.webp?size=96&quality=lossless")
+                            embed.set_image(_embed.image.url)
+                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                            await announce_channel.send(embed=embed)
                         if "returned with" in _embed.description:
                             # await message.channel.send(_embed.description)
                             description_text = f"Original message: [Click here]({message.jump_url})\n"
