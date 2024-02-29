@@ -12,7 +12,7 @@ import time
 from utility.all_checks import Basic_checker
 from utility.embed import Custom_embed, Auction_embed
 from utility.rarity_db import counts, countnumber, min_increase
-from utility.rarity_db import poke_rarity, embed_color
+from utility.rarity_db import poke_rarity, embed_color, chambers
 from utility.id_lists import unpinnables
 from googlesearch import search
 from PIL import Image, ImageDraw, ImageSequence
@@ -629,7 +629,29 @@ class Coms(commands.Cog):
         overseen = await ctx.channel.fetch_message(id)
         if overseen:
             Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
-            
+            if "from completing challenge" in overseen.content:
+                    if overseen.reference:
+                        ref_msg = await overseen.channel.fetch_message(overseen.reference.message_id)
+                        sender = ref_msg.author
+                    elif overseen.interaction:
+                        sender = overseen.interaction.author
+                    print(f'{sender.display_name} won a chamber.')
+                    nite = overseen.content.split("<:")[1]
+                    item = nite.split(":")[0]
+                    print(f'{item}, {chambers[item]}')
+                    number = nite.split(":")[1]
+                    number = number.split(">")[0]
+                    dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {chambers[item]}')
+                    dex = dex.fetchone()
+                    print(dex[1])
+                    current_time = overseen.created_at
+                    timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
+                    description_text = f"Original message: [Click here]({overseen.jump_url})\n"
+                    embed = disnake.Embed(title=f"{sender.display_name} was able to claim a **{item.capitalize()}**",description=description_text)
+                    embed.set_author(name=(f'{sender.display_name}'+" won in a megachamber!"),icon_url=f"https://cdn.discordapp.com/emojis/{number}.webp?size=96&quality=lossless")
+                    embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                    embed.set_image(dex[15])
+                    await announce.send(embed=embed)   
             if len(overseen.embeds) > 0:
                 _embed = overseen.embeds[0]
                 print(overseen)
