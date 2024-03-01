@@ -21,6 +21,7 @@ class Listener(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
+        self.dv = connect("dataverse.db")
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder):
         print("quest_reminder started for "+str(user_id)+" waiting for "+str(waiter)+" seconds.")
