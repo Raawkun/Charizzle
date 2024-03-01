@@ -862,8 +862,14 @@ class Coms(commands.Cog):
         code_channel = 1213234583949021255
         channel = self.client.get_channel(code_channel)
         cod = '\n'.join(lines)
+        firsthalf = cod.split("Expires")[0]
+        secondhalf = cod.split(firsthalf)[1]
+        firsthalf.replace("\n"," ")
+        secondhalf.replace("\n", " ")
+        cod = firsthalf+"\n"+secondhalf
         print(cod)
         if "Expires on:" in cod:
+            print("Its in")
             await ctx.delete()
             oldmsg = self.db.execute(f'SELECT * FROM Admin')
             oldmsg = oldmsg.fetchone()
