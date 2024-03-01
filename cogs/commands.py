@@ -870,7 +870,7 @@ class Coms(commands.Cog):
         print(cod)
         if "Expires on:" in cod:
             print("Its in")
-            await ctx.delete()
+            await ctx.message.delete()
             oldmsg = self.db.execute(f'SELECT * FROM Admin')
             oldmsg = oldmsg.fetchone()
             try:
