@@ -884,7 +884,7 @@ class Coms(commands.Cog):
             first = await channel.send(embed=_embed)
             react = self.client.get_emoji(825954837384265770)
             await first.add_reaction(react)
-            desc = "<:GengarHeart:1153729922620215349> To submit a code in here just use the command: ```mcode message```\n<:GengarHeart:1153729922620215349> React to the <:hype:825954837384265770> Emote if you've claimed the code!"
+            desc = "<:GengarHeart:1153729922620215349> To submit a code in here just use the command: ``mcode message``\n \n<:GengarHeart:1153729922620215349> React to the <:hype:825954837384265770> Emote if you've claimed the code!\n"
             _membed = await Auction_embed(self.client,title="**How to donate:**",description=desc).setup_embed()
             msg = await channel.send(embed=_membed)
             id = msg.id

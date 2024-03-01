@@ -79,7 +79,7 @@ class Auction_embed:
         if(self.footer != None):
             embed.set_footer(text=self.footer)
         else:
-            embed.set_footer(text=f'Auctions provided by {self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
+            embed.set_footer(text=f'Provided by {self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
         
         
         return(embed)
