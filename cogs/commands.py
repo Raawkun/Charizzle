@@ -861,12 +861,10 @@ class Coms(commands.Cog):
     async def code(self, ctx, *lines):
         code_channel = 1213234583949021255
         channel = self.client.get_channel(code_channel)
-        cod = '\n'.join(lines)
+        cod = ' '.join(lines)
         firsthalf = cod.split("Expires")[0]
         secondhalf = cod.split(firsthalf)[1]
-        firsthalf.replace("\n"," ")
         print(firsthalf)
-        secondhalf.replace("\n", " ")
         print(secondhalf)
         cod = firsthalf+"\n"+secondhalf
         print(cod)
