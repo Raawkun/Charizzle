@@ -865,7 +865,9 @@ class Coms(commands.Cog):
         firsthalf = cod.split("Expires")[0]
         secondhalf = cod.split(firsthalf)[1]
         firsthalf.replace("\n"," ")
+        print(firsthalf)
         secondhalf.replace("\n", " ")
+        print(secondhalf)
         cod = firsthalf+"\n"+secondhalf
         print(cod)
         if "Expires on:" in cod:
