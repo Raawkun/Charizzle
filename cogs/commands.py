@@ -864,12 +864,12 @@ class Coms(commands.Cog):
         cod = ' '.join(lines)
         firsthalf = cod.split("Expires")[0]
         secondhalf = cod.split(firsthalf)[1]
-        print(firsthalf)
-        print(secondhalf)
+        #print(firsthalf)
+        #print(secondhalf)
         cod = firsthalf+"\n"+secondhalf
-        print(cod)
+        #print(cod)
         if "Expires on:" in cod:
-            print("Its in")
+            #print("Its in")
             await ctx.message.delete()
             oldmsg = self.db.execute(f'SELECT * FROM Admin')
             oldmsg = oldmsg.fetchone()
@@ -890,8 +890,10 @@ class Coms(commands.Cog):
             id = msg.id
             self.db.execute(f'UPDATE Admin SET Stickymsg = {id}')
             self.db.commit()
-            asyncio.sleep(5)
+            await asyncio.sleep(5)
             await thx.delete()
+        else:
+            await ctx.send("Please paste the whole message from ``/drops``.")
     
     @commands.check(Basic_checker().check_management)
     @commands.command()
