@@ -880,7 +880,7 @@ class Coms(commands.Cog):
                 test = None
             _embed = await Auction_embed(self.client,title="**New Code**",description=cod).setup_embed()
             _embed.set_author(name=f'{ctx.author.display_name} sponsored a code!',icon_url=ctx.author.display_avatar)
-            await ctx.send(f"Thx for gifting a code! Check <#{code_channel}>!")
+            thx = await ctx.send(f"Thx for gifting a code! Check <#{code_channel}>!")
             first = await channel.send(embed=_embed)
             react = self.client.get_emoji(825954837384265770)
             await first.add_reaction(react)
@@ -890,6 +890,8 @@ class Coms(commands.Cog):
             id = msg.id
             self.db.execute(f'UPDATE Admin SET Stickymsg = {id}')
             self.db.commit()
+            asyncio.sleep(5)
+            await thx.delete()
     
     @commands.check(Basic_checker().check_management)
     @commands.command()
