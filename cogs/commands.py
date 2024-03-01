@@ -862,6 +862,7 @@ class Coms(commands.Cog):
         code_channel = 1213234583949021255
         channel = self.client.get_channel(code_channel)
         if "Expires on:" in cod:
+            await ctx.delete()
             oldmsg = self.db.execute(f'SELECT * FROM Admin')
             oldmsg = oldmsg.fetchone()
             try:
