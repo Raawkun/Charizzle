@@ -636,15 +636,34 @@ class Listener(commands.Cog):
                                 await message.channel.send("<@"+str(sender.id)+"> - You can use ;egg again.")
 
                             
-                        if "opened a " in _embed.author.name:
+                        if "opened " in _embed.author.name:
+                            print("Box opening")
                             if _embed.image:
+                                print("Theres a spawn")
                                 data_box = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data_box = data_box.fetchall()
                                 sender = ref_msg.author.display_name
                                 #Rare_Spawned = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Common","Uncommon","Golden"]
                                 raremon = poke_rarity[(data_box[0][14])]
-                                description_text = f"Original message: [Click here]({message.jump_url})\n"
                                 if data_box[0][14] in Rare_Spawned:
+                                    print("Rare enough")
+                                    description_text = None
+                                    if "Pokemon received" in _embed.description:
+                                        mons = _embed.description.split("total):\n")[1]
+                                        print(mons)
+                                        mons = mons.split(">")
+                                        unused = mons.pop()
+                                        print(mons)
+                                        description_text = "Pokemon received:\n"
+                                        for entry in mons:
+                                            monid = entry.split(":")[1]
+                                            print(monid)
+                                            monid = int(monid)
+                                            dex = self.dv.execute(f'SELECT * FROM SpawnEmotes WHERE DexID = {monid}')
+                                            dex = dex.fetchone()
+                                            description_text += f'<:{monid}:{dex[3]}> '
+                                            
+                                    description_text += f"\nOriginal message: [Click here]({message.jump_url})\n"
                                     embed = disnake.Embed(title=raremon+" **"+data_box[0][1]+"** \nDex: #"+str(data_box[0][0]), color=color,description=description_text)
                                     embed.set_author(name=(sender+" just unboxed a:"),icon_url="https://cdn.discordapp.com/emojis/784865588207157259.gif?size=96&quality=lossless")
                                     embed.set_image(_embed.image.url)
