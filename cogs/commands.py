@@ -858,9 +858,11 @@ class Coms(commands.Cog):
             await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
 
     @commands.command()
-    async def code(self, ctx, cod:str):
+    async def code(self, ctx, *lines):
         code_channel = 1213234583949021255
         channel = self.client.get_channel(code_channel)
+        cod = '\n'.join(lines)
+        print(cod)
         if "Expires on:" in cod:
             await ctx.delete()
             oldmsg = self.db.execute(f'SELECT * FROM Admin')
