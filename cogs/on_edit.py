@@ -27,229 +27,230 @@ class On_Edit(commands.Cog):
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         announce = self.client.get_channel(receiver_channel)
         log = self.client.get_channel(1210143608355823647)
+        
         if before.author.id == 664508672713424926:
-            
-            ##### Rare Spawn #####
-            Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
-            #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
-            if (len(before.embeds) > 0):
-                befembed = before.embeds[0]
-                if befembed.description:
-                    if "captcha" in befembed.description:
-                        #print("Captcha, rude")
-                        return
-                    else:
-                        try:
-                            _embed = after.embeds[0]
-                            color = _embed.color
-                        except:
-                            print("Message edited. No Embed")
-                        try:
-                            data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                            data = data.fetchall()
-                        except:
-                            print("Message edited. Theres no image or no embed.")
-                        if before.reference:
-                            ref_msg = await before.channel.fetch_message(before.reference.message_id)
-                            sender = ref_msg.author
-                        elif before.interaction:
-                            ref_msg = before.interaction.user
-                            sender = ref_msg
-                        
-                        
-                        if _embed.description:
-                            if _embed.footer.text:
-                                #print("Oh, a footer!")
-                                if "fished out a" in _embed.description:
-                                    if "shiny" in _embed.description.lower():
-                                        await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
-                                    elif "golden" in _embed.description.lower():
-                                        await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
-                                if "token" in _embed.footer.text:
-                                    #print("Token")
-                                    if "caught a" in _embed.description:
-                                        raremon = data[0][14]
-                                        ball = _embed.description.split(" with a")[1]
-                                        ball = ball.split("!")[0]
-                                        ball = ball.split(" ")[1]
-                                        #print("Fish caught")
-                                        if raremon in Rare_Spawns or _embed.color == 0xe9270b:
-                                            raremon = poke_rarity[(data[0][14])]
-                                            description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                            embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
-                                            embed.set_author(name=(sender.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
-                                            embed.set_image(_embed.image.url)
-                                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                            await announce.send(embed=embed)
-                                        dataev = self.db.execute(f'SELECT * FROM Admin')
-                                        dataev = dataev.fetchall()
-                                        if dataev[0][4] == 1:
-                                            dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                            dataev = dataev.fetchall()
-                                            if dataev:
-                                                used = dataev[0][3]
-                                                
-                                                #print(used)
-                                                #print(rare_calc[raremon])
-                                                if raremon in ["Common", "Uncommon", "Rare"]:
-                                                    points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_low[ball]*random.random()))*(1000+(used*6))
-                                                else:
-                                                    points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_high[ball]*random.random()))*(1000+(used*6))
-                                                #print(points)
-                                                points = round(points)
-                                                await before.channel.send("Your catch earned a score of **"f'{int(points):,}'"** points!")
-                                                if points > dataev[0][2]:
-                                                    self.db.execute(f'UPDATE Events SET Points = {points} WHERE User_ID = {sender.id}')
-                                                    self.db.commit()
-                                                item_count = dataev[0][3]
-                                                #print(item_count)
-                                                fish_odds = (1/drop_pos["fish"])
-                                                #print(fish_odds)
-                                                odds = 0
-                                                #if coin_type == "hunt":
-                                                odds = fish_odds
-
-                                                roll = random.random()
-
-                                                if odds > roll:
-                                                    #print("Find coins")
-                                                    await before.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                                                    data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                                    data = data.fetchall()
-                                                    old_amount = data[0][4]
-                                                    new_amount = 1+old_amount
-                                                    self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                                                    self.db.commit()
-                                        
-                                    if "broke out" in _embed.description:
-                                        raremon = data[0][14]
-                                        ball = _embed.description.split(" out of the")[1]
-                                        ball = ball.split("!")[0]
-                                        ball = ball.split(" ")[1]
-                                        if raremon in Rare_Spawns or _embed.color == 0xe9270b:
-                                            raremon = poke_rarity[(data[0][14])]
-                                            description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                            embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
-                                            embed.set_author(name=(sender.display_name+" almost caught a:"), icon_url=_embed.author.icon_url)
-                                            embed.set_image(_embed.image.url)
-                                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                            await announce.send(embed=embed)
-                                    if "ran away" in _embed.description:
-                                        raremon = data[0][14]
-                                        if raremon in Rare_Spawns or _embed.color == 0xe9270b:
-                                            raremon = poke_rarity[(data[0][14])]
-                                            description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                            embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
-                                            embed.set_author(name=(sender.display_name+" was too slow for:"), icon_url=_embed.author.icon_url)
-                                            embed.set_image(_embed.image.url)
-                                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                            await announce.send(embed=embed)
-                                else:
-                                    #print("No token")
-                                    if "caught a" in _embed.description:
-                                        try:
+            if before.pinned == after.pinned:
+                ##### Rare Spawn #####
+                Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
+                #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
+                if (len(before.embeds) > 0):
+                    befembed = before.embeds[0]
+                    if befembed.description:
+                        if "captcha" in befembed.description:
+                            #print("Captcha, rude")
+                            return
+                        else:
+                            try:
+                                _embed = after.embeds[0]
+                                color = _embed.color
+                            except:
+                                print("Message edited. No Embed")
+                            try:
+                                data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
+                                data = data.fetchall()
+                            except:
+                                print("Message edited. Theres no image or no embed.")
+                            if before.reference:
+                                ref_msg = await before.channel.fetch_message(before.reference.message_id)
+                                sender = ref_msg.author
+                            elif before.interaction:
+                                ref_msg = before.interaction.user
+                                sender = ref_msg
+                            
+                            
+                            if _embed.description:
+                                if _embed.footer.text:
+                                    #print("Oh, a footer!")
+                                    if "fished out a" in _embed.description:
+                                        if "shiny" in _embed.description.lower():
+                                            await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
+                                        elif "golden" in _embed.description.lower():
+                                            await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
+                                    if "token" in _embed.footer.text:
+                                        #print("Token")
+                                        if "caught a" in _embed.description:
                                             raremon = data[0][14]
-                                        except Exception as e:
-                                            #await log.send(embed=_embed)
-                                            #await log.send(f"Error: {e}, {data}, {before.jump_url}")
-                                            monname = _embed.description.split("**")[1]+" "
-                                            data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
-                                            data = data.fetchone()
-                                            #print(monname)
-                                            #print(data)
-                                            raremon = data[14]
-                                        ball = _embed.description.split(" with a")[1]
-                                        ball = ball.split("!")[0]
-                                        ball = ball.split(" ")[1]
-                                        #print("Caught a mon")
-                                        color = str(_embed.color)
-                                        if raremon in Rare_Spawns or color == '#ea260b':
-                                            raremon = poke_rarity[(data[0][14])]
-                                            description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                            embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
-                                            embed.set_author(name=(f'{sender.display_name}'+" just caught a:"), icon_url=_embed.author.icon_url)
-                                            embed.set_image(_embed.image.url)
-                                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                            await announce.send(embed=embed)
-                                        dataev = self.db.execute(f'SELECT * FROM Admin')
-                                        dataev = dataev.fetchall()
-                                        if dataev[0][4] == 1:
-                                            dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                            ball = _embed.description.split(" with a")[1]
+                                            ball = ball.split("!")[0]
+                                            ball = ball.split(" ")[1]
+                                            #print("Fish caught")
+                                            if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                                                raremon = poke_rarity[(data[0][14])]
+                                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                                embed.set_author(name=(sender.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
+                                                embed.set_image(_embed.image.url)
+                                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                                await announce.send(embed=embed)
+                                            dataev = self.db.execute(f'SELECT * FROM Admin')
                                             dataev = dataev.fetchall()
-                                            if dataev:
-                                                raremon = data[0][14]
-                                                used = dataev[0][3]
-                                                ball = _embed.description.split(" with a")[1]
-                                                ball = ball.split("!")[0]
-                                                ball = ball.split(" ")[1]
-                                                #print(used)
-                                                print(f'{raremon}'", "f'{rare_calc[raremon]}')
-                                                #print(rare_calc[raremon])
-                                                if raremon in ["Common", "Uncommon", "Rare"]:
-                                                    points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_low[ball]*random.random()))*(1000+(used*6))
-                                                else:
-                                                    points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_high[ball]*random.random()))*(1000+(used*6))
+                                            if dataev[0][4] == 1:
+                                                dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                                dataev = dataev.fetchall()
+                                                if dataev:
+                                                    used = dataev[0][3]
+                                                    
+                                                    #print(used)
+                                                    #print(rare_calc[raremon])
+                                                    if raremon in ["Common", "Uncommon", "Rare"]:
+                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_low[ball]*random.random()))*(1000+(used*6))
+                                                    else:
+                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_high[ball]*random.random()))*(1000+(used*6))
                                                     #print(points)
-                                                points = round(points)
-                                                await before.channel.send("Your catch earned a score of **"f'{int(points):,}'"** points!")
-                                                if points > dataev[0][2]:
-                                                    self.db.execute(f'UPDATE Events SET Points = {points} WHERE User_ID = {sender.id}')
-                                                    self.db.commit()
+                                                    points = round(points)
+                                                    await before.channel.send("Your catch earned a score of **"f'{int(points):,}'"** points!")
+                                                    if points > dataev[0][2]:
+                                                        self.db.execute(f'UPDATE Events SET Points = {points} WHERE User_ID = {sender.id}')
+                                                        self.db.commit()
+                                                    item_count = dataev[0][3]
+                                                    #print(item_count)
+                                                    fish_odds = (1/drop_pos["fish"])
+                                                    #print(fish_odds)
+                                                    odds = 0
+                                                    #if coin_type == "hunt":
+                                                    odds = fish_odds
 
+                                                    roll = random.random()
 
-                                                item_count = dataev[0][3]
-                                                #print(item_count)
-                                                hunt_odds = ((1/drop_pos["hunt"]))
-                                                #print(hunt_odds)
-                                                odds = 0
-                                                #if coin_type == "hunt":
-                                                odds = hunt_odds
-
-                                                roll = random.random()
-                                                #print(roll)
-                                                if odds > roll:
-                                                    #print("Find coins")
-                                                    await before.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                                                    data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                                    data = data.fetchall()
-                                                    old_amount = data[0][4]
-                                                    new_amount = 1+old_amount
-                                                    self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                                                    self.db.commit()
-                                    if "broke out" in _embed.description:
-                                        try:
+                                                    if odds > roll:
+                                                        #print("Find coins")
+                                                        await before.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
+                                                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                                        data = data.fetchall()
+                                                        old_amount = data[0][4]
+                                                        new_amount = 1+old_amount
+                                                        self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                                                        self.db.commit()
+                                            
+                                        if "broke out" in _embed.description:
                                             raremon = data[0][14]
-                                        except Exception as e:
-                                            #await log.send(embed=_embed)
-                                            #await log.send(f"Error: {e}, {data}, {before.jump_url}")
-                                            monname = _embed.description.split("**")[1]+" "
-                                            data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
-                                            data = data.fetchone()
-                                            #print(data[1])
-                                            raremon = data[14]
-                                        ball = _embed.description.split(" out of the")[1]
-                                        ball = ball.split("!")[0]
-                                        ball = ball.split(" ")[1]
-                                        color = str(_embed.color)
-                                        if raremon in Rare_Spawns or color == '#ea260b':
-                                            raremon = poke_rarity[(data[0][14])]
-                                            description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                            embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
-                                            embed.set_author(name=(f'{sender.display_name}'+" almost caught a:"), icon_url=_embed.author.icon_url)
-                                            embed.set_image(_embed.image.url)
-                                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                            await announce.send(embed=embed)
-                                    if "ran away" in _embed.description:
-                                        raremon = data[0][14]
-                                        color = str(_embed.color)
-                                        if raremon in Rare_Spawns or color == '#ea260b':
-                                            raremon = poke_rarity[(data[0][14])]
-                                            description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                            embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
-                                            embed.set_author(name=(sender.display_name+" was too slow for:"), icon_url=_embed.author.icon_url)
-                                            embed.set_image(_embed.image.url)
-                                            embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                            await announce.send(embed=embed)
+                                            ball = _embed.description.split(" out of the")[1]
+                                            ball = ball.split("!")[0]
+                                            ball = ball.split(" ")[1]
+                                            if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                                                raremon = poke_rarity[(data[0][14])]
+                                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                                embed.set_author(name=(sender.display_name+" almost caught a:"), icon_url=_embed.author.icon_url)
+                                                embed.set_image(_embed.image.url)
+                                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                                await announce.send(embed=embed)
+                                        if "ran away" in _embed.description:
+                                            raremon = data[0][14]
+                                            if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                                                raremon = poke_rarity[(data[0][14])]
+                                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                                embed.set_author(name=(sender.display_name+" was too slow for:"), icon_url=_embed.author.icon_url)
+                                                embed.set_image(_embed.image.url)
+                                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                                await announce.send(embed=embed)
+                                    else:
+                                        #print("No token")
+                                        if "caught a" in _embed.description:
+                                            try:
+                                                raremon = data[0][14]
+                                            except Exception as e:
+                                                #await log.send(embed=_embed)
+                                                #await log.send(f"Error: {e}, {data}, {before.jump_url}")
+                                                monname = _embed.description.split("**")[1]+" "
+                                                data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
+                                                data = data.fetchone()
+                                                #print(monname)
+                                                #print(data)
+                                                raremon = data[14]
+                                            ball = _embed.description.split(" with a")[1]
+                                            ball = ball.split("!")[0]
+                                            ball = ball.split(" ")[1]
+                                            #print("Caught a mon")
+                                            color = str(_embed.color)
+                                            if raremon in Rare_Spawns or color == '#ea260b':
+                                                raremon = poke_rarity[(data[0][14])]
+                                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
+                                                embed.set_author(name=(f'{sender.display_name}'+" just caught a:"), icon_url=_embed.author.icon_url)
+                                                embed.set_image(_embed.image.url)
+                                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                                await announce.send(embed=embed)
+                                            dataev = self.db.execute(f'SELECT * FROM Admin')
+                                            dataev = dataev.fetchall()
+                                            if dataev[0][4] == 1:
+                                                dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                                dataev = dataev.fetchall()
+                                                if dataev:
+                                                    raremon = data[0][14]
+                                                    used = dataev[0][3]
+                                                    ball = _embed.description.split(" with a")[1]
+                                                    ball = ball.split("!")[0]
+                                                    ball = ball.split(" ")[1]
+                                                    #print(used)
+                                                    print(f'{raremon}'", "f'{rare_calc[raremon]}')
+                                                    #print(rare_calc[raremon])
+                                                    if raremon in ["Common", "Uncommon", "Rare"]:
+                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_low[ball]*random.random()))*(1000+(used*6))
+                                                    else:
+                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_high[ball]*random.random()))*(1000+(used*6))
+                                                        #print(points)
+                                                    points = round(points)
+                                                    await before.channel.send("Your catch earned a score of **"f'{int(points):,}'"** points!")
+                                                    if points > dataev[0][2]:
+                                                        self.db.execute(f'UPDATE Events SET Points = {points} WHERE User_ID = {sender.id}')
+                                                        self.db.commit()
+
+
+                                                    item_count = dataev[0][3]
+                                                    #print(item_count)
+                                                    hunt_odds = ((1/drop_pos["hunt"]))
+                                                    #print(hunt_odds)
+                                                    odds = 0
+                                                    #if coin_type == "hunt":
+                                                    odds = hunt_odds
+
+                                                    roll = random.random()
+                                                    #print(roll)
+                                                    if odds > roll:
+                                                        #print("Find coins")
+                                                        await before.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
+                                                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
+                                                        data = data.fetchall()
+                                                        old_amount = data[0][4]
+                                                        new_amount = 1+old_amount
+                                                        self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
+                                                        self.db.commit()
+                                        if "broke out" in _embed.description:
+                                            try:
+                                                raremon = data[0][14]
+                                            except Exception as e:
+                                                #await log.send(embed=_embed)
+                                                #await log.send(f"Error: {e}, {data}, {before.jump_url}")
+                                                monname = _embed.description.split("**")[1]+" "
+                                                data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
+                                                data = data.fetchone()
+                                                #print(data[1])
+                                                raremon = data[14]
+                                            ball = _embed.description.split(" out of the")[1]
+                                            ball = ball.split("!")[0]
+                                            ball = ball.split(" ")[1]
+                                            color = str(_embed.color)
+                                            if raremon in Rare_Spawns or color == '#ea260b':
+                                                raremon = poke_rarity[(data[0][14])]
+                                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
+                                                embed.set_author(name=(f'{sender.display_name}'+" almost caught a:"), icon_url=_embed.author.icon_url)
+                                                embed.set_image(_embed.image.url)
+                                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                                await announce.send(embed=embed)
+                                        if "ran away" in _embed.description:
+                                            raremon = data[0][14]
+                                            color = str(_embed.color)
+                                            if raremon in Rare_Spawns or color == '#ea260b':
+                                                raremon = poke_rarity[(data[0][14])]
+                                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                                embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
+                                                embed.set_author(name=(sender.display_name+" was too slow for:"), icon_url=_embed.author.icon_url)
+                                                embed.set_image(_embed.image.url)
+                                                embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                                                await announce.send(embed=embed)
 
 
                             # lb_role = "Leaderboard Helper"
