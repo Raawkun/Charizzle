@@ -639,15 +639,15 @@ class Listener(commands.Cog):
                         if "opened " in _embed.author.name:
                             print("Box opening")
                             if _embed.image:
-                                print("Theres a spawn")
+                                #print("Theres a spawn")
                                 data_box = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data_box = data_box.fetchall()
                                 sender = ref_msg.author.display_name
                                 #Rare_Spawned = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Common","Uncommon","Golden"]
                                 raremon = poke_rarity[(data_box[0][14])]
                                 if data_box[0][14] in Rare_Spawned:
-                                    print("Rare enough")
-                                    description_text = None
+                                    #print("Rare enough")
+                                    description_text = " "
                                     if "Pokemon received" in _embed.description:
                                         mons = _embed.description.split("total):\n")[1]
                                         print(mons)

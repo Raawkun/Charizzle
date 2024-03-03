@@ -164,9 +164,16 @@ class On_Edit(commands.Cog):
                                             ball = ball.split(" ")[1]
                                             #print("Caught a mon")
                                             color = str(_embed.color)
+                                            description_text = " "
+                                            if "retrieved a" in _embed.description:
+                                                #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare","Common", "Uncommon", "SuperRare","Golden"]
+                                                item = _embed.description.split("retrieved")[1]
+                                                item = item.split("**")[1]
+                                                #print(item)
+                                                description_text = f"<:held_item:1213754494266122280> **It held onto a {item}**.\n"
                                             if raremon in Rare_Spawns or color == '#ea260b':
                                                 raremon = poke_rarity[(data[0][14])]
-                                                description_text = f"Original message: [Click here]({before.jump_url})\n"
+                                                description_text += f"Original message: [Click here]({before.jump_url})\n"
                                                 embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
                                                 embed.set_author(name=(f'{sender.display_name}'+" just caught a:"), icon_url=_embed.author.icon_url)
                                                 embed.set_image(_embed.image.url)
