@@ -310,8 +310,8 @@ class Listener(commands.Cog):
                     #print(_embed.author.name)
                     Rare_Spawned = ["Event", "Legendary", "Shiny", "Golden"]
                     if _embed.author:
-                        if "pokemeow global market -" in _embed.author.name.lower():
-                            #print("Market going on")
+                        if "Global Market " in _embed.author.name:
+                            print("Market going on")
                             number = _embed.footer.text.split("#")[1]
                             number = int(number.split(" ")[0])
                             #print(number)
@@ -319,15 +319,12 @@ class Listener(commands.Cog):
                             datdex = datdex.fetchall()
                             #print(datdex[0][1])
                             current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
-                            for field in _embed.fields:
-                                if field.name.lower() == "price each":
-                                    lowprice = field.value.split("`")[1]
-                                    lowprice = int(lowprice.replace(",",""))
-                                    #print(lowprice)
-                                if field.name.lower() == "amount remaining":
-                                    amount = field.value.split("`")[1]
-                                    amount = int(amount.split(" ")[0])
-                                    #print(amount)
+                            price = _embed.description.split("PokeCoin")[2]
+                            lowprice = price.split(" ")[1]
+                            lowprice = int(lowprice.replace(",", ""))
+                            #print(lowprice)
+                            amount = int(price.split(" ")[5])
+                            #print(amount)
                             self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
                             self.db.commit()
                             await asyncio.sleep(3)
