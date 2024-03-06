@@ -367,13 +367,6 @@ class Coms(commands.Cog):
         await ctx.send(f"{member.name} joined in {member.joined_at}")
 
     @commands.command()
-    async def master(self, ctx):
-        try:
-            await ctx.send(f"My trainer is Blue Flames.")
-        except Exception as e:
-            await ctx.send(f"Error: {str(e)}")
-
-    @commands.command()
     async def test(self, ctx):
         await ctx.send(f"I'm alive!!! {ctx.author.name}")
 
@@ -1156,6 +1149,76 @@ class Coms(commands.Cog):
         else:
             await ctx.send("No auction running at the moment.")
             
+    @commands.command(aliases=["psy", "ph"])
+    async def psyhunt(self, ctx, mode:str, mon: str = None):
+        if mode.lower() == "list":
+            hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
+            hunts = hunts.fetchall()
+            print(hunts)
+            if hunts == None:
+                await ctx.reply("You're not hunting for any Outbreaks.")
+            else:
+                desc = "you're currently hunting "
+                if len(hunts) == 1:
+                    desc += hunts[0][1]
+                    print(hunts[0][1])
+                else:
+                    print(hunts)
+                    i = 0
+                    for entry in hunts:
+                        if i == len(hunts):
+                            desc += f'{entry[1]}.'
+                        else:
+                            desc += f'{entry[1]}, '
+                        i += 1
+                await ctx.reply(f"{ctx.author.display_name }, {desc}")
+        elif mode.lower() == "add":
+            if mon == None:
+                await ctx.reply("Please specify a suitable Pokémon to hunt.")
+            else:
+                hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
+                hunts = hunts.fetchall()
+                i = 0
+                for entry in hunts:
+                    if mon in entry[1]:
+                        await ctx.reply("You're already looking for that Pokémon.")
+                        i = 1
+                if i == 0:
+                    self.db.execute(f'INSERT INTO PsyHunt (UserID, Mon) VALUES ({ctx.author.id}, "{mon}")')
+                    self.db.commit()
+                    await ctx.reply(f"{ctx.author.display_name}, I've added {mon} to your Outbreak hunting list.")
+        elif mode.lower() == "delete":
+            if mon == None:
+                await ctx.send("Please specify a suitable entry from your hunt list to delete.")
+            else:
+                hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
+                hunts = hunts.fetchall()
+                for entry in hunts:
+                    if mon in entry[1]:
+                        self.db.execute(f'DELETE FROM PsyHunt WHERE Mon = "{mon}" AND UserID = {ctx.author.id}')
+                        self.db.commit()
+                        await ctx.send(f"{ctx.author.display_name}, {mon} is now deleted from your Psycord huntlist.")
+        elif mode.lower() == "clear":
+            self.db.execute(f'DELETE FROM PsyHunt WHERE UserID = {ctx.author.id}')
+            self.db.commit()
+            await ctx.reply(f"Successfully cleared your Psycord outbreak hunts, {ctx.author.display_name}.")
+        else:
+            await ctx.reply("Wrong usage, either use ``list, add, delete, clear```.")
+        
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def readout(self, ctx, mid:int = None):
+        checker = 1
+        if mid == None:
+            if ctx.message.reference:
+                mid = ctx.message.reference.message_id
+            else:
+                await ctx.send("Please use a message ID or answer to a message.")
+                checker = 0
+        if checker == 1:
+            ref_msg = await ctx.channel.fetch_message(mid)
+            desc = f'Name:{ref_msg.author.display_name}\nID: {ref_msg.author.id}\nContent: {ref_msg.content}'
+            await ctx.reply(desc)
 
 
 def setup(client):
