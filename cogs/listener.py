@@ -167,7 +167,7 @@ class Listener(commands.Cog):
                     if "Reported" in emb.title:
                         mon = emb.description.split("**")[1]
                         print(mon)
-                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = {mon}')
+                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{mon}"')
                         hunts = hunts.fetchall()
                         desc = f"An outbreak of {mon} started! Gather, fellow hunters! \n"
                         for entry in hunts:
