@@ -162,19 +162,17 @@ class Listener(commands.Cog):
             ######## Psycord Outbreak Listener
             if message.channel.id == 1209829156020428891:
                 print("Feed channel")
-                if message.author.id == 1209829454667317288:
-                    print("From Psycord OS")
-                    if len(message.embed) > 0:
-                        emb = message.embed[0]
-                        if "Reported" in emb.title:
-                            mon = emb.description.split("**")[1]
-                            print(mon)
-                            hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = {mon}')
-                            hunts = hunts.fetchall()
-                            desc = f"An outbreak of {mon} started! Gather, fellow hunters! \n"
-                            for entry in hunts:
-                                desc += f'<@{entry[0]}> '
-                            await message.channel.send(desc)
+                if len(message.embed) > 0:
+                    emb = message.embed[0]
+                    if "Reported" in emb.title:
+                        mon = emb.description.split("**")[1]
+                        print(mon)
+                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = {mon}')
+                        hunts = hunts.fetchall()
+                        desc = f"An outbreak of {mon} started! Gather, fellow hunters! \n"
+                        for entry in hunts:
+                            desc += f'<@{entry[0]}> '
+                        await message.channel.send(desc)
 
             
             ########Rare Spawn Listener 825958388349272106 #bot-testing channel
