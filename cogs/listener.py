@@ -161,7 +161,9 @@ class Listener(commands.Cog):
 
             ######## Psycord Outbreak Listener
             if message.channel.id == 1209829156020428891:
+                print("Feed channel")
                 if message.author.id == 1209829454667317288:
+                    print("From Psycord OS")
                     if len(message.embed) > 0:
                         emb = message.embed[0]
                         if "Reported" in emb.title:
