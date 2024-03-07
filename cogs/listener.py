@@ -163,7 +163,7 @@ class Listener(commands.Cog):
             if message.channel.id == 1209829156020428891:
                 print("Feed channel")
                 if len(message.embeds) > 0:
-                    emb = message.embed[0]
+                    emb = message.embeds[0]
                     if "Reported" in emb.title:
                         mon = emb.description.split("**")[1]
                         print(mon)
