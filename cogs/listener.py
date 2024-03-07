@@ -105,7 +105,7 @@ class Listener(commands.Cog):
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         servers = [825813023716540426, 1037320778393321592]
         if message.guild.id == 825813023716540426:
-            if message.author.bot and message.author.id != meow and message.author.id != karp:
+            if message.author.bot and message.author.id != meow and message.author.id != karp and message.author.id != 1209829454667317288:
                 return
             
             if message.content.lower() == "trygoogle":
