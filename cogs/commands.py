@@ -1153,7 +1153,7 @@ class Coms(commands.Cog):
     async def psyhunt(self, ctx, mode:str = None, *args):
         print(args)
         args = [s.lower() for s in args]
-        mon = args.join(" ")
+        mon = " ".join(args)
         print(mon)
         if mode.lower() == "list":
             hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
