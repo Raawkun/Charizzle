@@ -206,7 +206,7 @@ class Listener(commands.Cog):
                                     target_role = message.guild.get_role(target_role)
                                     if target_role and target_role not in member.roles:
                                         await member.add_roles(target_role)
-                                        await message.channel.send(f"Welcome, <@{member.id}>! I've added the <@1203087005127548928> role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
+                                        await message.channel.send(f"Welcome, <@{member.id}>! I've added the *Straymons Member* role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
                                     
             ########Rare Spawn Listener 825958388349272106 #bot-testing channel
             receiver_channel = 825950637958234133 # rare-spawns
