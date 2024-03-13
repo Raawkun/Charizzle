@@ -1150,7 +1150,7 @@ class Coms(commands.Cog):
             await ctx.send("No auction running at the moment.")
             
     @commands.command(aliases=["psy", "ph"])
-    async def psyhunt(self, ctx, mode:str, *args):
+    async def psyhunt(self, ctx, mode:str = None, *args):
         print(args)
         args = [s.lower() for s in args]
         mon = args.join(" ")
