@@ -174,7 +174,23 @@ class Listener(commands.Cog):
                             desc += f'<@{entry[0]}> '
                         await message.channel.send(desc)
 
+            ######## Straymon Checker
             
+            if message.author.id = meow:
+                if len(message.embeds) > 0:
+                    _embed = message.embeds[0]
+                    if "PokeMeow Clans" in _embed.author:
+                        if "Welcome to" in _embed.description:
+                            if "Straymons" in _embed.description:
+                                try:
+                                    member = message.reference.author
+                                    target_role = "Straymons Member"
+                                    target_role = disnake.utils.get(message.guild.roles, name=target_role)
+                                    if target_role and target_role not in member.roles:
+                                        await member.add_roles(target_role)
+                                        await message.channel.send(f"Welcome! I've added the Straymons Member role to you, {member.display_name}")
+                                except Exception as e:
+                                    print(e)
             ########Rare Spawn Listener 825958388349272106 #bot-testing channel
             receiver_channel = 825950637958234133 # rare-spawns
             log_channel = 1164544776985653319
