@@ -1156,7 +1156,7 @@ class Coms(commands.Cog):
         mon = " ".join(args)
         print(mon)
         if mode == None:
-            await ctx.send("Placeholder.\nPlease use either ```list, add, delete, clear```.")
+            await ctx.send("Placeholder.\nPlease use either ``list, add, delete, clear``.")
         elif mode.lower() == "list":
             hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
             hunts = hunts.fetchall()
@@ -1209,7 +1209,7 @@ class Coms(commands.Cog):
             self.db.commit()
             await ctx.reply(f"Successfully cleared your Psycord outbreak hunts, {ctx.author.display_name}.")
         else:
-            await ctx.reply("Wrong usage, either use ```list, add, delete, clear```.")
+            await ctx.reply("Wrong usage, either use ``list, add, delete, clear``.")
         
     @commands.check(Basic_checker().check_management)
     @commands.command()
