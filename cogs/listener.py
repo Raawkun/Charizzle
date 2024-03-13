@@ -88,6 +88,11 @@ class Listener(commands.Cog):
             except Exception as e:
                 print(e)
                 print(member.display_name+" "+str(member.id))
+        else:
+            desc = f"Hey, <@{member.id}>!\n"
+            desc += f"If you're a Straymons member, please head to <#827551577698730015> and do ``;clan``.\n Enjoy your stay!"
+            channel = self.client.get_channel(825836238951022602)
+            await channel.send(desc)
 
     @commands.Cog.listener()
     async def on_message(self, message):
