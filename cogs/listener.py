@@ -180,21 +180,22 @@ class Listener(commands.Cog):
                     if len(message.embeds) > 0:
                         _embed = message.embeds[0]
                         if "PokeMeow Clans" in _embed.author.name:
+                            print("Clan command")
                             if "Welcome to" in _embed.description:
                                 if "Straymons" in _embed.description:
-                                    try:
-                                        if message.reference:
-                                            ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                                        elif message.interaction:
-                                            ref_msg = message.interaction.author
-                                        member = ref_msg.author
-                                        target_role = 1203087005127548928
-                                        target_role = await message.guild.get_role(target_role)
-                                        if target_role and target_role not in member.roles:
-                                            await member.add_roles(target_role)
-                                            await message.channel.send(f"Welcome! I've added the Straymons Member role to you, {member.display_name}")
-                                    except Exception as e:
-                                        print(e)
+                                    print("A Straymon member")
+                                    if message.reference:
+                                        ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                                    elif message.interaction:
+                                        ref_msg = message.interaction.author
+                                    member = ref_msg.author
+                                    target_role = 1203087005127548928
+                                    target_role = message.guild.get_role(target_role)
+                                    print(target_role)
+                                    if target_role and target_role not in member.roles:
+                                        await member.add_roles(target_role)
+                                        await message.channel.send(f"Welcome! I've added the Straymons Member role to you, {member.display_name}")
+                                    
             ########Rare Spawn Listener 825958388349272106 #bot-testing channel
             receiver_channel = 825950637958234133 # rare-spawns
             log_channel = 1164544776985653319
