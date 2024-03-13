@@ -1151,31 +1151,29 @@ class Coms(commands.Cog):
             
     @commands.command(aliases=["psy", "ph"])
     async def psyhunt(self, ctx, mode:str = None, *args):
-        print(args)
         args = [s.lower() for s in args]
         mon = " ".join(args)
-        print(mon)
+        #print(mon)
         if mode == None:
             await ctx.send("Placeholder.\nPlease use either ``list, add, delete, clear``.")
         elif mode.lower() == "list":
             hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
             hunts = hunts.fetchall()
-            print(hunts)
             if hunts == None:
                 await ctx.reply("You're not hunting for any outbreaks.")
             else:
                 desc = "you're currently hunting "
                 if len(hunts) == 1:
                     desc += hunts[0][1]
-                    print(hunts[0][1])
+                    print(hunts[0][1].title())
                 else:
                     print(hunts)
                     i = 0
                     for entry in hunts:
                         if i == len(hunts):
-                            desc += f'{entry[1]}.'
+                            desc += f'{entry[1].title()}.'
                         else:
-                            desc += f'{entry[1]}, '
+                            desc += f'{entry[1].title()}, '
                         i += 1
                 await ctx.reply(f"{ctx.author.display_name }, {desc}")
         elif mode.lower() == "add":
@@ -1192,7 +1190,7 @@ class Coms(commands.Cog):
                 if i == 0:
                     self.db.execute(f'INSERT INTO PsyHunt (UserID, Mon) VALUES ({ctx.author.id}, "{mon}")')
                     self.db.commit()
-                    await ctx.reply(f"{ctx.author.display_name}, I've added {mon} to your Outbreak hunting list.")
+                    await ctx.reply(f"{ctx.author.display_name}, I've added {mon.title()} to your Outbreak hunting list.")
         elif mode.lower() == "delete":
             if mon == None:
                 await ctx.send("Please specify a suitable entry from your hunt list to delete.")
@@ -1203,7 +1201,7 @@ class Coms(commands.Cog):
                     if mon in entry[1]:
                         self.db.execute(f'DELETE FROM PsyHunt WHERE Mon = "{mon}" AND UserID = {ctx.author.id}')
                         self.db.commit()
-                        await ctx.send(f"{ctx.author.display_name}, {mon} is now deleted from your Psycord huntlist.")
+                        await ctx.send(f"{ctx.author.display_name}, {mon.title} is now deleted from your Psycord huntlist.")
         elif mode.lower() == "clear":
             self.db.execute(f'DELETE FROM PsyHunt WHERE UserID = {ctx.author.id}')
             self.db.commit()
