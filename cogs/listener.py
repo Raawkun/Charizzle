@@ -180,10 +180,8 @@ class Listener(commands.Cog):
                     if len(message.embeds) > 0:
                         _embed = message.embeds[0]
                         if "PokeMeow Clans" in _embed.author.name:
-                            print("Clan command")
                             if "Welcome to" in _embed.description:
                                 if "Straymons" in _embed.description:
-                                    print("A Straymon member")
                                     if message.reference:
                                         ref_msg = await message.channel.fetch_message(message.reference.message_id)
                                     elif message.interaction:
@@ -191,10 +189,9 @@ class Listener(commands.Cog):
                                     member = ref_msg.author
                                     target_role = 1203087005127548928
                                     target_role = message.guild.get_role(target_role)
-                                    print(target_role)
                                     if target_role and target_role not in member.roles:
                                         await member.add_roles(target_role)
-                                        await message.channel.send(f"Welcome! I've added the Straymons Member role to you, {member.display_name}")
+                                        await ref_msg.reply(f"Welcome, <@{member.id}>! I've added the <@1203087005127548928> role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
                                     
             ########Rare Spawn Listener 825958388349272106 #bot-testing channel
             receiver_channel = 825950637958234133 # rare-spawns
