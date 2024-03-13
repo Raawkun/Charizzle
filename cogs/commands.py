@@ -1155,7 +1155,9 @@ class Coms(commands.Cog):
         args = [s.lower() for s in args]
         mon = " ".join(args)
         print(mon)
-        if mode.lower() == "list":
+        if mode == None:
+            await ctx.send("Placeholder.\nPlease use either ```list, add, delete, clear```.")
+        elif mode.lower() == "list":
             hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
             hunts = hunts.fetchall()
             print(hunts)
