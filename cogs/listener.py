@@ -166,13 +166,23 @@ class Listener(commands.Cog):
                     emb = message.embeds[0]
                     if "Reported" in emb.title:
                         mon = emb.description.split("**")[1]
-                        print(mon)
-                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{mon}"')
+                        outb = mon.lower()
+                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}"')
                         hunts = hunts.fetchall()
-                        desc = f"An outbreak of {mon} started! Gather, fellow hunters! \n"
+                        desc = f"An outbreak of **{mon}** started! Gather, fellow hunters! \n"
                         for entry in hunts:
                             desc += f'<@{entry[0]}> '
                         await message.channel.send(desc)
+                        if "Prof. Oak" in emb.description:
+                            mon = emb.description.split("**")[7]
+                            print(mon)
+                            outb = mon.lower()
+                            hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}"')
+                            hunts = hunts.fetchall()
+                            desc = f"**{mon}** is the connected Pokémon for the current Outbreak! Let's purify! \n"
+                            for entry in hunts:
+                                desc += f'<@{entry[0]}> '
+                            await message.channel.send(desc)
 
             ######## Straymon Checker
             if message.channel.id == 827551577698730015:

@@ -1150,13 +1150,17 @@ class Coms(commands.Cog):
             await ctx.send("No auction running at the moment.")
             
     @commands.command(aliases=["psy", "ph"])
-    async def psyhunt(self, ctx, mode:str, mon: str = None):
+    async def psyhunt(self, ctx, mode:str, *args):
+        print(args)
+        args = [s.lower() for s in args]
+        mon = args.join(" ")
+        print(mon)
         if mode.lower() == "list":
             hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
             hunts = hunts.fetchall()
             print(hunts)
             if hunts == None:
-                await ctx.reply("You're not hunting for any Outbreaks.")
+                await ctx.reply("You're not hunting for any outbreaks.")
             else:
                 desc = "you're currently hunting "
                 if len(hunts) == 1:
@@ -1203,7 +1207,7 @@ class Coms(commands.Cog):
             self.db.commit()
             await ctx.reply(f"Successfully cleared your Psycord outbreak hunts, {ctx.author.display_name}.")
         else:
-            await ctx.reply("Wrong usage, either use ``list, add, delete, clear```.")
+            await ctx.reply("Wrong usage, either use ```list, add, delete, clear```.")
         
     @commands.check(Basic_checker().check_management)
     @commands.command()
