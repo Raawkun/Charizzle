@@ -195,7 +195,7 @@ class Listener(commands.Cog):
                     if len(message.embeds) > 0:
                         _embed = message.embeds[0]
                         if "A wild " in _embed.title:
-                            await message.channel.send(f"A wild Pokémon spawned! <@1217752336508784681>")
+                            await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                     
 
             ######## Straymon Checker
