@@ -188,6 +188,15 @@ class Listener(commands.Cog):
                             for entry in hunts:
                                 desc += f'<@{entry[0]}> '
                             await message.channel.send(desc)
+                            
+                            
+            if message.channel.id == 1199807047294795878: #Psycord Spawn
+                if message.author == 1209829454667317288:
+                    if len(message.embeds) > 0:
+                        _embed = message.embeds[0]
+                        if "A wild " in _embed.title:
+                            await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
+                    
 
             ######## Straymon Checker
             if message.channel.id == 827551577698730015:
