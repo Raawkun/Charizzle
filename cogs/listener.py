@@ -194,7 +194,7 @@ class Listener(commands.Cog):
                 if message.author == 1209829454667317288:
                     if len(message.embeds) > 0:
                         _embed = message.embeds[0]
-                        if "A wild " in _embed.title:
+                        if "A wild " in _embed.description:
                             await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                     
 
