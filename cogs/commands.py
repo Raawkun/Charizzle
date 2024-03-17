@@ -33,7 +33,103 @@ class Coms(commands.Cog):
     
     current_time = datetime.datetime.utcnow()
     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    async def errorlog(self, error, author, guild, channel):
+        footer = f"{datetime.datetime.utcnow()}"
+        desc = f"{guild.name}, <#{channel}>, <@{author.id}>"
+        _emb = await Auction_embed(self.client,footer=footer, description=desc).setup_embed()
+        _emb.add_field(name="Erorr:",value=error)
+        errcha = self.client.get_channel(1210143608355823647)
+        await errcha.send(embed=_emb)
         
+    ############## Server configuration
+    @commands.check(Basic_checker().check_admin)
+    @commands.command()
+    async def setup(self, ctx, defo:str = None, mode:str = None, *args):
+        guild = ctx.guild
+        print(args[0])
+        channel = int(args[0])
+        if defo == None:
+            title = f"{self.client.user.display_name}'s Setup"
+            desc = f"This command is to setup {self.client.user.display_name}'s various feeds or pings.\n"
+            desc += f"The following can be set up in this server at the moment.\n\n**Functions:**\n"
+            desc += f"> * __Changelog__: {self.client.user.display_name}'s updates.\n"
+            desc += f"> * Usage: ``changelog [set/remove] [channel id]``\n"
+            desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarwspawn [set/remove] [channel id]``\n"
+            desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
+            desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
+
+            _emb = await Auction_embed(self.client,title=title, description=desc).setup_embed()
+
+            await ctx.reply(embed = _emb)
+        elif defo == "changelog":
+            if mode == "add" or mode == "set":
+                try:
+                    log = self.client.get_channel(args[0])
+                    self.db.execute(f'UPDATE Admin SET Changelog = {args[0]} WHERE Server_ID = {guild.id}')
+                    self.db.commit()
+                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id} has set up this channel to receive <@{self.client.user.id}>'s update logs.").setup_embed()
+                    await log.send(embed=_emb)
+                    await ctx.reply(f"Successfully set <#{args[0]}> as your changelog channel for me.")
+                except Exception as e:
+                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
+                    await ctx.reply("Please enter a Channel ID.")
+            elif mode == "remove" or mode == "delete":
+                self.db.execute(f'UPDATE Admin SET Changelog = NULL WHERE Server_ID = {guild.id}')
+                self.db.commit()
+                await ctx.reply(f"I've removed changelog updates from this server.")
+            else:
+                await ctx.reply()
+        elif defo == "rarespawn":
+            if mode == "add" or mode == "set":
+                try:
+                    log = self.client.get_channel(channel)
+                    self.db.execute(f'UPDATE Admin SET RareSpawn = {args[0]} WHERE Server_ID = {guild.id}')
+                    self.db.commit()
+                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id} has set up this channel to receive PokéMeow rare spawns.").setup_embed()
+                    await log.send(embed=_emb)
+                    await ctx.reply(f"Successfully set <#{args[0]}> as your rare spawn channel for PokéMeow.")
+                except Exception as e:
+                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
+                    await ctx.reply("Please enter a Channel ID.")
+            elif mode == "remove" or mode == "delete":
+                self.db.execute(f'UPDATE Admin SET RareSpawn = NULL WHERE Server_ID = {guild.id}')
+                self.db.commit()
+                await ctx.reply(f"I've removed PokéMeow rare spawn updates from this server.")
+            else:
+                await ctx.reply()
+        elif defo == "outbreaks":
+            if mode == "add" or mode == "set":
+                try:
+                    log = self.client.get_channel(channel)
+                    print(log)
+                    self.db.execute(f'UPDATE Admin SET PsyhuntFeed = {args[0]} WHERE Server_ID = {guild.id}')
+                    self.db.commit()
+                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to check for Psycord outbreaks.").setup_embed()
+                    await log.send(embed=_emb)
+                    await ctx.reply(f"Successfully set <#{args[0]}> as your Psycord outbreaks feed channel.")
+                except Exception as e:
+                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
+                    await ctx.reply("Wrong usage, please refer back to the command usage.")
+            elif mode == "role":
+                try:
+                    log = guild.get_role(channel)
+                    self.db.execute(f'UPDATE Admin SET PsyhuntRole = {args[0]} WHERE Server_ID = {guild.id}')
+                    self.db.commit()
+                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up <@&{args[0]}> to ping for Psycord spawns.").setup_embed()
+                    await ctx.reply(embed=_emb)
+                except Exception as e:
+                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
+                    await ctx.reply("Please enter a Channel ID.")
+            elif mode == "remove" or mode == "delete":
+                self.db.execute(f'UPDATE Admin SET PsyhuntFeed = NULL WHERE Server_ID = {guild.id}')
+                self.db.commit()
+                await ctx.reply(f"I've removed psycord outbreak pings from this server.")
+            else:
+                await ctx.reply()
+        else:
+            await ctx.reply()
+
     @commands.command()
     async def dm(self, ctx, userid, *args):
         try:
