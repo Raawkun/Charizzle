@@ -1278,7 +1278,7 @@ class Coms(commands.Cog):
                             desc +=(f"```{_embed.fields}```\n")
                         if _embed.image != None:
                             desc +=("Image:")
-                            adesc +=(f"```{_embed.image.url}```\n")
+                            desc +=(f"```{_embed.image.url}```\n")
                         if _embed.thumbnail != None:
                             desc +=("Thumb:")
                             desc +=(f"```{_embed.thumbnail.url}```\n")
