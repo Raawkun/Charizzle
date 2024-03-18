@@ -1229,7 +1229,7 @@ class Coms(commands.Cog):
                     self.db.execute(f'INSERT INTO PsyHunt (UserID, Mon) VALUES ({ctx.author.id}, "{mon}")')
                     self.db.commit()
                     await ctx.reply(f"{ctx.author.display_name}, I've added {mon.title()} to your Outbreak hunting list.")
-        elif mode.lower() == "delete":
+        elif mode.lower() == "delete" or mode.lower() == "remove":
             if mon == None:
                 await ctx.send("Please specify a suitable entry from your hunt list to delete.")
             else:
@@ -1249,7 +1249,7 @@ class Coms(commands.Cog):
         
     @commands.check(Basic_checker().check_management)
     @commands.command()
-    async def readout(self, ctx, mid:int = None):
+    async def readout(self, ctx, mid:int = None, mode:str = None):
         checker = 1
         if mid == None:
             if ctx.message.reference:
@@ -1260,7 +1260,34 @@ class Coms(commands.Cog):
         if checker == 1:
             ref_msg = await ctx.channel.fetch_message(mid)
             desc = f'Name:{ref_msg.author.display_name}\nID: {ref_msg.author.id}\nContent: {ref_msg.content}'
+            if mode == "embed":
+                if (len(ref_msg.embeds) > 0):
+                    _embed = ref_msg.embeds[0]
+                    if ref_msg.content != None:
+                        if _embed.description != None:
+                            desc +=("Desc:\n")
+                            desc +=(f"```{_embed.description}```\n")
+                        if _embed.footer != None:
+                            desc +=("Footer:\n")
+                            desc +=(f"```{_embed.footer}```\n")
+                        if _embed.title != None:
+                            desc +=("Title:")
+                            desc +=(f"```{_embed.title}```\n")
+                        if _embed.fields != None:
+                            desc +=("Fields:")
+                            desc +=(f"```{_embed.fields}```\n")
+                        if _embed.image != None:
+                            desc +=("Image:")
+                            adesc +=(f"```{_embed.image.url}```\n")
+                        if _embed.thumbnail != None:
+                            desc +=("Thumb:")
+                            desc +=(f"```{_embed.thumbnail.url}```\n")
+                        if _embed.author != None:
+                            desc +=("Author:")
+                            desc +=(f"```{_embed.author.name}```\n")
+                            desc +=(f"```{_embed.author.icon_url}```\n")
             await ctx.reply(desc)
+        
 
 
 def setup(client):

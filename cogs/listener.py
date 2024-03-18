@@ -80,6 +80,30 @@ class Listener(commands.Cog):
         self.db.commit()
         log = self.client.get_channel(1164544776985653319)
         await log.send(f"A new **server**! {guild.name} with the ID of {id}. ")
+        ### Setup msg
+        desc = f"This command is to setup {self.client.user.display_name}'s various feeds or pings.\n"
+        desc += f"The following can be set up in this server at the moment.\n\n**Functions:**\n"
+        desc += f"> * __Changelog__: {self.client.user.display_name}'s updates.\n"
+        desc += f"> * Usage: ``changelog [set/remove] [channel id]``\n"
+        desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarwspawn [set/remove] [channel id]``\n"
+        desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
+        desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
+
+        _emb = disnake.Embed(title=f"{self.client.user.display_name}'s Setup",description=desc)
+        _emb.color(0x807ba6)
+        _emb.set_footer(text=f'Provided by {self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
+        text = f"Thanks for choosing <@{self.client.user.id}>!"
+        try:
+            default = guild.system_channel
+            await default.send(text,embed=_emb)
+        except:
+            async for entry in guild.audit_logs(action=disnake.AuditLogAction.bot_add):
+                if entry.target == self.user:
+                    inviter_id = entry.user.id
+                    inviter_id = guild.get_member_named(inviter_id)
+                    await inviter_id.send(text,embed=_emb)
+                    return
+            
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
@@ -180,7 +204,9 @@ class Listener(commands.Cog):
                     await message.add_reaction(emoji2)
 
         ######## Psycord Outbreak Listener
-        if message.channel.id == 1209829156020428891:
+        outbreaks = self.db.execute(f'SELECT PsyhuntFeed FROM Admin WHERE Server_ID = {self.guild.id}')
+        outbreaks = outbreaks.fetchone()
+        if message.channel.id == int(outbreaks):
             print("Feed channel")
             if len(message.embeds) > 0:
                 emb = message.embeds[0]
