@@ -22,7 +22,7 @@ class On_Edit(commands.Cog):
     async def on_message_edit(self, before, after):
 
         # 825950637958234133
-        receiver_channel = self.db.execute(f'SELECT RareSpawn FROM Admin WHERE Server_ID = {self.guild.id}')
+        receiver_channel = self.db.execute(f'SELECT RareSpawn FROM Admin WHERE Server_ID = {before.guild.id}')
         receiver_channel = receiver_channel.fetchone()
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')

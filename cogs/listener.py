@@ -204,7 +204,7 @@ class Listener(commands.Cog):
                     await message.add_reaction(emoji2)
 
         ######## Psycord Outbreak Listener
-        outbreaks = self.db.execute(f'SELECT PsyhuntFeed FROM Admin WHERE Server_ID = {self.guild.id}')
+        outbreaks = self.db.execute(f'SELECT PsyhuntFeed FROM Admin WHERE Server_ID = {message.guild.id}')
         outbreaks = outbreaks.fetchone()
         if message.channel.id == int(outbreaks):
             print("Feed channel")
@@ -259,7 +259,8 @@ class Listener(commands.Cog):
                                     await message.channel.send(f"Welcome, <@{member.id}>! I've added the *Straymons Member* role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
                                 
         ########Rare Spawn Listener 825958388349272106 #bot-testing channel
-        receiver_channel = 825950637958234133 # rare-spawns
+        receiver_channel = self.db.execute(f'SELECT RareSpawn FROM Admin WHERE Server_ID = {message.guild.id}') # rare-spawns
+        receiver_channel = int(self.db.fetchone())
         log_channel = 1164544776985653319
         if message.author.id == meow:
             announce_channel = self.client.get_channel(receiver_channel)
