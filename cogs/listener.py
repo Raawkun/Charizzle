@@ -233,7 +233,7 @@ class Listener(commands.Cog):
                         
                         
         if message.channel.id == 1199807047294795878: #Psycord Spawn
-            if message.author == 1209829454667317288:
+            if message.author.id == 1209829454667317288:
                 if len(message.embeds) > 0:
                     _embed = message.embeds[0]
                     if "A wild " in _embed.title:
