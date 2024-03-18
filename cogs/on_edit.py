@@ -24,6 +24,7 @@ class On_Edit(commands.Cog):
         # 825950637958234133
         receiver_channel = self.db.execute(f'SELECT RareSpawn FROM Admin WHERE Server_ID = {before.guild.id}')
         receiver_channel = receiver_channel.fetchone()
+        receiver_channel = int(receiver_channel[0])
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         if receiver_channel > 0:

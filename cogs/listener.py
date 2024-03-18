@@ -206,7 +206,8 @@ class Listener(commands.Cog):
         ######## Psycord Outbreak Listener
         outbreaks = self.db.execute(f'SELECT PsyhuntFeed FROM Admin WHERE Server_ID = {message.guild.id}')
         outbreaks = outbreaks.fetchone()
-        if message.channel.id == int(outbreaks):
+        #print(outbreaks)
+        if message.channel.id == int(outbreaks[0]):
             print("Feed channel")
             if len(message.embeds) > 0:
                 emb = message.embeds[0]
@@ -260,7 +261,9 @@ class Listener(commands.Cog):
                                 
         ########Rare Spawn Listener 825958388349272106 #bot-testing channel
         receiver_channel = self.db.execute(f'SELECT RareSpawn FROM Admin WHERE Server_ID = {message.guild.id}') # rare-spawns
-        receiver_channel = int(self.db.fetchone())
+        receiver_channel = receiver_channel.fetchone()
+        #print(receiver_channel)
+        receiver_channel = int(receiver_channel[0])
         log_channel = 1164544776985653319
         if message.author.id == meow:
             announce_channel = self.client.get_channel(receiver_channel)
