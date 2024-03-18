@@ -84,9 +84,9 @@ class Coms(commands.Cog):
             if mode == "add" or mode == "set":
                 try:
                     log = self.client.get_channel(channel)
-                    self.db.execute(f'UPDATE Admin SET RareSpawn = {args[0]} WHERE Server_ID = {guild.id}')
+                    self.db.execute(f'UPDATE Admin SET RareSpawn = {channel} WHERE Server_ID = {guild.id}')
                     self.db.commit()
-                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id} has set up this channel to receive PokéMeow rare spawns.").setup_embed()
+                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to receive PokéMeow rare spawns.").setup_embed()
                     await log.send(embed=_emb)
                     await ctx.reply(f"Successfully set <#{args[0]}> as your rare spawn channel for PokéMeow.")
                 except Exception as e:
