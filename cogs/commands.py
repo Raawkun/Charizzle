@@ -1288,7 +1288,7 @@ class Coms(commands.Cog):
                             desc +=(f"```{_embed.author.icon_url}```\n")
                         if _embed.color != None:
                             desc +=(f"Color:\n")
-                            desc +=(f"```{_embed.color}```}
+                            desc +=(f"```{_embed.color}```")
             await ctx.reply(desc)
         
 
