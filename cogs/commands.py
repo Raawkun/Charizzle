@@ -1226,7 +1226,7 @@ class Coms(commands.Cog):
                         await ctx.reply("You're already looking for that Pokémon.")
                         i = 1
                 if i == 0:
-                    self.db.execute(f'INSERT INTO PsyHunt (UserID, Mon) VALUES ({ctx.author.id}, "{mon}")')
+                    self.db.execute(f'INSERT INTO PsyHunt (UserID, Mon, ServerID) VALUES ({ctx.author.id}, "{mon}", {ctx.guild.id})')
                     self.db.commit()
                     await ctx.reply(f"{ctx.author.display_name}, I've added {mon.title()} to your Outbreak hunting list.")
         elif mode.lower() == "delete" or mode.lower() == "remove":

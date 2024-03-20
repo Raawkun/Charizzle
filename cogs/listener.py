@@ -214,7 +214,7 @@ class Listener(commands.Cog):
                 if "Reported" in emb.title:
                     mon = emb.description.split("**")[1]
                     outb = mon.lower()
-                    hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}"')
+                    hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}" AND ServerID = {message.guild.id}')
                     hunts = hunts.fetchall()
                     desc = f"An outbreak of **{mon}** started! Gather, fellow hunters! \n"
                     for entry in hunts:
@@ -224,7 +224,7 @@ class Listener(commands.Cog):
                         mon = emb.description.split("**")[7]
                         print(mon)
                         outb = mon.lower()
-                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}"')
+                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}" AND ServerID = {message.guild.id}')
                         hunts = hunts.fetchall()
                         desc = f"**{mon}** is the connected Pokémon for the current Outbreak! Let's purify! \n"
                         for entry in hunts:
@@ -233,7 +233,7 @@ class Listener(commands.Cog):
                         
                         
         if message.channel.id == 1199807047294795878: #Psycord Spawn
-            if message.author.id == 1209829454667317288:
+            if message.author.id == 865576698137673739:
                 if len(message.embeds) > 0:
                     _embed = message.embeds[0]
                     if "A wild " in _embed.title:
