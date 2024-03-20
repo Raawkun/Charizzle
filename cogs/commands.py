@@ -1239,7 +1239,7 @@ class Coms(commands.Cog):
                     if mon in entry[1]:
                         self.db.execute(f'DELETE FROM PsyHunt WHERE Mon = "{mon}" AND UserID = {ctx.author.id}')
                         self.db.commit()
-                        await ctx.send(f"{ctx.author.display_name}, {mon.title} is now deleted from your Psycord huntlist.")
+                        await ctx.send(f"{ctx.author.display_name}, {mon.title()} is now deleted from your Psycord huntlist.")
         elif mode.lower() == "clear":
             self.db.execute(f'DELETE FROM PsyHunt WHERE UserID = {ctx.author.id}')
             self.db.commit()
