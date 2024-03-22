@@ -644,16 +644,6 @@ class Coms(commands.Cog):
 
     @commands.check(Basic_checker().check_management)
     @commands.command()
-    async def funds(self, ctx, money: int = None):
-        if money == None:
-            await ctx.send("Please add a money value next time.")
-        else:
-            self.db.execute(f'UPDATE Admin SET Funds = {money}')
-            self.db.commit()
-            await ctx.send("Set the current event funds to "+f'{money:,}')
-
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
     async def rare(self, ctx, id: int):
         receiver_channel = 825950637958234133
         announce = self.client.get_channel(receiver_channel)
@@ -1291,6 +1281,21 @@ class Coms(commands.Cog):
                             desc +=(f"```{_embed.color}```")
             await ctx.reply(desc)
         
+    @commands.command()
+    async def invite(self, ctx):
+        user = ctx.author
+        request = self.client.get_channel(1220801181123870932)
+        dm = ctx.guild.get_member(user.id)
+        desc = f"**{user.display_name}**, <@{user.id}>\n"
+        desc += f"From Server {ctx.guild.name} - {ctx.guild.id}, requested an invitation link."
+        _emb = await Auction_embed(self.client, title="**Invitation Request**",description=desc).setup_embed()
+        _emb.set_thumbnail(url=ctx.guild.icon.url)
+        _emb.set_image(url=user.display_avatar)
+        await dm.send("I've send your request to get approved. You'll receive a DM with an invite link from me, if the request gets approved.")
+        await ctx.reply("Request send. Please check your DMs.")
+        await request.send(embed=_emb)
+
+
 
 
 def setup(client):
