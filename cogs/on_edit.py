@@ -462,7 +462,12 @@ class On_Edit(commands.Cog):
                                     await announce.send(embed=embed)
                                 print("Explore: Ran away")
 
-
+        if before.author.id == 865576698137673739: ## Psycord
+            if before.pinned == after.pinned:
+                if (len(before.embeds) > 0):
+                    _embed = before.embeds[0]
+                    if "paralympics | members" in _embed.title.lower():
+                        print("A second page! wow!")
 
 
 def setup(client):

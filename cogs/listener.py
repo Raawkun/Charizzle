@@ -37,6 +37,20 @@ class Listener(commands.Cog):
         self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Channel = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
+    async def _psycord_team(self):
+        last = self.db.execute(f'SELECT TeamUpdate FROM Admin WHERE Server_ID = 825813023716540426')
+        last = last.fetchone()
+        last = last[0]
+        print(f'Last Psycord Team Update: {last}')
+        if (last+608400)>int(round(datetime.datetime.timestamp(datetime.datetime.utcnow()))+3600):
+            waiter = (last+608400)-int(round(datetime.datetime.timestamp(datetime.datetime.utcnow()))+3600)
+            print(f'Not ready, sleeping for {waiter}')
+            await asyncio.sleep(waiter)
+            channel = self.client.get_channel(1201300833304854538)
+            await channel.send(f"<@{1199086710659760189}>\nPlease use ``/team members``and scroll through the sites for the leaderboard.")
+            self.db.execute(f'UPDATE Admin SET TeamUpdate = {last+608400} WHERE Server_ID = 825813023716540426')
+            self.db.commit()
+
     #events
     @commands.Cog.listener()
     async def on_ready(self):
@@ -46,6 +60,7 @@ class Listener(commands.Cog):
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
         reminders = reminders.fetchall()
+        asyncio.create_task(self._psycord_team())
         print(reminders)
         for row in reminders:
             channelid = row[8]
@@ -129,8 +144,11 @@ class Listener(commands.Cog):
                 print(e)
                 print(member.display_name+" "+str(member.id))
         else:
-            desc = f"Hey, <@{member.id}>!\n"
-            desc += f"If you're a Straymons member, please head to <#827551577698730015> and do ``;clan``.\n Enjoy your stay!"
+            desc= f"Welcome to ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ <@{member.id}>\n.To get full access to the server, get verified in <#998249646923202610>!\n"
+            desc += f"If you are here to join the clan, then please post your `;stats` in <#825836268332122122>  and make sure you read the pins in there for clan requirements.\n"
+            desc += f"If you're a Straymons member, please head to <#825836268332122122> and do ``;clan``."
+            desc += f"Have a read of <#885070641638825984>  for information on the server including the rules.\n"
+            desc += f"Happy hunting!"
             channel = self.client.get_channel(825836238951022602)
             await channel.send(desc)
 
@@ -241,10 +259,39 @@ class Listener(commands.Cog):
                     if "a wild " in _embed.title.lower():
                         print("wild spawn")
                         await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
+                    if "paralympics | members" in _embed.title.lower():
+                        counter = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = 825813023716540426')
+                        counter = counter.fetchone()
+                        if (round(datetime.datetime.timestamp(datetime.datetime.now))+3600)>(counter+608400):
+                            desc = _embed.description
+                            desc = desc.split["Total TBs"](1)
+                            desc = desc.split[":"]
+                            i = 0
+                            for entry in desc:
+                                if i % 2 == 0:
+                                    name = entry.split["|"](0)
+                                    try:
+                                        old = self.db.execute(f'SELECT * FROM PsycordTeam WHERE User = "{name}"')
+                                        old = old.fetchone()
+                                        print(old)
+                                        oldpoint = int(old[1])
+                                        average = int(old[3])
+                                        count = int(old[4])+1
+                                    except:
+                                        oldpoint = 0
+                                        average = 0
+                                        count = 1
+                                    points = int(entry.split["|"](1)).replace(",", "")
+                                    print(f'{name}, {points}')
+                                    if average != 0:
+                                        newavg = (average*count-1)+points
+                                        average = newavg / (count+1)
+                                    self.db.execute(f'INSERT or REPLACE INTO PsycordTeam VALUES ("{name}", {points}, {oldpoint}, {average}, {count})')
+                                    self.db.commit()
                 
 
         ######## Straymon Checker
-        if message.channel.id == 827551577698730015:
+        if message.channel.id == 825836268332122122:
             if message.author.id == meow:
                 if len(message.embeds) > 0:
                     _embed = message.embeds[0]
@@ -260,7 +307,7 @@ class Listener(commands.Cog):
                                 target_role = message.guild.get_role(target_role)
                                 if target_role and target_role not in member.roles:
                                     await member.add_roles(target_role)
-                                    await message.channel.send(f"Welcome, <@{member.id}>! I've added the *Straymons Member* role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
+                                    await message.channel.send(f"Welcome, <@{member.id}>! I've added the <@&1203087005127548928> role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
                                 
         ########Rare Spawn Listener 825958388349272106 #bot-testing channel
         receiver_channel = self.db.execute(f'SELECT RareSpawn FROM Admin WHERE Server_ID = {message.guild.id}') # rare-spawns

@@ -1249,36 +1249,36 @@ class Coms(commands.Cog):
                 checker = 0
         if checker == 1:
             ref_msg = await ctx.channel.fetch_message(mid)
-            desc = f'Name:{ref_msg.author.display_name}\nID: {ref_msg.author.id}\nContent: {ref_msg.content}'
+            desc = f'Name:{ref_msg.author.display_name}\nID: {ref_msg.author.id}\nContent: {ref_msg.content}\n'
             if mode == "embed":
                 if (len(ref_msg.embeds) > 0):
                     _embed = ref_msg.embeds[0]
                     if ref_msg.content != None:
                         if _embed.description != None:
-                            desc +=("Desc:\n")
-                            desc +=(f"```{_embed.description}```\n")
+                            desc +=("```Desc:\n")
+                            desc +=(f"{_embed.description}```\n")
                         if _embed.footer != None:
-                            desc +=("Footer:\n")
-                            desc +=(f"```{_embed.footer}```\n")
+                            desc +=("```Footer:\n")
+                            desc +=(f"{_embed.footer.text}```\n")
                         if _embed.title != None:
-                            desc +=("Title:")
-                            desc +=(f"```{_embed.title}```\n")
+                            desc +=("```Title:")
+                            desc +=(f"{_embed.title}```\n")
                         if _embed.fields != None:
-                            desc +=("Fields:")
-                            desc +=(f"```{_embed.fields}```\n")
+                            desc +=("```Fields:")
+                            desc +=(f"{_embed.fields}```\n")
                         if _embed.image != None:
-                            desc +=("Image:")
-                            desc +=(f"```{_embed.image.url}```\n")
-                        if _embed.thumbnail != None:
-                            desc +=("Thumb:")
-                            desc +=(f"```{_embed.thumbnail.url}```\n")
-                        if _embed.author != None:
-                            desc +=("Author:")
-                            desc +=(f"```{_embed.author.name}```\n")
-                            desc +=(f"```{_embed.author.icon_url}```\n")
+                            desc +=("```Image:")
+                            desc +=(f"{_embed.image.url}```\n")
+                        if _embed.thumbnail.url != None:
+                            desc +=("```Thumb:")
+                            desc +=(f"{_embed.thumbnail.url}```\n")
+                        if _embed.author.name != None:
+                            desc +=("```Author:")
+                            desc +=(f"{_embed.author.name}\n")
+                            desc +=(f"{_embed.author.icon_url}```\n")
                         if _embed.color != None:
-                            desc +=(f"Color:\n")
-                            desc +=(f"```{_embed.color}```")
+                            desc +=(f"```Color:\n")
+                            desc +=(f"{_embed.color}```")
             await ctx.reply(desc)
         
     @commands.command()
