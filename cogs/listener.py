@@ -50,6 +50,10 @@ class Listener(commands.Cog):
             await channel.send(f"<@{1199086710659760189}>\nPlease use ``/team members``and scroll through the sites for the leaderboard.")
             self.db.execute(f'UPDATE Admin SET TeamUpdate = {last+608400} WHERE Server_ID = 825813023716540426')
             self.db.commit()
+        else:
+
+            channel = self.client.get_channel(1201300833304854538)
+            await channel.send(f"<@{1199086710659760189}>\nPlease use ``/team members``and scroll through the sites for the leaderboard.")
 
     #events
     @commands.Cog.listener()
