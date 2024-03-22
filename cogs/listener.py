@@ -234,9 +234,12 @@ class Listener(commands.Cog):
                         
         if message.channel.id == 1199807047294795878: #Psycord Spawn
             if message.author.id == 865576698137673739:
+                print("Psycord message")
                 if len(message.embeds) > 0:
+                    print("With embed")
                     _embed = message.embeds[0]
-                    if "A wild " in _embed.title:
+                    if "a wild " in _embed.title.lower():
+                        print("wild spawn")
                         await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                 
 
