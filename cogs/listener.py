@@ -256,13 +256,14 @@ class Listener(commands.Cog):
                         await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                         
                         
-        if message.channel.id == 1199807047294795878: #Psycord Spawn
+        if message.channel.id == 1201300833304854538: #Psycord Extra
             if message.author.id == 865576698137673739:
                 print("Psycord message")
                 if len(message.embeds) > 0:
                     print("With embed")
                     _embed = message.embeds[0]
                     if "paralympics | members" in _embed.title.lower():
+                        print("Members table")
                         counter = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = 825813023716540426')
                         counter = counter.fetchone()
                         if (round(datetime.datetime.timestamp(datetime.datetime.now))+3600)>(counter+608400):
