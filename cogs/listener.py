@@ -51,7 +51,6 @@ class Listener(commands.Cog):
             self.db.execute(f'UPDATE Admin SET TeamUpdate = {last+608400} WHERE Server_ID = 825813023716540426')
             self.db.commit()
         else:
-
             channel = self.client.get_channel(1201300833304854538)
             await channel.send(f"<@{1199086710659760189}>\nPlease use ``/team members``and scroll through the sites for the leaderboard.")
 
@@ -252,6 +251,9 @@ class Listener(commands.Cog):
                         for entry in hunts:
                             desc += f'<@{entry[0]}> '
                         await message.channel.send(desc)
+                    if "a wild " in emb.title.lower():
+                        print("wild spawn")
+                        await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                         
                         
         if message.channel.id == 1199807047294795878: #Psycord Spawn
@@ -260,9 +262,6 @@ class Listener(commands.Cog):
                 if len(message.embeds) > 0:
                     print("With embed")
                     _embed = message.embeds[0]
-                    if "a wild " in _embed.title.lower():
-                        print("wild spawn")
-                        await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                     if "paralympics | members" in _embed.title.lower():
                         counter = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = 825813023716540426')
                         counter = counter.fetchone()
@@ -292,6 +291,9 @@ class Listener(commands.Cog):
                                         average = newavg / (count+1)
                                     self.db.execute(f'INSERT or REPLACE INTO PsycordTeam VALUES ("{name}", {points}, {oldpoint}, {average}, {count})')
                                     self.db.commit()
+                                    self.db.execute(f'UPDATE Admin SET TeamUpdate = {counter+608400}')
+                                    self.db.commit()
+                                    print(f"Next Update will be at {counter+608400}")
                 
 
         ######## Straymon Checker
