@@ -149,7 +149,7 @@ class Listener(commands.Cog):
         else:
             desc= f"Welcome to ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ <@{member.id}>\n.To get full access to the server, get verified in <#998249646923202610>!\n"
             desc += f"If you are here to join the clan, then please post your `;stats` in <#825836268332122122>  and make sure you read the pins in there for clan requirements.\n"
-            desc += f"If you're a Straymons member, please head to <#825836268332122122> and do ``;clan``."
+            desc += f"If you're a member of a partnered clan, please head to <#825836268332122122> and do ``;clan``.\n"
             desc += f"Have a read of <#885070641638825984>  for information on the server including the rules.\n"
             desc += f"Happy hunting!"
             channel = self.client.get_channel(825836238951022602)
@@ -258,8 +258,8 @@ class Listener(commands.Cog):
                         
         if message.channel.id == 1201300833304854538: #Psycord Extra
             if message.author.id == 865576698137673739:
-                print(f"Message from {message.author}")
-                print(len(message.embeds))
+                #print(f"Message from {message.author}")
+                #print(len(message.embeds))
                 if len(message.embeds) > 0:
                     print("With embed")
                     _embed = message.embeds[0]
@@ -475,24 +475,25 @@ class Listener(commands.Cog):
                 if _embed.author:
                     if "Global Market " in _embed.author.name:
                         print("Market going on")
-                        number = _embed.footer.text.split("#")[1]
-                        number = int(number.split(" ")[0])
-                        #print(number)
-                        datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
-                        datdex = datdex.fetchall()
-                        #print(datdex[0][1])
-                        current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
-                        price = _embed.description.split("PokeCoin")[2]
-                        lowprice = price.split(" ")[1]
-                        lowprice = int(lowprice.replace(",", ""))
-                        #print(lowprice)
-                        amount = int(price.split(" ")[5])
-                        #print(amount)
-                        self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
-                        self.db.commit()
-                        await asyncio.sleep(3)
-                        datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
+                        if _embed.footer.text:
+                            number = _embed.footer.text.split("#")[1]
+                            number = int(number.split(" ")[0])
+                            #print(number)
+                            datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
+                            datdex = datdex.fetchall()
+                            #print(datdex[0][1])
+                            current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
+                            price = _embed.description.split("PokeCoin")[2]
+                            lowprice = price.split(" ")[1]
+                            lowprice = int(lowprice.replace(",", ""))
+                            #print(lowprice)
+                            amount = int(price.split(" ")[5])
+                            #print(amount)
+                            self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
+                            self.db.commit()
+                            await asyncio.sleep(3)
+                            datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                            datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
                             await message.channel.send(str(sender.display_name)+", you can use ;market again.")
                         elif datarem[0][15] == 2:

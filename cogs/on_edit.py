@@ -24,6 +24,7 @@ class On_Edit(commands.Cog):
         # 825950637958234133
         receiver_channel = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {before.guild.id}')
         receiver_channel = receiver_channel.fetchone()
+        #print(receiver_channel)
         receiver_channel = int(receiver_channel[4])
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -325,11 +326,61 @@ class On_Edit(commands.Cog):
                                 print("Explore: Ran away")
 
         if before.author.id == 865576698137673739: ## Psycord
-            if before.pinned == after.pinned:
-                if (len(before.embeds) > 0):
-                    _embed = before.embeds[0]
+            #if before.pinned == after.pinned:
+            if (len(before.embeds) > 0):
+                _embed = before.embeds[0]
+                if _embed.title:
                     if "paralympics | members" in _embed.title.lower():
-                        print("A second page! wow!")
+                        print("Members table")
+                        counter = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = 825813023716540426')
+                        counter = counter.fetchone()
+                        counter = int(counter[9])
+                        if int(round(datetime.datetime.timestamp(datetime.datetime.utcnow()))+3600)>(counter+608400):
+                            #print(_embed.description)
+                            desc = _embed.description.split("Total TBs")[1]
+                            desc = desc.split("\n")
+                            #print(desc)
+                            for entry in desc:
+                                #print(f"Entry: {entry}")
+                                try:
+                                    name = entry.split("|")[0]
+                                    #print(name)
+                                    if "🦁" in name:
+                                        name = name.split("🦁")[1]
+                                    elif "🐻" in name:
+                                        name = name.split("🐻")[1]
+                                    elif "🦊" in name:
+                                        name = name.split("🦊")[1]
+                                    elif "🐰" in name:
+                                        name = name.split("🐰")[1]
+                                    name = name.replace(" ", "")
+                                    #print(f"Name: {name}")
+                                    try:
+                                        old = self.db.execute(f'SELECT * FROM PsycordTeam WHERE User = "{name}"')
+                                        old = old.fetchone()
+                                        #print(old)
+                                        oldpoint = int(old[1])
+                                        average = int(old[3])
+                                        count = int(old[4])+1
+                                    except:
+                                        oldpoint = 0
+                                        average = 0
+                                        count = 1
+                                    points = int((entry.split("|")[1].replace(",", "")).replace(" ", ""))
+                                    print(f'{name}, {points}')
+                                    if average != 0:
+                                        newavg = (average*count-1)+points
+                                        average = newavg / (count+1)
+                                    elif average == 0 and count > 1:
+                                        newavg = oldpoint+points
+                                        average = int(round(newavg / 2))
+                                    self.db.execute(f'INSERT or REPLACE INTO PsycordTeam VALUES ("{name}", {points}, {oldpoint}, {average}, {count})')
+                                    self.db.commit()
+                                    self.db.execute(f'UPDATE Admin SET TeamUpdate = {counter+608400}')
+                                    self.db.commit()
+                                    print(f"Next Update will be at {counter+608400}")
+                                except Exception as e:
+                                    print(e)
 
 
 def setup(client):
