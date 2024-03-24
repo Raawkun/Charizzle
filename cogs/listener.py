@@ -47,12 +47,12 @@ class Listener(commands.Cog):
             print(f'Not ready, sleeping for {waiter}')
             await asyncio.sleep(waiter)
             channel = self.client.get_channel(1201300833304854538)
-            await channel.send(f"<@{1199086710659760189}>\nPlease use ``/team members``and scroll through the sites for the leaderboard.")
+            await channel.send(f"<@&1199086710659760189>\nPlease use ``/team members`` in <#1201300833304854538> and scroll through the sites for the leaderboard.")
             self.db.execute(f'UPDATE Admin SET TeamUpdate = {last+608400} WHERE Server_ID = 825813023716540426')
             self.db.commit()
         else:
             channel = self.client.get_channel(1201300833304854538)
-            await channel.send(f"<@{1199086710659760189}>\nPlease use ``/team members``and scroll through the sites for the leaderboard.")
+            await channel.send(f"<@&1199086710659760189>\nPlease use ``/team members`` in <#1201300833304854538> and scroll through the sites for the leaderboard.")
 
     #events
     @commands.Cog.listener()
@@ -233,7 +233,7 @@ class Listener(commands.Cog):
         outbreaks = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {message.guild.id}')
         outbreaks = outbreaks.fetchone()
         #print(outbreaks)
-        if message.channel.id == int(outbreaks[2]):
+        if message.channel.id == int(outbreaks[2]): #Feed channel
             print("Feed channel")
             if len(message.embeds) > 0:
                 emb = message.embeds[0]
@@ -256,7 +256,8 @@ class Listener(commands.Cog):
                         for entry in hunts:
                             desc += f'<@{entry[0]}> '
                         await message.channel.send(desc)
-        if message.channel.id == 1199807047294795878:
+        
+        if message.channel.id == 1199807047294795878: ##Psycord Channel
             if message.author.id == 865576698137673739:  
                 log = self.client.get_channel(1221565506902032444)
                 await log.send(f"{message}\n>>>\n{message.content}")
@@ -264,8 +265,8 @@ class Listener(commands.Cog):
                     emb = message.embeds[0]
                     await log.send(embed=emb)
                     if "a wild " in emb.title.lower():
-                                print("wild spawn")
-                                await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
+                        print("wild spawn")
+                        await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                         
                         
         if message.channel.id == 1201300833304854538: #Psycord Extra

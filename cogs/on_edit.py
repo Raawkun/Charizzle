@@ -327,6 +327,15 @@ class On_Edit(commands.Cog):
 
         if before.author.id == 865576698137673739: ## Psycord
             #if before.pinned == after.pinned:
+            if len(after.embeds) > 0:
+                print("An embed?")
+                log = self.client.get_channel(1221565506902032444)
+                emb = after.embeds[0]
+                await log.send(embed=emb)
+                if emb.title != None:
+                    if "a wild " in emb.title.lower():
+                            print("wild spawn")
+                            await after.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
             if (len(before.embeds) > 0):
                 _embed = before.embeds[0]
                 if _embed.title:
