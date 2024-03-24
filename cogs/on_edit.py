@@ -331,7 +331,7 @@ class On_Edit(commands.Cog):
                 print("An embed?")
                 log = self.client.get_channel(1221565506902032444)
                 emb = after.embeds[0]
-                await log.send(embed=emb)
+                await log.send(f"Original message: [Click here]({after.jump_url})\n",embed=emb)
                 if emb.title != None:
                     if "a wild " in emb.title.lower():
                             print("wild spawn")
