@@ -154,6 +154,11 @@ class Listener(commands.Cog):
             desc += f"Happy hunting!"
             channel = self.client.get_channel(825836238951022602)
             await channel.send(desc)
+    
+    @commands.Cog.listener()
+    async def on_interaction(interaction: disnake.Interaction):
+        if isinstance(interaction, disnake.MessageInteraction):
+            print(interaction.data.content)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -225,10 +230,10 @@ class Listener(commands.Cog):
                     await message.add_reaction(emoji2)
 
         ######## Psycord Outbreak Listener
-        outbreaks = self.db.execute(f'SELECT PsyhuntFeed FROM Admin WHERE Server_ID = {message.guild.id}')
+        outbreaks = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {message.guild.id}')
         outbreaks = outbreaks.fetchone()
         #print(outbreaks)
-        if message.channel.id == int(outbreaks[0]):
+        if message.channel.id == int(outbreaks[2]):
             print("Feed channel")
             if len(message.embeds) > 0:
                 emb = message.embeds[0]
@@ -251,9 +256,16 @@ class Listener(commands.Cog):
                         for entry in hunts:
                             desc += f'<@{entry[0]}> '
                         await message.channel.send(desc)
+        if message.channel.id == 1199807047294795878:
+            if message.author.id == 865576698137673739:  
+                log = self.client.get_channel(1221565506902032444)
+                await log.send(message)
+                if len(message.embeds) > 0:
+                    emb = message.embeds[0]
+                    await log.send(embed=emb)
                     if "a wild " in emb.title.lower():
-                        print("wild spawn")
-                        await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
+                                print("wild spawn")
+                                await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
                         
                         
         if message.channel.id == 1201300833304854538: #Psycord Extra
@@ -318,10 +330,10 @@ class Listener(commands.Cog):
                                     await message.channel.send(f"Welcome, <@{member.id}>! I've added the <@&1203087005127548928> role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
                                 
         ########Rare Spawn Listener 825958388349272106 #bot-testing channel
-        receiver_channel = self.db.execute(f'SELECT RareSpawn FROM Admin WHERE Server_ID = {message.guild.id}') # rare-spawns
+        receiver_channel = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {message.guild.id}') # rare-spawns
         receiver_channel = receiver_channel.fetchone()
         #print(receiver_channel)
-        receiver_channel = int(receiver_channel[0])
+        receiver_channel = int(receiver_channel[4])
         log_channel = 1164544776985653319
         if message.author.id == meow:
             announce_channel = self.client.get_channel(receiver_channel)
