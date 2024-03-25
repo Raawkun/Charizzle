@@ -260,7 +260,7 @@ class Listener(commands.Cog):
         if message.channel.id == 1199807047294795878: ##Psycord Channel
             if message.author.id == 865576698137673739:  
                 log = self.client.get_channel(1221565506902032444)
-                await log.send(f"{message}\n>>>\n{message.content}")
+                #await log.send(f"{message}\n>>>\n{message.content}")
                 if len(message.embeds) > 0:
                     emb = message.embeds[0]
                     await log.send(embed=emb)
