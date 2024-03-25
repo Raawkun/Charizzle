@@ -333,8 +333,10 @@ class On_Edit(commands.Cog):
                 emb = after.embeds[0]
                 await log.send(f"Original message: [Click here]({after.jump_url})\n",embed=emb)
                 if emb.title != None:
+                    await log.send(f"Original message: [Click here]({after.jump_url})\n",embed=emb)
                     if "a wild " in emb.title.lower():
                             print("wild spawn")
+                            await log.send(f"<@352224989367369729> Original message: [Click here]({after.jump_url})\n",embed=emb)
                             await after.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
             if (len(before.embeds) > 0):
                 _embed = before.embeds[0]
