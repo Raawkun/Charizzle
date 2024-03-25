@@ -19,6 +19,13 @@ client = commands.AutoShardedBot(intents = intents, command_prefix =commands.whe
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         return
+        
+@client.event
+async def on_type_error(self, message, error:
+    if isinstance(error, TypeError):
+    log = self.client.get_channel(1210143608355823647)
+    await log.send(f"Original message: [Click here](message.url)\n{message.content}")
+    return
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
