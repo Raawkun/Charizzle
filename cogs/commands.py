@@ -145,7 +145,7 @@ class Coms(commands.Cog):
             print(userid)
         else:
             print(userid)
-            userid = ctx.guild.get_member_named(userid)
+            userid = ctx.guild.get_member(int(userid))
             print(userid)
             userid = userid.id
             print("Its a name...")
