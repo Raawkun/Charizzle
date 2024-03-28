@@ -152,3 +152,4 @@ cython_debug/
 #.idea/
 key.txt
 database.db
+*.db

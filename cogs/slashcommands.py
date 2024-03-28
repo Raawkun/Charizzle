@@ -411,50 +411,34 @@ class SlashComs(commands.Cog):
         else:
             embed.add_field(name="**__Info Panel__**",value=info["text"])
             await ctx.send(embed=embed)
-
-    @commands.slash_command(name="setup", description="First setup of the bot (can be changed later too ofc).", options=
-                [Option(
-                    name="mode",
-                    description="What you want to set up.",
-                    choices=[OptionChoice("Gengar Changelog","chlo"),
-                             OptionChoice("Meow Rare Spawn","rasp"),
-                             OptionChoice("Psycord Outbreak Channel", "outbr"),
-                             OptionChoice("Psycord Wild Spawn Ping", "role")],
-                    required=False),
-                Option(
-                    name="set",
-                    description="Wether to set it up or delete.",
-                    type=3,
-                    choice=[OptionChoice("Set", "set"),
-                            OptionChoice("Delete","delete")],
-                    required=False
-                ),
-                Option(
-                    name="id",
-                    description="Channel/Role ID",
-                    type=4,
-                    required=False
-                )
-                             ])
     
-    async def _setup(self, ctx: disnake.ApplicationContext, mode = None, set = None, id = None):
+    @commands.check(Basic_checker().check_admin)
+    @commands.slash_command(name="setup", description="First setup of the bot (can be changed later too ofc).", 
+                            options=[Option(name="mode", description="What you want to set up.", choices=[OptionChoice("Gengar Changelog","chlo"), OptionChoice("Meow Rare Spawn","rasp"), OptionChoice("Psycord Outbreak Channel", "outbr"), OptionChoice("Psycord Wild Spawn Ping", "role")], required=False),
+                                Option(name="set", description="Wether to set it up or delete.", type=3, choices=[OptionChoice("Set", "set"), OptionChoice("Delete","delete")], required=False),
+                                Option(name="id", description="Channel/Role ID", type=4, required=False),
+                                
+                                    ])
+    
+    async def _setup(self, ctx, mode = None, set = None, id = None):
         guild = ctx.guild
-        ID = int(id)
-        if ID == None:
+        if id != None:
+            ID = int(id)
+        if id == None:
             ID = ctx.channel.id
         if mode == None:
             title = f"{self.client.user.display_name}'s Setup"
             desc = f"This command is to setup {self.client.user.display_name}'s various feeds or pings.\n"
             desc += f"The following can be set up in this server at the moment.\n\n**Functions:**\n"
             desc += f"> * __Changelog__: {self.client.user.display_name}'s updates.\n"
-            desc += f"> * Usage: ``changelog [set/remove] [channel id]``\n"
-            desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarwspawn [set/remove] [channel id]``\n"
+            desc += f"> * Usage: ``changelog [set/delete] [channel id]``\n"
+            desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarespawn [set/delete] [channel id]``\n"
             desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
-            desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
+            desc += f"> * Usage: ``outbreaks [set/delete] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
 
             _emb = await Auction_embed(self.client,title=title, description=desc).setup_embed()
 
-            await ctx.reply(embed = _emb)
+            await ctx.send(embed = _emb)
         elif mode == "chlo":
             if set == "set":
                 try:
@@ -463,16 +447,16 @@ class SlashComs(commands.Cog):
                     self.db.commit()
                     _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id} has set up this channel to receive <@{self.client.user.id}>'s update logs.").setup_embed()
                     await log.send(embed=_emb)
-                    await ctx.reply(f"Successfully set <#{ID}> as your changelog channel for my updates.")
+                    await ctx.send(f"Successfully set <#{ID}> as your changelog channel for my updates.")
                 except Exception as e:
                     asyncio.create_task(self.errorlog(e, ctx.author, guild, ID))
-                    await ctx.reply("Please enter a Channel ID.")
+                    await ctx.send("Please enter a Channel ID.")
             elif set == "delete":
                 self.db.execute(f'UPDATE Admin SET Changelog = NULL WHERE Server_ID = {guild.id}')
                 self.db.commit()
-                await ctx.reply(f"I've removed changelog updates from this server.")
+                await ctx.send(f"I've removed changelog updates from this server.")
             else:
-                await ctx.reply()
+                await ctx.send()
         elif mode == "rasp":
             if set == "set":
                 try:
@@ -481,16 +465,16 @@ class SlashComs(commands.Cog):
                     self.db.commit()
                     _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to receive PokéMeow rare spawns.").setup_embed()
                     await log.send(embed=_emb)
-                    await ctx.reply(f"Successfully set <#{ID}> as your rare spawn channel for PokéMeow.")
+                    await ctx.send(f"Successfully set <#{ID}> as your rare spawn channel for PokéMeow.")
                 except Exception as e:
                     asyncio.create_task(self.errorlog(e, ctx.author, guild, ID))
-                    await ctx.reply("Please enter a Channel ID.")
+                    await ctx.send("Please enter a Channel ID.")
             elif set == "delete":
                 self.db.execute(f'UPDATE Admin SET RareSpawn = NULL WHERE Server_ID = {guild.id}')
                 self.db.commit()
-                await ctx.reply(f"I've removed PokéMeow rare spawn updates from this server.")
+                await ctx.send(f"I've removed PokéMeow rare spawn updates from this server.")
             else:
-                await ctx.reply()
+                await ctx.send()
         elif mode == "outbr":
             if set == "set":
                 try:
@@ -500,16 +484,16 @@ class SlashComs(commands.Cog):
                     self.db.commit()
                     _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to check for Psycord outbreaks.").setup_embed()
                     await log.send(embed=_emb)
-                    await ctx.reply(f"Successfully set <#{ID}> as your Psycord outbreaks feed channel.")
+                    await ctx.send(f"Successfully set <#{ID}> as your Psycord outbreaks feed channel.")
                 except Exception as e:
                     asyncio.create_task(self.errorlog(e, ctx.author, guild, ID))
-                    await ctx.reply("Wrong usage, please refer back to the command usage.")
+                    await ctx.send("Wrong usage, please refer back to the command usage.")
             elif set == "delete":
                 self.db.execute(f'UPDATE Admin SET PsyhuntFeed = NULL WHERE Server_ID = {guild.id}')
                 self.db.commit()
-                await ctx.reply(f"I've removed psycord outbreak pings from this server.")
+                await ctx.send(f"I've removed psycord outbreak pings from this server.")
             else:
-                await ctx.reply()
+                await ctx.send()
         elif mode == "role":
             if set == "set":
                 try:
@@ -517,16 +501,16 @@ class SlashComs(commands.Cog):
                     self.db.execute(f'UPDATE Admin SET PsyhuntRole = {ID} WHERE Server_ID = {guild.id}')
                     self.db.commit()
                     _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up <@&{ID}> to ping for Psycord spawns.").setup_embed()
-                    await ctx.reply(embed=_emb)
+                    await ctx.send(embed=_emb)
                 except Exception as e:
                     asyncio.create_task(self.errorlog(e, ctx.author, guild, ID))
-                    await ctx.reply("Please enter a valid Role ID.")
+                    await ctx.send("Please enter a valid Role ID.")
             elif set == "delete":
                 self.db.execute(f'UPDATE Admin SET PsyhuntRole = NULL WHERE Server_ID = {guild.id}')
                 self.db.commit()
-                await ctx.reply(f"I've removed psycord wild spawn pings from this server.")
+                await ctx.send(f"I've removed psycord wild spawn pings from this server.")
         else:
-            await ctx.reply()
+            await ctx.send()
         
         
             

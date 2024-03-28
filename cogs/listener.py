@@ -154,11 +154,6 @@ class Listener(commands.Cog):
             desc += f"Happy hunting!"
             channel = self.client.get_channel(825836238951022602)
             await channel.send(desc)
-    
-    @commands.Cog.listener()
-    async def on_interaction(interaction: disnake.Interaction):
-        if isinstance(interaction, disnake.MessageInteraction):
-            print(interaction.data.content)
 
     @commands.Cog.listener()
     async def on_message(self, message):
