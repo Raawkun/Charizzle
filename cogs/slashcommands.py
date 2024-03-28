@@ -412,7 +412,7 @@ class SlashComs(commands.Cog):
             embed.add_field(name="**__Info Panel__**",value=info["text"])
             await ctx.send(embed=embed)
 
-    @commands.slash(name="setup", description="First setup of the bot (can be changed later too ofc).", options=
+    @commands.slash_command(name="setup", description="First setup of the bot (can be changed later too ofc).", options=
                 [Option(
                     name="Mode",
                     description="What you want to set up.",
