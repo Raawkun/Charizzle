@@ -414,7 +414,7 @@ class SlashComs(commands.Cog):
 
     @commands.slash_command(name="setup", description="First setup of the bot (can be changed later too ofc).", options=
                 [Option(
-                    name="Mode",
+                    name="mode",
                     description="What you want to set up.",
                     choices=[OptionChoice("Gengar Changelog","chlo"),
                              OptionChoice("Meow Rare Spawn","rasp"),
@@ -430,19 +430,19 @@ class SlashComs(commands.Cog):
                     required=False
                 ),
                 Option(
-                    name="ID",
+                    name="id",
                     description="Channel/Role ID",
                     type=4,
                     required=False
                 )
                              ])
     
-    async def _setup(self, ctx: disnake.ApplicationContext, Mode = None, set = None, ID = None):
+    async def _setup(self, ctx: disnake.ApplicationContext, mode = None, set = None, id = None):
         guild = ctx.guild
-        ID = int(ID)
+        ID = int(id)
         if ID == None:
             ID = ctx.channel.id
-        if Mode == None:
+        if mode == None:
             title = f"{self.client.user.display_name}'s Setup"
             desc = f"This command is to setup {self.client.user.display_name}'s various feeds or pings.\n"
             desc += f"The following can be set up in this server at the moment.\n\n**Functions:**\n"
@@ -455,7 +455,7 @@ class SlashComs(commands.Cog):
             _emb = await Auction_embed(self.client,title=title, description=desc).setup_embed()
 
             await ctx.reply(embed = _emb)
-        elif Mode == "chlo":
+        elif mode == "chlo":
             if set == "set":
                 try:
                     log = self.client.get_channel(ID)
@@ -473,7 +473,7 @@ class SlashComs(commands.Cog):
                 await ctx.reply(f"I've removed changelog updates from this server.")
             else:
                 await ctx.reply()
-        elif Mode == "rasp":
+        elif mode == "rasp":
             if set == "set":
                 try:
                     log = self.client.get_channel(ID)
@@ -491,7 +491,7 @@ class SlashComs(commands.Cog):
                 await ctx.reply(f"I've removed PokéMeow rare spawn updates from this server.")
             else:
                 await ctx.reply()
-        elif Mode == "outbr":
+        elif mode == "outbr":
             if set == "set":
                 try:
                     log = self.client.get_channel(ID)
@@ -510,7 +510,7 @@ class SlashComs(commands.Cog):
                 await ctx.reply(f"I've removed psycord outbreak pings from this server.")
             else:
                 await ctx.reply()
-        elif Mode == "role":
+        elif mode == "role":
             if set == "set":
                 try:
                     log = guild.get_role(ID)
