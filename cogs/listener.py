@@ -448,7 +448,7 @@ class Listener(commands.Cog):
                         embed.set_image(dex[15])
                         await announce_channel.send(embed=embed)
                 except Exception as e:
-                    print("No valid Chamber, its too easy: "+e)
+                    print(f"No valid Chamber, its too easy: {e}")
             if message.reference:
                 ref_msg = await message.channel.fetch_message(message.reference.message_id)
                 sender = ref_msg.author
