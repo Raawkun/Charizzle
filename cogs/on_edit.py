@@ -36,7 +36,6 @@ class On_Edit(commands.Cog):
             if before.pinned != after.pinned:
                 print(f"{before.author.display_name} pinned a message.")
             if before.pinned == after.pinned:
-                print("No pins")
                 ##### Rare Spawn #####
                 Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
                 #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
@@ -67,6 +66,7 @@ class On_Edit(commands.Cog):
                             
                             if _embed.description:
                                 if _embed.footer.text:
+                                    print("No pins")
                                     #print("Oh, a footer!")
                                     if "fished out a" in _embed.description:
                                         if "shiny" in _embed.description.lower():
