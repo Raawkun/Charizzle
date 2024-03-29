@@ -32,8 +32,11 @@ class On_Edit(commands.Cog):
             announce = self.client.get_channel(int(receiver_channel))
         log = self.client.get_channel(1210143608355823647)
         
-        if before.author.id == 664508672713424926:
+        if before.author.id == 664508672713424926:  #Meow
+            if before.pinned != after.pinned:
+                print(f"{before.author.display_name} pinned a message.")
             if before.pinned == after.pinned:
+                print("No pins")
                 ##### Rare Spawn #####
                 Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
                 #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
