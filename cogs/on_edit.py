@@ -55,7 +55,7 @@ class On_Edit(commands.Cog):
                                     print("SHINY FISH!!!")
                                     await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
                             except:
-                                print("Message edited. Theres no image or no embed.")
+                                return
                             if before.reference:
                                 ref_msg = await before.channel.fetch_message(before.reference.message_id)
                                 sender = ref_msg.author
