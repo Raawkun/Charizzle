@@ -46,14 +46,14 @@ class On_Edit(commands.Cog):
                             #print("Captcha, rude")
                             return
                         else:
-                            try:
-                                _embed = after.embeds[0]
-                                color = _embed.color
-                            except:
-                                print("Message edited. No Embed")
+                            _embed = after.embeds[0]
+                            color = _embed.color
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data = data.fetchall()
+                                if data[1][11] == 1:
+                                    print("SHINY FISH!!!")
+                                    await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
                             except:
                                 print("Message edited. Theres no image or no embed.")
                             if before.reference:
@@ -69,9 +69,9 @@ class On_Edit(commands.Cog):
                                     #print("No pins")
                                     #print("Oh, a footer!")
                                     if "fished out a" in _embed.description:
-                                        if "shiny" in _embed.description.lower():
+                                        if data[0][11] == 1:
                                             await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
-                                        elif "golden" in _embed.description.lower():
+                                        elif data[0][12]:
                                             await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
                                     if "token" in _embed.footer.text:
                                         #print("Token")

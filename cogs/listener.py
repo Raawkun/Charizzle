@@ -464,17 +464,27 @@ class Listener(commands.Cog):
                     datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                     datarem = datarem.fetchall()
                     if datarem[0][15] == 1:
-                        await message.channel.send(str(sender.display_name)+", you can now use your catchbot again.")
+                        desc = f"{sender.display_name}, you can now use your catchbot again."
+                        desc = desc[::-1]
+                        await message.channel.send(desc)
                     elif datarem[0][15] == 2:
-                        await message.channel.send("<@"+str(sender.id)+"> - You can now use your catchbot again.")
+                        desc = ", you can now use your catchbot again."
+                        desc = desc[::-1]
+                        desc += f'<@+{str(sender.id)}>'
+                        await message.channel.send(desc)
                 if "holding an egg" in message.content.lower() or "egg is not ready" in message.content.lower():
                     await asyncio.sleep(5)
                     datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                     datarem = datarem.fetchall()
                     if datarem[0][15] == 1:
-                        await message.channel.send(str(sender.display_name)+", you can use ;egg again.")
+                        desc = f"{sender.display_name}, you can now use ;egg again."
+                        desc = desc[::-1]
+                        await message.channel.send(desc)
                     elif datarem[0][15] == 2:
-                        await message.channel.send("<@"+str(sender.id)+"> - You can use ;egg again.")
+                        desc = ", you can now use ;egg again."
+                        desc = desc[::-1]
+                        desc += f'<@+{str(sender.id)}>'
+                        await message.channel.send(desc)
             if (len(message.embeds) > 0):
                 _embed = message.embeds[0]
                 color = _embed.color
@@ -503,9 +513,14 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can use ;market again.")
+                            desc = f"{sender.display_name}, you can now use ;market again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][15] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can use ;market again.")
+                            desc = ", you can now use ;market again."
+                            desc = desc[::-1]
+                            desc += f'<@+{str(sender.id)}>'
+                            await message.channel.send(desc)
                     if "Counters" in _embed.author.name:
                         if _embed.fields:
                             for field in _embed.fields:
@@ -610,26 +625,44 @@ class Listener(commands.Cog):
                         #print(database)
                         if databaserep:
                             if databaserep[0][3] == 1:
+                                boost = "boost expired!"
+                                hey = "Hey, your"
+                                boost = boost[::-1]
+                                hey = hey[::-1]
+                                user = f'<@{str(sender.id)}>'
                                 #print("repel activated"+str(database[0][3]))
                                 if "super_repel" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
+                                    await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
                                 if "max_repel" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
+                                    await message.channel.send(f"{boost} <:maxrepel:1165230966164434974> {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
                                 if ":repel" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                                    await message.channel.send(f"{boost} <:repel:1164286208822738967> {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:repel:1164286208822738967> boost expired!")
                                 if ":fluffy" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:fluffytail:1206495940572225557> boost expired!")
+                                    await message.channel.send(f"{boost} <:fluffytail:1206495940572225557> {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:fluffytail:1206495940572225557> boost expired!")
                                 if ":pokedoll" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:pokedoll:1206496050450403358> boost expired!")
+                                    await message.channel.send(f"{boost} <:pokedoll:1206496050450403358> {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:pokedoll:1206496050450403358> boost expired!")
                                 if ":poketoy" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:poketoy:1206496067865022464> boost expired!")
+                                    await message.channel.send(f"{boost} <:poketoy:1206496067865022464> {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:poketoy:1206496067865022464> boost expired!")
                             else: return
                             if databaserep[0][2] == 1:
+                                boost = "boost expired!"
+                                hey = "Hey, your"
+                                boost = boost[::-1]
+                                hey = hey[::-1]
+                                user = f'<@{str(sender.id)}>'
                                 #print("grazz activated"+str(database[0][2]))
                                 if "goldenrazz" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+                                    await message.channel.send(f"{boost} <:grazz:1164341690442727464>  {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
                                 if "honey" in message.content and "boost" in message.content:
-                                    await message.channel.send("<@"+str(sender.id)+"> Hey, your <:honey:1165231049287155793> boost expired!")
+                                    await message.channel.send(f"{boost} <:honey:1165231049287155793> {hey} {user}")
+                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:honey:1165231049287155793> boost expired!")
                             else: return
 
                     
@@ -637,27 +670,54 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][10] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can now use </pokemon:1015311085441654824> again.")
+                            desc = "again."
+                            desc = desc[::-1]
+                            desc1=str(sender.display_name)+", you can now use "
+                            desc1=desc1[::-1]
+                            await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1}")
+                            #await message.channel.send(str(sender.display_name)+" - You can now use </pokemon:1015311085441654824> again.")
                         elif datarem[0][10] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can now use </pokemon:1015311085441654824> again.")
+                            user = f"<@{str(sender.id)}>"
+                            desc = "again."
+                            desc = desc[::-1]
+                            desc1=", you can now use "
+                            desc1=desc1[::-1]
+                            await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1} {user}")
+                            #await message.channel.send("<@"+str(sender.id)+"> - You can now use </pokemon:1015311085441654824> again.")
                 if _embed.description:
                     if "cast out a" in _embed.description:
                         await asyncio.sleep(24.2)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][11] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can now use </fish spawn:1015311084812501026> again.")
+                            desc = "again."
+                            desc = desc[::-1]
+                            desc1=str(sender.display_name)+", you can now use "
+                            desc1=desc1[::-1]
+                            await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1}")
+                            #await message.channel.send(str(sender.display_name)+"" - You can now use </fish spawn:1015311084812501026> again.")
                         elif datarem[0][11] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can now use </fish spawn:1015311084812501026> again.")
+                            user = f"<@{str(sender.id)}>"
+                            desc = "again."
+                            desc = desc[::-1]
+                            desc1=", you can now use "
+                            desc1=desc1[::-1]
+                            await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1} {user}")
+                            #await message.channel.send("<@"+str(sender.id)+"> - You can now use </fish spawn:1015311084812501026> again.")
                     
                     if "from a swap" in _embed.description:
                         await asyncio.sleep(6)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can now swap again.")
+                            desc = str(sender.display_name)+", you can now swap again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][15] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can now swap again.")
+                            user = f"<@{str(sender.id)}>"
+                            desc = ", you can now swap again."
+                            desc = desc[::-1]+user
+                            await message.channel.send(desc)
                 if _embed.title:
                     if "quests for rewards!" in _embed.title:
                         #print("Quest screen from "+sender.display_name)
@@ -665,9 +725,14 @@ class Listener(commands.Cog):
                         datarem = datarem.fetchall()
                         await asyncio.sleep(6)
                         if datarem[0][13] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can now check your quests again.")
+                            desc = str(sender.display_name)+", you can now check your quests again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][13] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can check your quests again.")
+                            user = f"<@{str(sender.id)}>"
+                            desc = ", you can now check your quests again."
+                            desc = desc[::-1]+user
+                            await message.channel.send(desc)
                         if _embed.footer:
                             if "Next quest in" in _embed.footer.text:
                                 #print("Oh, a quest?")
@@ -714,9 +779,14 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can now use your catchbot again.")
+                            desc = str(sender.display_name)+", you can now use your catchbot again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][15] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can now use your catchbot again.")
+                            user = f'<@{str(sender.id)}>'
+                            desc = ", you can now use your catchbot again."
+                            desc = desc[::-1]+user
+                            await message.channel.send(desc)
                 
                 
                 if _embed.footer.text:
@@ -726,9 +796,14 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][12] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can now battle again.")
+                            desc = str(sender.display_name)+", you can now battle again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][12] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can now battle again.")
+                            user = f'<@{sender.id}>'
+                            desc = ", you can now battle again."
+                            desc = desc[::-1]+user
+                            await message.channel.send(desc)
                     if "buddy help" in _embed.footer.text:
                         print("Buddy Window")
                         await asyncio.sleep(5)
@@ -738,13 +813,22 @@ class Listener(commands.Cog):
                             if _embed.fields:
                                 for field in _embed.fields:
                                     if field.name == "Friendship":
-                                        await message.channel.send(str(sender.display_name)+", you can now use </buddy current-buddy:1015311084422434823> again.")
+                                        desc = str(sender.display_name)+", you can now use ;buddy again."
+                                        desc = desc[::-1]
+                                        await message.channel.send(desc)
                             if _embed.author:
                                 if "Buddy Moves" in _embed.author.name:
-                                    await message.channel.send(str(sender.display_name)+", you can now use </moves view:1015311085441654817> again.")
-                            await message.channel.send(str(sender.display_name)+", you can now use </buddy current-buddy:1015311084422434823> again.")
+                                    desc = str(sender.display_name)+", you can now use ;moves again."
+                                    desc = desc[::-1]
+                                    await message.channel.send(desc)
+                            desc = str(sender.display_name)+", you can now use ;buddy again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][15] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can now use </buddy current-buddy:1015311084422434823> again.")
+                            user = f'<@{sender.id}>'
+                            desc = ", you can now use ;buddy again."
+                            desc = desc[::-1]+user
+                            await message.channel.send(desc)
 
                         
 
@@ -754,9 +838,14 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can use ;egg again.")
+                            desc = f"{sender.display_name}, you can now use ;egg again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][15] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can use ;egg again.")
+                            desc = ", you can now use ;egg again."
+                            desc = desc[::-1]
+                            desc += f'<@+{str(sender.id)}>'
+                            await message.channel.send(desc)
                     if "hatched" in _embed.author.name:
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_egg = data_egg.fetchall()
@@ -800,9 +889,14 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            await message.channel.send(str(sender.display_name)+", you can use ;egg again.")
+                            desc = f"{sender.display_name}, you can now use ;egg again."
+                            desc = desc[::-1]
+                            await message.channel.send(desc)
                         elif datarem[0][15] == 2:
-                            await message.channel.send("<@"+str(sender.id)+"> - You can use ;egg again.")
+                            desc = ", you can now use ;egg again."
+                            desc = desc[::-1]
+                            desc += f'<@+{str(sender.id)}>'
+                            await message.channel.send(desc)
 
                         
                     if "opened " in _embed.author.name:
