@@ -1,4 +1,0 @@
-- Reverted the effects of April 01.
-- Added a new layout to the reminders.
-- Added a new toggle for reminders: Emote only mode! Check /toggle to find it!
-- Fixed spelling mistakes.
