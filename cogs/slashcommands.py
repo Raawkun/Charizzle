@@ -143,7 +143,7 @@ class SlashComs(commands.Cog):
                 self.db.commit()
                 await ctx.send("Toggled off.", ephemeral= True)
             elif switch == "emoreminder0":
-                self.db.execute(f'UPDATE Toggle SET Reminder = 0 WHERE User-ID = {ctx.author.id}')
+                self.db.execute(f'UPDATE Toggle SET Reminder = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled your reminders to text style.", ephemeral= True)
             elif switch == "emoreminder1":
