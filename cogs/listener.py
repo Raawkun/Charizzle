@@ -788,7 +788,7 @@ class Listener(commands.Cog):
                             # desc1=desc1[::-1]
                             # await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1}")
                             if datarem[0][6]==0:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}, you can use</fish spawn:1015311084812501026> again.'
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can use</fish spawn:1015311084812501026> again.'
                             else:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fish"]}'
                             await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
@@ -833,7 +833,7 @@ class Listener(commands.Cog):
                         datarem = datarem.fetchall()
                         await asyncio.sleep(6)
                         if datarem[0][6]==0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}, you can now check your quests again.'
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now check your quests again.'
                         else:
                             desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}'
                         if datarem[0][13] == 1:
