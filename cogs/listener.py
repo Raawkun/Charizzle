@@ -9,6 +9,7 @@ from main import client
 from utility.rarity_db import poke_rarity, chambers
 from utility.egglist import eggexcl
 from utility.drop_chance import drop_pos, buyin
+from utility.info_dict import rem_emotes
 import datetime
 from utility.embed import Custom_embed
 
@@ -54,6 +55,34 @@ class Listener(commands.Cog):
             channel = self.client.get_channel(1201300833304854538)
             await channel.send(f"<@&1199086710659760189>\nPlease use ``/team members`` in <#1201300833304854538> and scroll through the sites for the leaderboard.")
 
+    async def _changelog(self):
+        log = self.client.get_channel(1210143608355823647)
+        print("Changelog check!")
+        try:
+            print("Opening that file!")
+            with open("changelog.txt", 'r') as file:
+            # Read the content of the file
+                file_content = file.read()
+                print(file_content)
+            # Check if the file contains any words
+            
+            if any(word.isalpha() for word in file_content.split()):
+                # If the file contains words, send the content in a message
+                channels = self.db.execute(f'SELECT Changelog FROM Admin WHERE Changelog != 0')
+                channels = channels.fetchall()
+                print(channels)
+                for entry in channels:
+                    print(entry)
+                    entry = int(entry[0])
+                    channel = self.client.get_channel(entry)
+                    await channel.send(f"Time for a new changelog! Get ready:\n```\n{file_content}\n```\nAnd that's all for today!")
+                open("changelog.txt",'w')
+                pass
+            else:
+                await log.send(f"The file 'changelog.txt' does not contain any words.")
+        except FileNotFoundError:
+            await log.send(f"File 'changelog.txt' not found.")
+
     #events
     @commands.Cog.listener()
     async def on_ready(self):
@@ -61,9 +90,10 @@ class Listener(commands.Cog):
         print("------")
         print(datetime.datetime.timestamp(datetime.datetime.now()))
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
+        asyncio.create_task(self._changelog())
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
         reminders = reminders.fetchall()
-        asyncio.create_task(self._psycord_team())
+        #asyncio.create_task(self._psycord_team())
         print(reminders)
         for row in reminders:
             channelid = row[8]
@@ -367,9 +397,17 @@ class Listener(commands.Cog):
                 datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                 datarem = datarem.fetchall()
                 if datarem[0][15] == 1:
-                    await message.channel.send("You can now use </give fun-item:1015311084812501028> again.")
+                    if datarem[0][6]==0:
+                        desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </give fun-item:1015311084812501028> again.'
+                    else:
+                        desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["give"]}'
+                    await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                 elif datarem[0][15] == 2:
-                    await message.channel.send("<@"+str(sender.id)+"> - You can now use </give fun-item:1015311084812501028> again.")
+                    if datarem[0][6]==0:
+                        desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </give fun-item:1015311084812501028> again.'
+                    else:
+                        desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["give"]}'
+                    await message.channel.send(desc)
             if "s trainer icon!" in message.content:
                 iconname = message.content.split("unlocked ")[1]
                 icon = iconname.split(":")[2]
@@ -464,26 +502,36 @@ class Listener(commands.Cog):
                     datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                     datarem = datarem.fetchall()
                     if datarem[0][15] == 1:
-                        desc = f"{sender.display_name}, you can now use your catchbot again."
-                        desc = desc[::-1]
-                        await message.channel.send(desc)
+                        if datarem[0][6] == 0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use your catchbot again.'
+                            #desc = desc[::-1]
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]}'
+                        await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                     elif datarem[0][15] == 2:
-                        desc = ", you can now use your catchbot again."
-                        desc = desc[::-1]
-                        desc += f'<@+{str(sender.id)}>'
+                        if datarem[0][6] == 0:
+                            desc = f'{rem_emotes["remind"]} - <@{str(sender.id)}>, you can now use your catchbot again.'
+                            #desc = desc[::-1]
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]}'
                         await message.channel.send(desc)
                 if "holding an egg" in message.content.lower() or "egg is not ready" in message.content.lower():
                     await asyncio.sleep(5)
                     datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                     datarem = datarem.fetchall()
                     if datarem[0][15] == 1:
-                        desc = f"{sender.display_name}, you can now use ;egg again."
-                        desc = desc[::-1]
-                        await message.channel.send(desc)
+                        if datarem[0][6] == 0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;egg again.'
+                            #desc = desc[::-1]
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]}'
+                        await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                     elif datarem[0][15] == 2:
-                        desc = ", you can now use ;egg again."
-                        desc = desc[::-1]
-                        desc += f'<@+{str(sender.id)}>'
+                        if datarem[0][6] == 0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;egg again.'
+                            #desc = desc[::-1]
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]}'
                         await message.channel.send(desc)
             if (len(message.embeds) > 0):
                 _embed = message.embeds[0]
@@ -513,13 +561,18 @@ class Listener(commands.Cog):
                             datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                             datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            desc = f"{sender.display_name}, you can now use ;market again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            if datarem[0][6] == 0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;market again.'
+                                #desc = desc[::-1]
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["market"]}'
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][15] == 2:
-                            desc = ", you can now use ;market again."
-                            desc = desc[::-1]
-                            desc += f'<@+{str(sender.id)}>'
+                            if datarem[0][6] == 0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;market again.'
+                                #desc = desc[::-1]
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["market"]}'
                             await message.channel.send(desc)
                     if "Counters" in _embed.author.name:
                         if _embed.fields:
@@ -625,44 +678,68 @@ class Listener(commands.Cog):
                         #print(database)
                         if databaserep:
                             if databaserep[0][3] == 1:
-                                boost = "boost expired!"
-                                hey = "Hey, your"
-                                boost = boost[::-1]
-                                hey = hey[::-1]
-                                user = f'<@{str(sender.id)}>'
+                                # boost = "boost expired!"
+                                # hey = "Hey, your"
+                                # boost = boost[::-1]
+                                # hey = hey[::-1]
+                                # user = f'<@{str(sender.id)}>'
                                 #print("repel activated"+str(database[0][3]))
                                 if "super_repel" in message.content and "boost" in message.content:
-                                    await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:superrepel:1165230878474113025> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["superrepel"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["superrepel"]}'
                                 if "max_repel" in message.content and "boost" in message.content:
-                                    await message.channel.send(f"{boost} <:maxrepel:1165230966164434974> {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:maxrepel:1165230966164434974> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["maxrepel"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["maxrepel"]}'
                                 if ":repel" in message.content and "boost" in message.content:
-                                    await message.channel.send(f"{boost} <:repel:1164286208822738967> {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:repel:1164286208822738967> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["repel"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["repel"]}'
                                 if ":fluffy" in message.content:
-                                    await message.channel.send(f"{boost} <:fluffytail:1206495940572225557> {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:fluffytail:1206495940572225557> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["fluffy"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fluffy"]}'
                                 if ":pokedoll" in message.content:
-                                    await message.channel.send(f"{boost} <:pokedoll:1206496050450403358> {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:pokedoll:1206496050450403358> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["pokedoll"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["pokedoll"]}'
                                 if ":poketoy" in message.content:
-                                    await message.channel.send(f"{boost} <:poketoy:1206496067865022464> {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:poketoy:1206496067865022464> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["poketoy"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["poketoy"]}'
                             else: return
                             if databaserep[0][2] == 1:
-                                boost = "boost expired!"
-                                hey = "Hey, your"
-                                boost = boost[::-1]
-                                hey = hey[::-1]
-                                user = f'<@{str(sender.id)}>'
+                                # boost = "boost expired!"
+                                # hey = "Hey, your"
+                                # boost = boost[::-1]
+                                # hey = hey[::-1]
+                                # user = f'<@{str(sender.id)}>'
                                 #print("grazz activated"+str(database[0][2]))
                                 if "goldenrazz" in message.content and "boost" in message.content:
-                                    await message.channel.send(f"{boost} <:grazz:1164341690442727464>  {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:grazz:1164341690442727464> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["grazz"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["grazz"]}'
                                 if "honey" in message.content and "boost" in message.content:
-                                    await message.channel.send(f"{boost} <:honey:1165231049287155793> {hey} {user}")
-                                    #await message.channel.send("<@"+str(sender.id)+"> Hey, your <:honey:1165231049287155793> boost expired!")
+                                    if databaserep[0][6]==0:
+                                        #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["honey"]} boost expired!'
+                                    else:
+                                        desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["honey"]}'
                             else: return
 
                     
@@ -670,53 +747,77 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][10] == 1:
-                            desc = "again."
-                            desc = desc[::-1]
-                            desc1=str(sender.display_name)+", you can now use "
-                            desc1=desc1[::-1]
-                            await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1}")
-                            #await message.channel.send(str(sender.display_name)+" - You can now use </pokemon:1015311085441654824> again.")
+                            # desc = "again."
+                            # desc = desc[::-1]
+                            # desc1=str(sender.display_name)+", you can now use "
+                            # desc1=desc1[::-1]
+                            # await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1}")
+                            if datarem[0][6]==0:
+                                desc=f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </pokemon:1015311085441654824> again.'
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["spawn"]}'
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][10] == 2:
-                            user = f"<@{str(sender.id)}>"
-                            desc = "again."
-                            desc = desc[::-1]
-                            desc1=", you can now use "
-                            desc1=desc1[::-1]
-                            await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1} {user}")
-                            #await message.channel.send("<@"+str(sender.id)+"> - You can now use </pokemon:1015311085441654824> again.")
+                            # user = f"<@{str(sender.id)}>"
+                            # desc = "again."
+                            # desc = desc[::-1]
+                            # desc1=", you can now use "
+                            # desc1=desc1[::-1]
+                            # await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1} {user}")
+                            if datarem[0][6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </pokemon:1015311085441654824> again.'
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["spawn"]}'
+                            await message.channel.send(desc)
                 if _embed.description:
                     if "cast out a" in _embed.description:
                         await asyncio.sleep(24.2)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][11] == 1:
-                            desc = "again."
-                            desc = desc[::-1]
-                            desc1=str(sender.display_name)+", you can now use "
-                            desc1=desc1[::-1]
-                            await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1}")
-                            #await message.channel.send(str(sender.display_name)+"" - You can now use </fish spawn:1015311084812501026> again.")
+                            # desc = "again."
+                            # desc = desc[::-1]
+                            # desc1=str(sender.display_name)+", you can now use "
+                            # desc1=desc1[::-1]
+                            # await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1}")
+                            if datarem[0][6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}, you can use</fish spawn:1015311084812501026> again.'
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fish"]}'
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][11] == 2:
-                            user = f"<@{str(sender.id)}>"
-                            desc = "again."
-                            desc = desc[::-1]
-                            desc1=", you can now use "
-                            desc1=desc1[::-1]
-                            await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1} {user}")
-                            #await message.channel.send("<@"+str(sender.id)+"> - You can now use </fish spawn:1015311084812501026> again.")
+                            # user = f"<@{str(sender.id)}>"
+                            # desc = "again."
+                            # desc = desc[::-1]
+                            # desc1=", you can now use "
+                            # desc1=desc1[::-1]
+                            # await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1} {user}")
+                            if datarem[0][6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </fish spawn:1015311084812501026> again.'
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fish"]}'
+                            await message.channel.send(desc)
                     
                     if "from a swap" in _embed.description:
                         await asyncio.sleep(6)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            desc = str(sender.display_name)+", you can now swap again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            # desc = str(sender.display_name)+", you can now swap again."
+                            # desc = desc[::-1]
+                            if datarem[0][6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now ;swap again.'
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["swap"]}'
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][15] == 2:
-                            user = f"<@{str(sender.id)}>"
-                            desc = ", you can now swap again."
-                            desc = desc[::-1]+user
+                            # user = f"<@{str(sender.id)}>"
+                            # desc = ", you can now swap again."
+                            # desc = desc[::-1]+user
+                            if datarem[0][6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now ;swap again.'
+                            else:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["swap"]}'
                             await message.channel.send(desc)
                 if _embed.title:
                     if "quests for rewards!" in _embed.title:
@@ -724,14 +825,13 @@ class Listener(commands.Cog):
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         await asyncio.sleep(6)
+                        if datarem[0][6]==0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}, you can now check your quests again.'
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}'
                         if datarem[0][13] == 1:
-                            desc = str(sender.display_name)+", you can now check your quests again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][13] == 2:
-                            user = f"<@{str(sender.id)}>"
-                            desc = ", you can now check your quests again."
-                            desc = desc[::-1]+user
                             await message.channel.send(desc)
                         if _embed.footer:
                             if "Next quest in" in _embed.footer.text:
@@ -778,14 +878,13 @@ class Listener(commands.Cog):
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
+                        if datarem[0][6]==0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can use your ;catchbot again.'
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]}'
                         if datarem[0][15] == 1:
-                            desc = str(sender.display_name)+", you can now use your catchbot again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][15] == 2:
-                            user = f'<@{str(sender.id)}>'
-                            desc = ", you can now use your catchbot again."
-                            desc = desc[::-1]+user
                             await message.channel.send(desc)
                 
                 
@@ -795,39 +894,30 @@ class Listener(commands.Cog):
                         await asyncio.sleep(59)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
+                        if datarem[0][6]==0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now ;battle again.'
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["battle"]}'
                         if datarem[0][12] == 1:
-                            desc = str(sender.display_name)+", you can now battle again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][12] == 2:
-                            user = f'<@{sender.id}>'
-                            desc = ", you can now battle again."
-                            desc = desc[::-1]+user
                             await message.channel.send(desc)
-                    if "buddy help" in _embed.footer.text:
+                    if "buddy help" in _embed.footer.text.lower() or "move help" in _embed.footer.text.lower():
                         print("Buddy Window")
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
+                        if datarem[0][6]==0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use'
+                            if "move" in _embed.footer.text.lower():
+                                desc += ";moves again."
+                            else:
+                                desc += ";buddy again."
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["buddy"]}'
                         if datarem[0][15] == 1:
-                            if _embed.fields:
-                                for field in _embed.fields:
-                                    if field.name == "Friendship":
-                                        desc = str(sender.display_name)+", you can now use ;buddy again."
-                                        desc = desc[::-1]
-                                        await message.channel.send(desc)
-                            if _embed.author:
-                                if "Buddy Moves" in _embed.author.name:
-                                    desc = str(sender.display_name)+", you can now use ;moves again."
-                                    desc = desc[::-1]
-                                    await message.channel.send(desc)
-                            desc = str(sender.display_name)+", you can now use ;buddy again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][15] == 2:
-                            user = f'<@{sender.id}>'
-                            desc = ", you can now use ;buddy again."
-                            desc = desc[::-1]+user
                             await message.channel.send(desc)
 
                         
@@ -837,14 +927,13 @@ class Listener(commands.Cog):
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
+                        if datarem[0][6]==0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;egg again.'
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]}'
                         if datarem[0][15] == 1:
-                            desc = f"{sender.display_name}, you can now use ;egg again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][15] == 2:
-                            desc = ", you can now use ;egg again."
-                            desc = desc[::-1]
-                            desc += f'<@+{str(sender.id)}>'
                             await message.channel.send(desc)
                     if "hatched" in _embed.author.name:
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
@@ -888,14 +977,13 @@ class Listener(commands.Cog):
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
+                        if datarem[0][6]==0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;egg again.'
+                        else:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]}'
                         if datarem[0][15] == 1:
-                            desc = f"{sender.display_name}, you can now use ;egg again."
-                            desc = desc[::-1]
-                            await message.channel.send(desc)
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][15] == 2:
-                            desc = ", you can now use ;egg again."
-                            desc = desc[::-1]
-                            desc += f'<@+{str(sender.id)}>'
                             await message.channel.send(desc)
 
                         

@@ -65,7 +65,7 @@ class Coms(commands.Cog):
         elif defo == "changelog":
             if mode == "add" or mode == "set":
                 try:
-                    log = self.client.get_channel(args[0])
+                    log = self.client.get_channel(channel)
                     self.db.execute(f'UPDATE Admin SET Changelog = {args[0]} WHERE Server_ID = {guild.id}')
                     self.db.commit()
                     _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id} has set up this channel to receive <@{self.client.user.id}>'s update logs.").setup_embed()
@@ -186,11 +186,9 @@ class Coms(commands.Cog):
             else: 
                 value_start = emo_no
             if database[0][6] == 0:
-                value_rem = emo_no
+                value_rem = "Text style"
             elif database[0][6] == 1:
-                value_rem = emo_yes + emo_sile
-            else:
-                value_rem = emo_yes + emo_ping
+                value_rem = "Emote Style"
             if database[0][10] == 1:
                 value_spawn = emo_yes + emo_sile
             elif database[0][10] == 0: 
@@ -232,10 +230,10 @@ class Coms(commands.Cog):
             )
             embed.set_author(icon_url=author_url,name=author_name)
             embed.set_footer(icon_url=footer_icon,text=footer_name)
-            embed.add_field(name="Golden Razz Berry: ",inline=True, value=value_grazz)
-            embed.add_field(name="Repel: ",inline=True, value=value_repel)
+            embed.add_field(name="Golden Razz Berry/Honey: ",inline=True, value=value_grazz)
+            embed.add_field(name="Repels: ",inline=True, value=value_repel)
             embed.add_field(name="Starter: ",inline=True, value=value_start)
-            embed.add_field(name="Reminders: ", inline=True, value=value_rem)
+            embed.add_field(name="Reminder Mode: ", inline=True, value=value_rem)
             embed.add_field(name="",inline=True, value="")
             embed.add_field(name="Spawn: ", inline=True, value=value_spawn)
             embed.add_field(name="Fish: ", inline=True, value=value_fish)

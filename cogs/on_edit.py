@@ -41,10 +41,11 @@ class On_Edit(commands.Cog):
                 #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
                 if (len(before.embeds) > 0):
                     befembed = before.embeds[0]
+                    guild = before.guild
                     if befembed.description:
                         if "captcha" in befembed.description:
                             #print("Captcha, rude")
-                            return
+                            exit
                         else:
                             _embed = after.embeds[0]
                             color = _embed.color
@@ -90,7 +91,7 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     await announce.send(embed=embed)
-                                            dataev = self.db.execute(f'SELECT * FROM Admin')
+                                            dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {guild.id}')
                                             dataev = dataev.fetchall()
                                             if dataev[0][4] == 1:
                                                 dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
@@ -190,7 +191,7 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     await announce.send(embed=embed)
-                                            dataev = self.db.execute(f'SELECT * FROM Admin')
+                                            dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {guild.id}')
                                             dataev = dataev.fetchall()
                                             if dataev[0][4] == 1:
                                                 dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')

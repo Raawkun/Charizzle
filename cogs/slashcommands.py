@@ -75,9 +75,11 @@ class SlashComs(commands.Cog):
                     OptionChoice("Grazz", "grazz"),
                     OptionChoice("Repel", "repel"),
                     OptionChoice("Starter", "starter"),
-                    OptionChoice("Reminder Off","reminder0"),
-                    OptionChoice("Reminder On, no Ping","reminder1"),
-                    OptionChoice("Reminder On, with Ping","reminder2"),
+                    #OptionChoice("Reminder Off","reminder0"),
+                    #OptionChoice("Reminder On, no Ping","reminder1"),
+                    #OptionChoice("Reminder On, with Ping","reminder2"),
+                    OptionChoice("All Reminders Emote only off", "emoreminder0"),
+                    OptionChoice("All Reminders Emote only on", "emoreminder1"),
                     OptionChoice("Spawn Reminder Off","spreminder0"),
                     OptionChoice("Spawn Reminder On, no Ping","spreminder1"),
                     OptionChoice("Spawn Reminder On, with Ping","spreminder2"),
@@ -131,18 +133,26 @@ class SlashComs(commands.Cog):
                 self.db.execute(f'UPDATE Toggle SET Starter = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
                 await ctx.send("Toggled off.", ephemeral= True)
-            elif switch == "reminder0":
-                self.db.execute(f'UPDATE Toggle SET Reminder = 0 WHERE User_ID = {ctx.author.id}')
+            elif switch == "emoreminder0":
+                self.db.execute(f'UPDATE Toggle SET Reminder = 0 WHERE User-ID = {ctx.author.id}')
                 self.db.commit()
-                await ctx.send("Toggled your reminders off.", ephemeral= True)
-            elif switch == "reminder1":
+                await ctx.send("Toggled your reminders to text style.", ephemeral= True)
+            elif switch == "emoreminder1":
                 self.db.execute(f'UPDATE Toggle SET Reminder = 1 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
-                await ctx.send("Toggled reminders on, but I wont ping you.", ephemeral= True)
-            elif switch == "reminder2":
-                self.db.execute(f'UPDATE Toggle SET Reminder = 2 WHERE User_ID = {ctx.author.id}')
-                self.db.commit()
-                await ctx.send("Toggled reminders on, and I will ping you.", ephemeral= True)
+                await ctx.send("Toggled your reminder to emote style.", ephemeral= True)
+            # elif switch == "reminder0":
+            #     self.db.execute(f'UPDATE Toggle SET Reminder = 0 WHERE User_ID = {ctx.author.id}')
+            #     self.db.commit()
+            #     await ctx.send("Toggled your reminders off.", ephemeral= True)
+            # elif switch == "reminder1":
+            #     self.db.execute(f'UPDATE Toggle SET Reminder = 1 WHERE User_ID = {ctx.author.id}')
+            #     self.db.commit()
+            #     await ctx.send("Toggled reminders on, but I wont ping you.", ephemeral= True)
+            # elif switch == "reminder2":
+            #     self.db.execute(f'UPDATE Toggle SET Reminder = 2 WHERE User_ID = {ctx.author.id}')
+            #     self.db.commit()
+            #     await ctx.send("Toggled reminders on, and I will ping you.", ephemeral= True)
             elif switch == "spreminder0":
                 self.db.execute(f'UPDATE Toggle SET ToggleSpawn = 0 WHERE User_ID = {ctx.author.id}')
                 self.db.commit()
@@ -416,7 +426,7 @@ class SlashComs(commands.Cog):
     @commands.slash_command(name="setup", description="First setup of the bot (can be changed later too ofc).", 
                             options=[Option(name="mode", description="What you want to set up.", choices=[OptionChoice("Gengar Changelog","chlo"), OptionChoice("Meow Rare Spawn","rasp"), OptionChoice("Psycord Outbreak Channel", "outbr"), OptionChoice("Psycord Wild Spawn Ping", "role")], required=False),
                                 Option(name="set", description="Wether to set it up or delete.", type=3, choices=[OptionChoice("Set", "set"), OptionChoice("Delete","delete")], required=False),
-                                Option(name="id", description="Channel/Role ID", type=4, required=False),
+                                Option(name="id", description="Channel/Role ID", type=3, required=False),
                                 
                                     ])
     
