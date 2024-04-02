@@ -3,6 +3,7 @@ import disnake
 from disnake.ext import commands
 from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
 import asyncio
+import datetime
 from utility.embed import Custom_embed, Auction_embed
 from utility.all_checks import Basic_checker
 from utility.rarity_db import counts, countnumber
@@ -13,6 +14,14 @@ class SlashComs(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
+
+    async def errorlog(self, error, author, guild, channel):
+        footer = f"{datetime.datetime.utcnow()}"
+        desc = f"{guild.name}, <#{channel}>, <@{author.id}>"
+        _emb = await Auction_embed(self.client,footer=footer, description=desc).setup_embed()
+        _emb.add_field(name="Error:",value=error)
+        errcha = self.client.get_channel(1210143608355823647)
+        await errcha.send(embed=_emb)
 
     @commands.slash_command(
             name="test",

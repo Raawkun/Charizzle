@@ -38,7 +38,7 @@ class Coms(commands.Cog):
         footer = f"{datetime.datetime.utcnow()}"
         desc = f"{guild.name}, <#{channel}>, <@{author.id}>"
         _emb = await Auction_embed(self.client,footer=footer, description=desc).setup_embed()
-        _emb.add_field(name="Erorr:",value=error)
+        _emb.add_field(name="Error:",value=error)
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
         
