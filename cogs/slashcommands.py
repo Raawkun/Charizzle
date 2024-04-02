@@ -455,7 +455,7 @@ class SlashComs(commands.Cog):
                     log = self.client.get_channel(ID)
                     self.db.execute(f'UPDATE Admin SET Changelog = {ID} WHERE Server_ID = {guild.id}')
                     self.db.commit()
-                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id} has set up this channel to receive <@{self.client.user.id}>'s update logs.").setup_embed()
+                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to receive <@{self.client.user.id}>'s update logs.").setup_embed()
                     await log.send(embed=_emb)
                     await ctx.send(f"Successfully set <#{ID}> as your changelog channel for my updates.")
                 except Exception as e:
