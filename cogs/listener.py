@@ -699,36 +699,42 @@ class Listener(commands.Cog):
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["superrepel"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["superrepel"]}'
+                                    await message.channel.send(desc)
                                 if "max_repel" in message.content and "boost" in message.content:
                                     if databaserep[0][6]==0:
                                         #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["maxrepel"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["maxrepel"]}'
+                                    await message.channel.send(desc)
                                 if ":repel" in message.content and "boost" in message.content:
                                     if databaserep[0][6]==0:
                                         #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["repel"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["repel"]}'
+                                    await message.channel.send(desc)
                                 if ":fluffy" in message.content:
                                     if databaserep[0][6]==0:
                                         #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["fluffy"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fluffy"]}'
+                                    await message.channel.send(desc)
                                 if ":pokedoll" in message.content:
                                     if databaserep[0][6]==0:
                                         #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["pokedoll"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["pokedoll"]}'
+                                    await message.channel.send(desc)
                                 if ":poketoy" in message.content:
                                     if databaserep[0][6]==0:
                                         #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["poketoy"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["poketoy"]}'
+                                    await message.channel.send(desc)
                             else: return
                             if databaserep[0][2] == 1:
                                 # boost = "boost expired!"
@@ -743,12 +749,14 @@ class Listener(commands.Cog):
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["grazz"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["grazz"]}'
+                                    await message.channel.send(desc)
                                 if "honey" in message.content and "boost" in message.content:
                                     if databaserep[0][6]==0:
                                         #await message.channel.send(f"{boost} <:superrepel:1165230878474113025> {hey} {user}")
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> Hey, your {rem_emotes["honey"]} boost expired!'
                                     else:
                                         desc=f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["honey"]}'
+                                    await message.channel.send(desc)
                             else: return
 
                     
