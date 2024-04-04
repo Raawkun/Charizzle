@@ -146,8 +146,7 @@ class Listener(commands.Cog):
         desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
         desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
 
-        _emb = disnake.Embed(title=f"{self.client.user.display_name}'s Setup",description=desc)
-        _emb.set_color(0x807ba6)
+        _emb = disnake.Embed(title=f"{self.client.user.display_name}'s Setup",description=desc,colour=0x807ba6)
         _emb.set_footer(text=f'Provided by {self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
         text = f"Thanks for choosing <@{self.client.user.id}>!"
         try:
