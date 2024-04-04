@@ -45,14 +45,14 @@ class On_Edit(commands.Cog):
                     if befembed.description:
                         if "captcha" in befembed.description:
                             #print("Captcha, rude")
-                            exit
+                            return
                         else:
                             _embed = after.embeds[0]
                             color = _embed.color
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data = data.fetchall()
-                                if data[1][11] == 1:
+                                if data[0][11] == 1:
                                     print("SHINY FISH!!!")
                                     await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
                             except:
