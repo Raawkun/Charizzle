@@ -97,7 +97,7 @@ class Listener(commands.Cog):
                     channel = self.client.get_channel(entry)
                     await channel.send(f"Time for a new changelog! Get ready:\n```\n{file_content}\n```\nAnd that's all for today!")
                 with open("changelog_old.txt", "a") as file:
-                    old_content += f"\n\n{timestamp}\n{file_content}"
+                    old_content = f"\n\n{timestamp}\n{file_content}"
                     file.write(old_content)
                 with open("changelog.txt", "w"):
                     pass
