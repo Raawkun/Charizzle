@@ -51,7 +51,7 @@ class On_Edit(commands.Cog):
                             color = _embed.color
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                                data = data.fetchall()
+                                data = data.fetchone()
                             except:
                                 return
                             if before.reference:
@@ -67,23 +67,23 @@ class On_Edit(commands.Cog):
                                     #print("No pins")
                                     #print("Oh, a footer!")
                                     if "fished out a" in _embed.description:
-                                        if data[0][11] == 1:
+                                        if data[11] == 1:
                                             await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
-                                        elif data[0][12]:
+                                        elif data[12]:
                                             await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
                                     if "token" in _embed.footer.text:
                                         #print("Token")
                                         if "caught a" in _embed.description:
-                                            raremon = data[0][14]
+                                            raremon = data[14]
                                             ball = _embed.description.split(" with a")[1]
                                             ball = ball.split("!")[0]
                                             ball = ball.split(" ")[1]
                                             #print("Fish caught")
                                             if raremon in Rare_Spawns or _embed.color == 0xe9270b:
                                                 if receiver_channel > 0:
-                                                    raremon = poke_rarity[(data[0][14])]
+                                                    raremon = poke_rarity[(data[14])]
                                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=color,description=description_text)
                                                     embed.set_author(name=(sender.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
@@ -124,22 +124,22 @@ class On_Edit(commands.Cog):
                                                         #print("Find coins")
                                                         await before.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
                                                         data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                                        data = data.fetchall()
-                                                        old_amount = data[0][4]
+                                                        data = data.fetchone()
+                                                        old_amount = data[4]
                                                         new_amount = 1+old_amount
                                                         self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
                                                         self.db.commit()
                                             
                                         if "broke out" in _embed.description:
-                                            raremon = data[0][14]
+                                            raremon = data[14]
                                             ball = _embed.description.split(" out of the")[1]
                                             ball = ball.split("!")[0]
                                             ball = ball.split(" ")[1]
                                             if raremon in Rare_Spawns or _embed.color == 0xe9270b:
                                                 if receiver_channel > 0:
-                                                    raremon = poke_rarity[(data[0][14])]
+                                                    raremon = poke_rarity[(data[14])]
                                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=color,description=description_text)
                                                     embed.set_author(name=(sender.display_name+" almost caught a:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
@@ -147,12 +147,12 @@ class On_Edit(commands.Cog):
                                                     emoji = '🔔'
                                                     await after.add_reaction(emoji)
                                         if "ran away" in _embed.description:
-                                            raremon = data[0][14]
+                                            raremon = data[14]
                                             if raremon in Rare_Spawns or _embed.color == 0xe9270b:
                                                 if receiver_channel > 0:
-                                                    raremon = poke_rarity[(data[0][14])]
+                                                    raremon = poke_rarity[(data[14])]
                                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=color,description=description_text)
+                                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=color,description=description_text)
                                                     embed.set_author(name=(sender.display_name+" was too slow for:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
@@ -163,7 +163,7 @@ class On_Edit(commands.Cog):
                                         #print("No token")
                                         if "caught a" in _embed.description:
                                             try:
-                                                raremon = data[0][14]
+                                                raremon = data[14]
                                             except Exception as e:
                                                 #await log.send(embed=_embed)
                                                 #await log.send(f"Error: {e}, {data}, {before.jump_url}")
@@ -187,9 +187,9 @@ class On_Edit(commands.Cog):
                                                 description_text = f"<:held_item:1213754494266122280> **It held onto a {item}**.\n"
                                             if raremon in Rare_Spawns or color == '#ea260b':
                                                 if receiver_channel > 0:
-                                                    raremon = poke_rarity[(data[0][14])]
+                                                    raremon = poke_rarity[(data[14])]
                                                     description_text += f"Original message: [Click here]({before.jump_url})\n"
-                                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
+                                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=_embed.color,description=description_text)
                                                     embed.set_author(name=(f'{sender.display_name}'+" just caught a:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
@@ -243,7 +243,7 @@ class On_Edit(commands.Cog):
                                                         self.db.commit()
                                         if "broke out" in _embed.description:
                                             try:
-                                                raremon = data[0][14]
+                                                raremon = data[14]
                                             except Exception as e:
                                                 #await log.send(embed=_embed)
                                                 #await log.send(f"Error: {e}, {data}, {before.jump_url}")
@@ -258,9 +258,9 @@ class On_Edit(commands.Cog):
                                             color = str(_embed.color)
                                             if raremon in Rare_Spawns or color == '#ea260b':
                                                 if receiver_channel > 0:
-                                                    raremon = poke_rarity[(data[0][14])]
+                                                    raremon = poke_rarity[(data[14])]
                                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
+                                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=_embed.color,description=description_text)
                                                     embed.set_author(name=(f'{sender.display_name}'+" almost caught a:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
@@ -268,13 +268,13 @@ class On_Edit(commands.Cog):
                                                     emoji = '🔔'
                                                     await after.add_reaction(emoji)
                                         if "ran away" in _embed.description:
-                                            raremon = data[0][14]
+                                            raremon = data[14]
                                             color = str(_embed.color)
                                             if raremon in Rare_Spawns or color == '#ea260b':
                                                 if receiver_channel > 0:
-                                                    raremon = poke_rarity[(data[0][14])]
+                                                    raremon = poke_rarity[(data[14])]
                                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=_embed.color,description=description_text)
+                                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=_embed.color,description=description_text)
                                                     embed.set_author(name=(sender.display_name+" was too slow for:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
@@ -306,36 +306,36 @@ class On_Edit(commands.Cog):
                                 monnumber += 9000
                             monnumber = str(monnumber)
                             data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monnumber}')
-                            data = data.fetchall()
+                            data = data.fetchone()
                             if "just caught a " in after.content:
                                 if receiver_channel > 0:
-                                    raremon = poke_rarity[(data[0][14])]
+                                    raremon = poke_rarity[(data[14])]
                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=embed_color[monrare],description=description_text)
+                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=embed_color[monrare],description=description_text)
                                     embed.set_author(name=(f'{sender}'+" just discovered a:"), icon_url="https://cdn.discordapp.com/emojis/1072075141489623040.webp?size=96&quality=lossless")
-                                    embed.set_image(data[0][15])
+                                    embed.set_image(data[15])
                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                     anno = await announce.send(embed=embed)
                                     
                                 print("Explore: Caught it!")
                             elif "broke out" in after.content:
                                 if receiver_channel > 0:
-                                    raremon = poke_rarity[(data[0][14])]
+                                    raremon = poke_rarity[(data[14])]
                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=embed_color[monrare],description=description_text)
+                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=embed_color[monrare],description=description_text)
                                     embed.set_author(name=(f'{sender}'+" almost caught a:"), icon_url="https://cdn.discordapp.com/emojis/1072075141489623040.webp?size=96&quality=lossless")
-                                    embed.set_image(data[0][15])
+                                    embed.set_image(data[15])
                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                     anno = await announce.send(embed=embed)
                                     
                                 print("Explore: Broke out")
                             elif "ran away" in after.content:
                                 if receiver_channel > 0:
-                                    raremon = poke_rarity[(data[0][14])]
+                                    raremon = poke_rarity[(data[14])]
                                     description_text = f"Original message: [Click here]({before.jump_url})\n"
-                                    embed = disnake.Embed(title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]), color=embed_color[monrare],description=description_text)
+                                    embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=embed_color[monrare],description=description_text)
                                     embed.set_author(name=(sender+" was too slow for:"), icon_url="https://cdn.discordapp.com/emojis/1072075141489623040.webp?size=96&quality=lossless")
-                                    embed.set_image(data[0][15])
+                                    embed.set_image(data[15])
                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                     anno = await announce.send(embed=embed)
                                     
