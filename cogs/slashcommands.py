@@ -453,7 +453,8 @@ class SlashComs(commands.Cog):
             desc += f"> * Usage: ``changelog [set/delete] [channel id]``\n"
             desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarespawn [set/delete] [channel id]``\n"
             desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
-            desc += f"> * Usage: ``outbreaks [set/delete] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
+            desc += f"> * Usage: ``outbreaks [set/delete] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``"
+            desc += f"> * __Psycord Flex Channel__: Custom made starboard for Psycord. Usable with replying ``flex`` on a Psycord message.\n> * Usage: ``psyflex [set/remove] [channel id]``\n\n\n*Parameters in [] are mandatory.*"
 
             _emb = await Auction_embed(self.client,title=title, description=desc).setup_embed()
 

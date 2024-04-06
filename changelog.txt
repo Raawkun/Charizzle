@@ -1,0 +1,4 @@
+- Fixed the welcome message. Oopsie.
+- Instant respone if a Legendary+ spawn got send into the rare spawn channel.
+- Updated emoji reminders.
+- Psycord flex is now per-server. (theoretically)

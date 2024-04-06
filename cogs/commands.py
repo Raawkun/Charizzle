@@ -55,9 +55,10 @@ class Coms(commands.Cog):
             desc += f"The following can be set up in this server at the moment.\n\n**Functions:**\n"
             desc += f"> * __Changelog__: {self.client.user.display_name}'s updates.\n"
             desc += f"> * Usage: ``changelog [set/remove] [channel id]``\n"
-            desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarwspawn [set/remove] [channel id]``\n"
+            desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarespawn [set/remove] [channel id]``\n"
             desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
-            desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
+            desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``"
+            desc += f"> * __Psycord Flex Channel__: Custom made starboard for Psycord. Usable with replying ``flex`` on a Psycord message.\n> * Usage: ``psyflex [set/remove] [channel id]``\n\n\n*Parameters in [] are mandatory.*"
 
             _emb = await Auction_embed(self.client,title=title, description=desc).setup_embed()
 
@@ -96,6 +97,24 @@ class Coms(commands.Cog):
                 self.db.execute(f'UPDATE Admin SET RareSpawn = NULL WHERE Server_ID = {guild.id}')
                 self.db.commit()
                 await ctx.reply(f"I've removed PokéMeow rare spawn updates from this server.")
+            else:
+                await ctx.reply()
+        elif defo == "psyflex":
+            if mode == "add" or mode == "set":
+                try:
+                    log = self.client.get_channel(channel)
+                    self.db.execute(f'UPDATE Admin SET PsyFlex = {channel} WHERE Server_ID = {guild.id}')
+                    self.db.commit()
+                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to receive Psycord flex messages. ``flex`` is the command to use for that.").setup_embed()
+                    await log.send(embed=_emb)
+                    await ctx.reply(f"Successfully set <#{args[0]}> as your flex channel for Psycord.")
+                except Exception as e:
+                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
+                    await ctx.reply("Please enter a Channel ID.")
+            elif mode == "remove" or mode == "delete":
+                self.db.execute(f'UPDATE Admin SET PsyFlex = NULL WHERE Server_ID = {guild.id}')
+                self.db.commit()
+                await ctx.reply(f"I've removed Psycord flex posts from this server.")
             else:
                 await ctx.reply()
         elif defo == "outbreaks":
@@ -859,22 +878,27 @@ class Coms(commands.Cog):
 
     @commands.command()
     async def flex(self, ctx, number: int = None):
-        flexchannel = 1200435380256788610
-        flexchannel = self.client.get_channel(flexchannel)
-        if number == None:
-            if ctx.message.reference:
-                spawn = ctx.message.reference.message_id
-                spawn = await ctx.channel.fetch_message(spawn)
+        flex = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {ctx.guild.id}')
+        flex = flex.fetchone()
+        if flex[10] != 0:
+            flexchannel = int(flex[10])
+            flexchannel = self.client.get_channel(flexchannel)
+            if number == None:
+                if ctx.message.reference:
+                    spawn = ctx.message.reference.message_id
+                    spawn = await ctx.channel.fetch_message(spawn)
+                    _embed = spawn.embeds[0]
+                    await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
+                    await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
+                else:
+                    await ctx.send("Please answer to a message or use its ID.")
+            elif number != None:
+                spawn = await ctx.channel.fetch_message(number)
                 _embed = spawn.embeds[0]
                 await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
                 await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
-            else:
-                await ctx.send("Please answer to a message or use its ID.")
-        elif number != None:
-            spawn = await ctx.channel.fetch_message(number)
-            _embed = spawn.embeds[0]
-            await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
-            await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
+        else:
+            await ctx.message.reply("Your server has not yet setup a flex channel for psycord spawns. Please ask your server admin about it.")
 
     @commands.command()
     async def code(self, ctx, *lines):

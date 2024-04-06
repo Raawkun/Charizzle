@@ -24,17 +24,20 @@ class Listener(commands.Cog):
         self.dv = connect("dataverse.db")
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder):
-        print("quest_reminder started for "+str(user_id)+" waiting for "+str(waiter)+" seconds.")
+        print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
         channel = self.client.get_channel(channelid)
         self.db.execute(f'UPDATE Toggle SET Timer = 1 WHERE User_ID = {user_id}')
         self.db.commit()
         await asyncio.sleep(waiter)
         print("slept enough.")
         if reminder == 1:
-            username = self.client.get_user(user_id).display_name
-            await channel.send(username+", your next quest is ready!")
+            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}> , your next quest is ready!', allowed_mentions = disnake.AllowedMentions(users=False))
         elif reminder == 2:
-            await channel.send("<@"+f'{(user_id)}'+"> - your next quest is ready!")
+            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}>, your next quest is ready!')
+        elif reminder == 3:
+            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}> {rem_emotes["next"]}{rem_emotes["quest"]}', allowed_mentions= disnake.AllowedMentions(users=False))
+        elif reminder == 4:
+            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}> {rem_emotes["next"]}{rem_emotes["quest"]}')
         self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Channel = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
@@ -122,8 +125,12 @@ class Listener(commands.Cog):
                 print(waiter)
                 if row[14] == 1:
                     reminder = 1
+                    if row[6] == 0:
+                        reminder = 3
                 elif row[14] == 2:
                     reminder = 2
+                    if row[6] == 0:
+                        reminder = 4
                 await asyncio.create_task(self._quest_reminder(channelid, userid, waiter, reminder))
             elif waiter < current_time:
                 self.db.execute(f'UPDATE Toggle SET Channel = 0, QuestTime = 0, Timer = 0 WHERE User_ID = {userid}')
@@ -269,6 +276,7 @@ class Listener(commands.Cog):
         #print(outbreaks)
         if message.channel.id == int(outbreaks[2]): #Feed channel
             print("Feed channel")
+            print(f'{message.guild.name}')
             if len(message.embeds) > 0:
                 emb = message.embeds[0]
                 if "Reported" in emb.title:
@@ -683,7 +691,7 @@ class Listener(commands.Cog):
                             await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ``/info`` for more info.")
                         Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
                         _embed = message.embeds[0]
-                        data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = {_embed.icon_url}')
+                        data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data = data.fetchone()
                         ######## Repel/Grazz notifier
                         #print(database)
@@ -888,7 +896,14 @@ class Listener(commands.Cog):
                                             remind = 2
                                         if datarem[0][9] == 0:
                                             minutes = int(waiter/60)
-                                            await message.channel.send(str(sender.display_name)+", I've set a timer for "+str(minutes)+" minutes.")
+                                            if datarem[0][6] == 0:
+                                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}:alarm_clock::two::regional_indicator_h:'
+                                            elif datarem[0][6] == 1:
+                                                desc = str(sender.display_name)+", I've set a timer for "+str(minutes)+" minutes."
+                                            if datarem[0][14] == 1:
+                                                await message.channel.send(desc, allowed_mentions= disnake.AllowedMentions(users=False))
+                                            elif datarem[0][14] == 2:
+                                                await message.channel.send(desc)
                                             await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
                         
                 if _embed.author.name:
