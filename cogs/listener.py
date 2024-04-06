@@ -901,13 +901,17 @@ class Listener(commands.Cog):
                                         q_time = str(q_time)
                                         if datarem[0][14] == 1:
                                             remind = 1
+                                            if datarem[0][6] == 0:
+                                                remind == 3
                                         elif datarem[0][14] == 2:
                                             remind = 2
+                                            if datarem[0][6] == 1:
+                                                remind = 4
                                         if datarem[0][9] == 0:
                                             minutes = int(waiter/60)
-                                            if datarem[0][6] == 0:
+                                            if datarem[0][6] == 1:
                                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}:alarm_clock::two::regional_indicator_h:'
-                                            elif datarem[0][6] == 1:
+                                            elif datarem[0][6] == 0:
                                                 desc = str(sender.display_name)+", I've set a timer for "+str(minutes)+" minutes."
                                             if datarem[0][14] == 1:
                                                 await message.channel.send(desc, allowed_mentions= disnake.AllowedMentions(users=False))
