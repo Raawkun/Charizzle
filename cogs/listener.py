@@ -910,7 +910,7 @@ class Listener(commands.Cog):
                                         if datarem[0][9] == 0:
                                             minutes = int(waiter/60)
                                             if datarem[0][6] == 1:
-                                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}:alarm_clock::two::regional_indicator_h:'
+                                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}:alarm_clock::white_check_mark:'
                                             elif datarem[0][6] == 0:
                                                 desc = str(sender.display_name)+", I've set a timer for "+str(minutes)+" minutes."
                                             if datarem[0][14] == 1:
