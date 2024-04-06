@@ -1079,7 +1079,7 @@ class Listener(commands.Cog):
                                     self.db.commit()
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
+                        datarem = datarem.fetchone()
                         if datarem[15] == 1:
                             if datarem[5] == 0:
                                 link = ";egg"
