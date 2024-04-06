@@ -888,14 +888,14 @@ class Coms(commands.Cog):
                     spawn = ctx.message.reference.message_id
                     spawn = await ctx.channel.fetch_message(spawn)
                     _embed = spawn.embeds[0]
-                    await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
+                    await ctx.message.reply(f"Done! Check <#{flexchannel.id}> to see the result!")
                     await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
                 else:
                     await ctx.send("Please answer to a message or use its ID.")
             elif number != None:
                 spawn = await ctx.channel.fetch_message(number)
                 _embed = spawn.embeds[0]
-                await ctx.message.reply("Done! Check <#1200435380256788610> to see the result!")
+                await ctx.message.reply(f"Done! Check <#{flexchannel.id}> to see the result!")
                 await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
         else:
             await ctx.message.reply("Your server has not yet setup a flex channel for psycord spawns. Please ask your server admin about it.")
