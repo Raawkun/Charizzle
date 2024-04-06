@@ -171,27 +171,28 @@ class Listener(commands.Cog):
 
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
-        
-        db = self.db.execute(f'SELECT * FROM Blacklist WHERE UserID = {member.id}')
-        db = db.fetchall()
-        print(member.id)
-        print(member.name)
-        if db:
-            try:
-                await member.send("Sorry, the server you were trying to join blacklisted you.\nThat's probably because you broke some server rules.")
-                await member.kick(reason="You're blacklisted on this server, because you broke the law.")
-            except Exception as e:
-                print(e)
-                print(member.display_name+" "+str(member.id))
-        else:
-            desc= f"Welcome to ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ <@{member.id}>.\nTo get full access to the server, get verified in <#998249646923202610>!\n"
-            desc += f"If you are here to join the clan, then please post your `;stats` in <#825836268332122122> and make sure you read the pins in there for clan requirements.\n"
-            desc += f"If you're a member of a partnered clan, please head to <#825836268332122122> and use ``;clan``.\n"
-            desc += f"Have a read of <#885070641638825984> for information on the server including the rules.\n"
-            desc += f"Happy hunting!"
-            channel = self.client.get_channel(825836238951022602)
-            await channel.send(desc)
+    async def on_member_join(self, member, guild):
+        id = guild.id
+        if id == 825813023716540426:
+            db = self.db.execute(f'SELECT * FROM Blacklist WHERE UserID = {member.id}')
+            db = db.fetchall()
+            print(member.id)
+            print(member.name)
+            if db:
+                try:
+                    await member.send("Sorry, the server you were trying to join blacklisted you.\nThat's probably because you broke some server rules.")
+                    await member.kick(reason="You're blacklisted on this server, because you broke the law.")
+                except Exception as e:
+                    print(e)
+                    print(member.display_name+" "+str(member.id))
+            else:
+                desc= f"Welcome to ᵖᵃʳᵃˡʸᵐᵖᶤᶜˢ <@{member.id}>.\nTo get full access to the server, get verified in <#998249646923202610>!\n"
+                desc += f"If you are here to join the clan, then please post your `;stats` in <#825836268332122122> and make sure you read the pins in there for clan requirements.\n"
+                desc += f"If you're a member of a partnered clan, please head to <#825836268332122122> and use ``;clan``.\n"
+                desc += f"Have a read of <#885070641638825984> for information on the server including the rules.\n"
+                desc += f"Happy hunting!"
+                channel = self.client.get_channel(825836238951022602)
+                await channel.send(desc)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -673,16 +674,18 @@ class Listener(commands.Cog):
                         
                             #print(sender)
                         ## Checking for a User in Database, if not, initializing
-                        database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.id}')
-                        database = database.fetchall()
-                        if not database:
+                        databaserep = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID={sender.id}')
+                        databaserep = databaserep.fetchall()
+                        if not databaserep:
                             self.db.execute(f'INSERT INTO Toggle (USER_ID) VALUES ({sender.id})')
                             self.db.commit()
                             await log_channel.send(str(sender)+" is now in the database. "+str(sender.id))
                             await message.channel.send(f"Is this your first visit here? Welcome! I've added you to my database. Check ``/info`` for more info.")
-                        ######## Repel/Grazz notifier 
-                        databaserep = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        databaserep = databaserep.fetchall()
+                        Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
+                        _embed = message.embeds[0]
+                        data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = {_embed.icon_url}')
+                        data = data.fetchone()
+                        ######## Repel/Grazz notifier
                         #print(database)
                         if databaserep:
                             if databaserep[0][3] == 1:
