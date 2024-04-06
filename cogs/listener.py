@@ -82,18 +82,16 @@ class Listener(commands.Cog):
                     entry = int(entry[0])
                     channel = self.client.get_channel(entry)
                     await channel.send(f"Time for a new changelog! Get ready:\n```\n{file_content}\n```\nAnd that's all for today!")
-                with open("changelog_old.txt",'r') as file:
-                    old_content = file.read()
-                    with open("changelog_old.txt", "w") as file:
-                        old_content += f"\n\n{timestamp}\n{file_content}"
-                        file.write(old_content)
-                open("changelog.txt", "w")
-                pass
+                with open("changelog_old.txt", "a") as file:
+                    old_content += f"\n\n{timestamp}\n{file_content}"
+                    file.write(old_content)
+                with open("changelog.txt", "w"):
+                    pass
                 
             else:
                exit
-        except FileNotFoundError:
-            await log.send(f"File 'changelog.txt' not found.")
+        except Exception as e:
+            await log.send(f'Changelog Error: {e}')
 
     #events
     @commands.Cog.listener()
