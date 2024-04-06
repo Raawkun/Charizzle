@@ -575,40 +575,43 @@ class Listener(commands.Cog):
                         print("Market going on")
                         try:
                             if _embed.footer.text:
-                                number = _embed.footer.text.split("#")[1]
-                                number = int(number.split(" ")[0])
-                                #print(number)
-                                datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
-                                datdex = datdex.fetchall()
-                                #print(datdex[0][1])
-                                current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
-                                price = _embed.description.split("PokeCoin")[2]
-                                lowprice = price.split(" ")[1]
-                                lowprice = int(lowprice.replace(",", ""))
-                                #print(lowprice)
-                                amount = int(price.split(" ")[5])
-                                #print(amount)
-                                self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
-                                self.db.commit()
-                                await asyncio.sleep(3)
-                                datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                                datarem = datarem.fetchall()
+                                if "#" in _embed.footer.text:
+                                    number = _embed.footer.text.split("#")[1]
+                                    number = int(number.split(" ")[0])
+                                    #print(number)
+                                    datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
+                                    datdex = datdex.fetchall()
+                                    #print(datdex[0][1])
+                                    current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
+                                    price = _embed.description.split("PokeCoin")[2]
+                                    lowprice = price.split(" ")[1]
+                                    lowprice = int(lowprice.replace(",", ""))
+                                    #print(lowprice)
+                                    amount = int(price.split(" ")[5])
+                                    #print(amount)
+                                    self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
+                                    self.db.commit()
                         except Exception as e:
                             asyncio.create_task(self.errorlog(e, message=message, author=sender))
-                        if datarem[0][15] == 1:
-                            if datarem[0][6] == 0:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;market again.'
+                        await asyncio.sleep(3)
+                        datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                        datarem = datarem.fetchone()
+                        if datarem[15] == 1:
+                            if datarem[5] == 0:
+                                link = ";market"
+                            else:
+                                link = "</market view:1015311085307445255>"
+                            if datarem[6] == 0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
                                 #desc = desc[::-1]
                             else:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["market"]}'
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][15] == 2:
-                            if datarem[0][6] == 0:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;market again.'
-                                #desc = desc[::-1]
+                                if datarem[5] == 0:
+                                    link =""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["market"]} {link}'
+                            if datarem[16] == 0:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                             else:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["market"]}'
-                            await message.channel.send(desc)
+                                await message.channel.send(desc)
                     if "Counters" in _embed.author.name:
                         if _embed.fields:
                             for field in _embed.fields:
@@ -1000,6 +1003,7 @@ class Listener(commands.Cog):
                                     link = "</moves view:1015311085441654817>"
                                 else:
                                     link = "</buddy current-buddy:1015311084422434823>"
+                            print(link)
                             if datarem[6]==0:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
                             else:
