@@ -11,7 +11,7 @@ from utility.egglist import eggexcl
 from utility.drop_chance import drop_pos, buyin
 from utility.info_dict import rem_emotes
 import datetime
-from utility.embed import Custom_embed
+from utility.embed import Custom_embed, Auction_embed
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -22,6 +22,14 @@ class Listener(commands.Cog):
         self.client = client
         self.db = connect("database.db")
         self.dv = connect("dataverse.db")
+
+    async def errorlog(self, error, message,author):
+        footer = f"{datetime.datetime.utcnow()}"
+        desc = f"{message.guild.name}, <#{message.channel}>, <@{author.id}>\n[Original Message.]({message.jump_url})"
+        _emb = await Auction_embed(self.client,footer=footer, description=desc).setup_embed()
+        _emb.add_field(name="Error:",value=error)
+        errcha = self.client.get_channel(1210143608355823647)
+        await errcha.send(embed=_emb)
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
@@ -556,25 +564,28 @@ class Listener(commands.Cog):
                 if _embed.author:
                     if "Global Market " in _embed.author.name:
                         print("Market going on")
-                        if _embed.footer.text:
-                            number = _embed.footer.text.split("#")[1]
-                            number = int(number.split(" ")[0])
-                            #print(number)
-                            datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
-                            datdex = datdex.fetchall()
-                            #print(datdex[0][1])
-                            current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
-                            price = _embed.description.split("PokeCoin")[2]
-                            lowprice = price.split(" ")[1]
-                            lowprice = int(lowprice.replace(",", ""))
-                            #print(lowprice)
-                            amount = int(price.split(" ")[5])
-                            #print(amount)
-                            self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
-                            self.db.commit()
-                            await asyncio.sleep(3)
-                            datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                            datarem = datarem.fetchall()
+                        try:
+                            if _embed.footer.text:
+                                number = _embed.footer.text.split("#")[1]
+                                number = int(number.split(" ")[0])
+                                #print(number)
+                                datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
+                                datdex = datdex.fetchall()
+                                #print(datdex[0][1])
+                                current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
+                                price = _embed.description.split("PokeCoin")[2]
+                                lowprice = price.split(" ")[1]
+                                lowprice = int(lowprice.replace(",", ""))
+                                #print(lowprice)
+                                amount = int(price.split(" ")[5])
+                                #print(amount)
+                                self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
+                                self.db.commit()
+                                await asyncio.sleep(3)
+                                datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
+                                datarem = datarem.fetchall()
+                        except Exception as e:
+                            asyncio.create_task(self.errorlog(e, message=message, author=sender))
                         if datarem[0][15] == 1:
                             if datarem[0][6] == 0:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;market again.'
