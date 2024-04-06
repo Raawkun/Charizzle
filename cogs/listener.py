@@ -216,7 +216,7 @@ class Listener(commands.Cog):
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         
-        if message.author.bot and message.author.id != meow and message.author.id != karp and message.author.id != 1209829454667317288 and message.author.id != 865576698137673739:
+        if message.author.bot and message.author.id != meow and message.author.id != karp and message.author.id != 1209829454667317288 and message.author.id != 865576698137673739 and message.author.display_name != "Psycord Official #🚨・alerts":
             return
         
         if message.content.lower() == "trygoogle":

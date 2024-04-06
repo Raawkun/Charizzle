@@ -503,16 +503,16 @@ class SlashComs(commands.Cog):
                     self.db.commit()
                     _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to receive Psycord flex messages. ``flex`` is the command to use for that.").setup_embed()
                     await log.send(embed=_emb)
-                    await ctx.reply(f"Successfully set <#{ID}> as your flex channel for Psycord.")
+                    await ctx.send(f"Successfully set <#{ID}> as your flex channel for Psycord.")
                 except Exception as e:
                     asyncio.create_task(self.errorlog(e, ctx.author, guild, ID))
-                    await ctx.reply("Please enter a Channel ID.")
+                    await ctx.send("Please enter a Channel ID.")
             elif set == "delete":
                 self.db.execute(f'UPDATE Admin SET PsyFlex = NULL WHERE Server_ID = {guild.id}')
                 self.db.commit()
-                await ctx.reply(f"I've removed Psycord flex posts from this server.")
+                await ctx.send(f"I've removed Psycord flex posts from this server.")
             else:
-                await ctx.reply()
+                await ctx.send()
         elif mode == "outbr":
             if set == "set":
                 try:

@@ -1259,7 +1259,7 @@ class Coms(commands.Cog):
         else:
             await ctx.reply("Wrong usage, either use ``list, add, delete, clear``.")
         
-    @commands.check(Basic_checker().check_management)
+    @commands.check(Basic_checker().check_admin)
     @commands.command()
     async def readout(self, ctx, mid:int = None, mode:str = None):
         checker = 1
