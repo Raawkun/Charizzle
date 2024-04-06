@@ -244,20 +244,11 @@ class Listener(commands.Cog):
             await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
 
         if message.content.lower() == "stfu":
-            database = self.db.execute(f'SELECT Stfu FROM Admin')
-            database=database.fetchall()
-            for row in database:
-                if row[0] == 1:
-                    await message.channel.send("No u.")
+            await message.channel.send("No u.")
 
 
         if message.content.lower() == "lol":
-            database = self.db.execute(f'SELECT Lol FROM Admin')
-            database=database.fetchall()
-            if database:
-                if database[0][0] == 1:
-                    await message.channel.send("Rofl.")
-                else: return
+            await message.channel.send("Rofl.")
 
         if message.author.id == 922248409350549564:
             if "our general chat" in message.content.lower():
@@ -926,12 +917,16 @@ class Listener(commands.Cog):
                                         q_time = str(q_time)
                                         if datarem[14] == 1:
                                             remind = 1
-                                            if datarem[6] == 0:
-                                                remind == 3
                                         elif datarem[14] == 2:
                                             remind = 2
-                                            if datarem[6] == 1:
-                                                remind = 4
+                                        if datarem[6] == 0:
+                                            emote = 0
+                                        else: 
+                                            emote = 1
+                                        if datarem[5] == 0:
+                                            link = 0
+                                        else:
+                                            link = 1
                                         if datarem[9] == 0:
                                             minutes = int(waiter/60)
                                             if datarem[6] == 1:
@@ -942,7 +937,7 @@ class Listener(commands.Cog):
                                                 await message.channel.send(desc, allowed_mentions= disnake.AllowedMentions(users=False))
                                             elif datarem[14] == 2:
                                                 await message.channel.send(desc)
-                                            await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
+                                            await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind, link, emote))
                         
                 if _embed.author.name:
                     if "catchbot" in _embed.author.name.lower():
