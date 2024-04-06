@@ -997,7 +997,7 @@ class Listener(commands.Cog):
                                 if "move" in _embed.footer.text.lower():
                                     link = ";moves"
                                 else:
-                                    desc = ";buddy"
+                                    link = ";buddy"
                             else:
                                 if "move" in _embed.footer.text.lower():
                                     link = "</moves view:1015311085441654817>"
