@@ -31,21 +31,27 @@ class Listener(commands.Cog):
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
     
-    async def _quest_reminder(self,channelid, user_id, waiter,reminder):
+    async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
         channel = self.client.get_channel(channelid)
         self.db.execute(f'UPDATE Toggle SET Timer = 1 WHERE User_ID = {user_id}')
         self.db.commit()
         await asyncio.sleep(waiter)
         print("slept enough.")
+        if link == 0:
+            link = ";quest"
+        else:
+            link = f'</quest info:1015311085517156475>'
+        if emote == 1:
+            if link == 0:
+                link = ""
+            desc = f'{rem_emotes["remind"]} - <@{user_id}> {rem_emotes["next"]}{rem_emotes["quest"]} {link}'
+        else:
+            desc = f'{rem_emotes["remind"]} - <@{user_id}>, your next {link} is ready!'
         if reminder == 1:
-            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}> , your next quest is ready!', allowed_mentions = disnake.AllowedMentions(users=False))
+            await channel.send(desc, allowed_mentions = disnake.AllowedMentions(users=False))
         elif reminder == 2:
-            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}>, your next quest is ready!')
-        elif reminder == 3:
-            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}> {rem_emotes["next"]}{rem_emotes["quest"]}', allowed_mentions= disnake.AllowedMentions(users=False))
-        elif reminder == 4:
-            await channel.send(f'{rem_emotes["remind"]} - <@{user_id}> {rem_emotes["next"]}{rem_emotes["quest"]}')
+            await channel.send(desc)
         self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Channel = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
@@ -131,13 +137,18 @@ class Listener(commands.Cog):
                 print(waiter)
                 if row[14] == 1:
                     reminder = 1
-                    if row[6] == 0:
-                        reminder = 3
                 elif row[14] == 2:
                     reminder = 2
-                    if row[6] == 0:
-                        reminder = 4
-                await asyncio.create_task(self._quest_reminder(channelid, userid, waiter, reminder))
+                if row[6] == 1:
+                    emote = 0
+                else:
+                    emote = 1
+                if row[5] == 0:
+                    link = 0
+                else:
+                    link = 1
+                
+                await asyncio.create_task(self._quest_reminder(channelid, userid, waiter, reminder, link, emote))
             elif waiter < current_time:
                 self.db.execute(f'UPDATE Toggle SET Channel = 0, QuestTime = 0, Timer = 0 WHERE User_ID = {userid}')
                 self.db.commit()
@@ -260,9 +271,9 @@ class Listener(commands.Cog):
                 await message.channel.send("<a:welcome1:1130245046025846814><a:welcome2:1130245098983137323>")
 
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {message.author.id}')
-        database = database.fetchall()
+        database = database.fetchone()
         if database:
-            if database[0][4] == 1:
+            if database[4] == 1:
                 emoji = False
                 emoji2 = False
                 # print("Starter is toggled on")
@@ -418,19 +429,24 @@ class Listener(commands.Cog):
                     sender = message.interaction.author
                 await asyncio.sleep(3)
                 datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                datarem = datarem.fetchall()
-                if datarem[0][15] == 1:
-                    if datarem[0][6]==0:
-                        desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </give fun-item:1015311084812501028> again.'
+                datarem = datarem.fetchone()
+                if datarem[15] == 1:
+                    if datarem[5] == 1:
+                        link = '</give fun-item:1015311084812501028>'
                     else:
-                        desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["give"]}'
-                    await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                elif datarem[0][15] == 2:
-                    if datarem[0][6]==0:
-                        desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </give fun-item:1015311084812501028> again.'
+                        link = ";give"
+                    if datarem[6]==0:
+                        desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
                     else:
-                        desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["give"]}'
-                    await message.channel.send(desc)
+                        if datarem[5] == 0:
+                            link = ""
+                        desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["give"]} {link}'
+                    
+                    if datarem[16] == 0:
+                        await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
+                    else:
+                        await message.channel.send(desc)
+                    
             if "s trainer icon!" in message.content:
                 iconname = message.content.split("unlocked ")[1]
                 icon = iconname.split(":")[2]
@@ -458,9 +474,9 @@ class Listener(commands.Cog):
                 await log_chn.send("Its "+iconname)
             if "won the battle!" in message.content:
                 #print("Battle won")
-                dataev = self.db.execute(f'SELECT * FROM Admin')
-                dataev = dataev.fetchall()
-                if dataev[0][4] == 1:
+                dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {message.guild.id}')
+                dataev = dataev.fetchone()
+                if dataev[6] == 1:
                     username = message.content.split("**")[1]
                     username = message.guild.get_member_named(username)
                     #print(username)
@@ -523,21 +539,23 @@ class Listener(commands.Cog):
                     #print("Aha, catchbotting in message")
                     await asyncio.sleep(8)
                     datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                    datarem = datarem.fetchall()
-                    if datarem[0][15] == 1:
-                        if datarem[0][6] == 0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use your catchbot again.'
+                    datarem = datarem.fetchone()
+                    if datarem[15] == 1:
+                        if datarem[5] == 0:
+                            link = ";catchbot"
+                        else:
+                            link = "</catchbot view:1015311084422434824>"
+                        if datarem[6] == 0:
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use your {link} again.'
                             #desc = desc[::-1]
                         else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]}'
-                        await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                    elif datarem[0][15] == 2:
-                        if datarem[0][6] == 0:
-                            desc = f'{rem_emotes["remind"]} - <@{str(sender.id)}>, you can now use your catchbot again.'
-                            #desc = desc[::-1]
+                            if datarem[5] == 0:
+                                link = ""
+                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]} {link}'
+                        if datarem[16] == 0:
+                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]}'
-                        await message.channel.send(desc)
+                            await message.channel.send(desc)
                 if "holding an egg" in message.content.lower() or "egg is not ready" in message.content.lower():
                     await asyncio.sleep(5)
                     datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
@@ -859,16 +877,23 @@ class Listener(commands.Cog):
                     if "quests for rewards!" in _embed.title:
                         #print("Quest screen from "+sender.display_name)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
+                        datarem = datarem.fetchone()
                         await asyncio.sleep(6)
-                        if datarem[0][6]==0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now check your quests again.'
-                        else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}'
-                        if datarem[0][13] == 1:
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][13] == 2:
-                            await message.channel.send(desc)
+                        if datarem[13] == 1:
+                            if datarem[5] == 0:
+                                link = ";quest"
+                            else:
+                                link = "</quest info:1015311085517156475>"
+                            if datarem[6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now check your {link} again.'
+                            else:
+                                if datarem[5] == 0:
+                                    link =""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]} {link}'
+                            if datarem[16] == 0:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
+                            else:
+                                await message.channel.send(desc)
                         if _embed.footer:
                             if "Next quest in" in _embed.footer.text:
                                 #print("Oh, a quest?")
@@ -886,9 +911,9 @@ class Listener(commands.Cog):
                                 waiter = hours+minutes+seconds
                                 #print(waiter)
                                 datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                                datarem = datarem.fetchall()
-                                if datarem[0][14] != 0:
-                                    if datarem[0][7] != 0:
+                                datarem = datarem.fetchone()
+                                if datarem[14] != 0:
+                                    if datarem[7] != 0:
                                         print("Already a timer running")
                                     else:
                                         print("Oh, a new timer")
@@ -899,23 +924,23 @@ class Listener(commands.Cog):
                                         self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time}, Channel = {channelid} WHERE User_ID = {sender.id}')
                                         self.db.commit()
                                         q_time = str(q_time)
-                                        if datarem[0][14] == 1:
+                                        if datarem[14] == 1:
                                             remind = 1
-                                            if datarem[0][6] == 0:
+                                            if datarem[6] == 0:
                                                 remind == 3
-                                        elif datarem[0][14] == 2:
+                                        elif datarem[14] == 2:
                                             remind = 2
-                                            if datarem[0][6] == 1:
+                                            if datarem[6] == 1:
                                                 remind = 4
-                                        if datarem[0][9] == 0:
+                                        if datarem[9] == 0:
                                             minutes = int(waiter/60)
-                                            if datarem[0][6] == 1:
+                                            if datarem[6] == 1:
                                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["quest"]}:alarm_clock::white_check_mark:'
-                                            elif datarem[0][6] == 0:
+                                            elif datarem[6] == 0:
                                                 desc = str(sender.display_name)+", I've set a timer for "+str(minutes)+" minutes."
-                                            if datarem[0][14] == 1:
+                                            if datarem[14] == 1:
                                                 await message.channel.send(desc, allowed_mentions= disnake.AllowedMentions(users=False))
-                                            elif datarem[0][14] == 2:
+                                            elif datarem[14] == 2:
                                                 await message.channel.send(desc)
                                             await asyncio.create_task(self._quest_reminder(channelid, sender.id, waiter,remind))
                         
@@ -924,15 +949,23 @@ class Listener(commands.Cog):
                         #print("Aha, catchbotting in name")
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
-                        if datarem[0][6]==0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can use your ;catchbot again.'
-                        else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]}'
-                        if datarem[0][15] == 1:
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][15] == 2:
-                            await message.channel.send(desc)
+                        datarem = datarem.fetchone()
+                        if datarem[15] == 1:
+                            if datarem[5] == 0:
+                                link = ";catchbot"
+                            else:
+                                link = "</catchbot view:1015311084422434824>"
+                            if datarem[6] == 0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use your {link} again.'
+                                #desc = desc[::-1]
+                            else:
+                                if datarem[5] == 0:
+                                    link = ""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["catchbot"]} {link}'
+                            if datarem[16] == 0:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
+                            else:
+                                await message.channel.send(desc)
                 
                 
                 if _embed.footer.text:
@@ -940,32 +973,48 @@ class Listener(commands.Cog):
                         print("Aha, battling.")
                         await asyncio.sleep(59)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
-                        if datarem[0][6]==0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now ;battle again.'
-                        else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["battle"]}'
-                        if datarem[0][12] == 1:
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][12] == 2:
-                            await message.channel.send(desc)
+                        datarem = datarem.fetchone()
+                        if datarem[12] == 1:
+                            if datarem[5] == 0:
+                                link = ";battle"
+                            else:
+                                link = "</battle:1015311084422434819>"
+                            if datarem[6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now {link} again.'
+                            else:
+                                if datarem[5] == 0:
+                                    link = ""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["battle"]} {link}'
+                            if datarem[16] == 0:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
+                            else:
+                                await message.channel.send(desc)
                     if "buddy help" in _embed.footer.text.lower() or "move help" in _embed.footer.text.lower():
                         print("Buddy Window")
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
-                        if datarem[0][6]==0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use'
-                            if "move" in _embed.footer.text.lower():
-                                desc += ";moves again."
+                        datarem = datarem.fetchone()
+                        if datarem[15] == 1:
+                            if datarem[5] == 0:
+                                if "move" in _embed.footer.text.lower():
+                                    link = ";moves"
+                                else:
+                                    desc = ";buddy"
                             else:
-                                desc += ";buddy again."
-                        else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["buddy"]}'
-                        if datarem[0][15] == 1:
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][15] == 2:
-                            await message.channel.send(desc)
+                                if "move" in _embed.footer.text.lower():
+                                    link = "</moves view:1015311085441654817>"
+                                else:
+                                    link = "</buddy current-buddy:1015311084422434823>"
+                            if datarem[6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
+                            else:
+                                if datarem[5] == 0:
+                                    link =""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["buddy"]} {link}'
+                            if datarem[16] == 0:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
+                            else:
+                                await message.channel.send(desc)
 
                         
 
@@ -973,15 +1022,22 @@ class Listener(commands.Cog):
                     if "Egg Centre" in _embed.author.name:
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
-                        if datarem[0][6]==0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;egg again.'
-                        else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]}'
-                        if datarem[0][15] == 1:
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][15] == 2:
-                            await message.channel.send(desc)
+                        datarem = datarem.fetchone()
+                        if datarem[15] == 1:
+                            if datarem[5] == 0:
+                                link = ";egg"
+                            else:
+                                link = "</egg status:1015311084594405485>"
+                            if datarem[6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
+                            else:
+                                if datarem[5] == 0:
+                                    link=""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]} {link}'
+                            if datarem[16] == 0:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
+                            else:
+                                await message.channel.send(desc)
                     if "hatched" in _embed.author.name:
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_egg = data_egg.fetchall()
@@ -1024,14 +1080,21 @@ class Listener(commands.Cog):
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
-                        if datarem[0][6]==0:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use ;egg again.'
-                        else:
-                            desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]}'
-                        if datarem[0][15] == 1:
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][15] == 2:
-                            await message.channel.send(desc)
+                        if datarem[15] == 1:
+                            if datarem[5] == 0:
+                                link = ";egg"
+                            else:
+                                link = "</egg status:1015311084594405485>"
+                            if datarem[6]==0:
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
+                            else:
+                                if datarem[5] == 0:
+                                    link=""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]} {link}'
+                            if datarem[16] == 0:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
+                            else:
+                                await message.channel.send(desc)
 
                         
                     if "opened " in _embed.author.name:

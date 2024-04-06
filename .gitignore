@@ -153,3 +153,4 @@ cython_debug/
 key.txt
 database.db
 *.db
+springclean.txt

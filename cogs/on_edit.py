@@ -88,7 +88,8 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     anno = await announce.send(embed=embed)
-                                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                                    emoji = '🔔'
+                                                    await after.add_reaction(emoji)
                                             dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {guild.id}')
                                             dataev = dataev.fetchall()
                                             if dataev[0][4] == 1:
@@ -143,7 +144,8 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     anno = await announce.send(embed=embed)
-                                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                                    emoji = '🔔'
+                                                    await after.add_reaction(emoji)
                                         if "ran away" in _embed.description:
                                             raremon = data[0][14]
                                             if raremon in Rare_Spawns or _embed.color == 0xe9270b:
@@ -155,7 +157,8 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     anno = await announce.send(embed=embed)
-                                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                                    emoji = '🔔'
+                                                    await after.add_reaction(emoji)
                                     else:
                                         #print("No token")
                                         if "caught a" in _embed.description:
@@ -191,7 +194,8 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     anno = await announce.send(embed=embed)
-                                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                                    emoji = '🔔'
+                                                    await after.add_reaction(emoji)
                                             dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {guild.id}')
                                             dataev = dataev.fetchall()
                                             if dataev[0][4] == 1:
@@ -261,7 +265,8 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     anno = await announce.send(embed=embed)
-                                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                                    emoji = '🔔'
+                                                    await after.add_reaction(emoji)
                                         if "ran away" in _embed.description:
                                             raremon = data[0][14]
                                             color = str(_embed.color)
@@ -274,7 +279,8 @@ class On_Edit(commands.Cog):
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                                     anno = await announce.send(embed=embed)
-                                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                                    emoji = '🔔'
+                                                    await after.add_reaction(emoji)
 
             if ":map: Map:" in before.content:
                 if "Steps today:" in after.content:
@@ -310,7 +316,7 @@ class On_Edit(commands.Cog):
                                     embed.set_image(data[0][15])
                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                     anno = await announce.send(embed=embed)
-                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                    
                                 print("Explore: Caught it!")
                             elif "broke out" in after.content:
                                 if receiver_channel > 0:
@@ -321,7 +327,7 @@ class On_Edit(commands.Cog):
                                     embed.set_image(data[0][15])
                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                     anno = await announce.send(embed=embed)
-                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                    
                                 print("Explore: Broke out")
                             elif "ran away" in after.content:
                                 if receiver_channel > 0:
@@ -332,7 +338,7 @@ class On_Edit(commands.Cog):
                                     embed.set_image(data[0][15])
                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                                     anno = await announce.send(embed=embed)
-                                    await before.channel.send(f'Spawn posted in <#{announce.id}>: {anno.jump_url}')
+                                    
                                 print("Explore: Ran away")
 
         if before.author.id == 865576698137673739: ## Psycord

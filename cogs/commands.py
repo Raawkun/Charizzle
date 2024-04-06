@@ -173,6 +173,28 @@ class Coms(commands.Cog):
         msg = " ".join(args)
         await user.send(msg)
 
+    @commands.check(Basic_checker().check_server)
+    @commands.check(Basic_checker().check_admin)
+    @commands.command()
+    async def spring(self, ctx):
+        exclude = ["IPC-Trainer", "PAR Trainer", "Trial Member", "Clan Friend", "Botz", "Clan Treasury", "PAR Friends", "Straymons Member"]
+        members = ctx.guild.members
+        await ctx.send("Calculating...")
+        role = disnake.utils.get(ctx.guild.roles, name="Stranger?")
+        print(role)
+        with open("springclean.txt", "w") as file:
+
+            for entry in members:
+                has_role = any(role.name in exclude for role in entry.roles)
+                if not has_role and entry.bot == False:
+                    print(entry.display_name)
+                    await entry.add_roles(role)
+                    file.write(f"Name: {entry.display_name} - ID: {entry.id}, joined: {entry.joined_at}, roles: {entry.roles}\n")
+                    
+            pass
+
+        await ctx.reply(content="Here is the file for the spring cleaning.",file=disnake.File(file, filename="springclean.txt"))
+
 
     @commands.command()
     async def toggle(self, ctx):
@@ -180,7 +202,7 @@ class Coms(commands.Cog):
         timestamp = current_time.strftime('%Y-%m-%d %H:%M')
         user_id = ctx.author.id
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
-        database = database.fetchall()
+        database = database.fetchone()
         author_url = "https://cdn.discordapp.com/emojis/1153729922620215349.webp?size=96&quality=lossless"
         author_name = ctx.author.display_name
         gengar_bot = self.client.get_user(1161011648585285652)
@@ -192,58 +214,56 @@ class Coms(commands.Cog):
         emo_sile = ":no_bell:"
         color = 0x807ba6
         if database:
-            if database[0][2] == 1:
+            if database[2] == 1:
                 value_grazz = emo_yes
             else: 
                 value_grazz = emo_no
-            if database[0][3] == 1:
+            if database[3] == 1:
                 value_repel = emo_yes
             else:
                 value_repel = emo_no
-            if database[0][4] == 1:
+            if database[4] == 1:
                 value_start = emo_yes
             else: 
                 value_start = emo_no
-            if database[0][6] == 0:
+            if database[5] == 1:
+                value_link = emo_yes
+            else:
+                value_link = emo_no
+            if database[6] == 0:
                 value_rem = "Text style"
-            elif database[0][6] == 1:
+            elif database[6] == 1:
                 value_rem = "Emote Style"
-            if database[0][10] == 1:
-                value_spawn = emo_yes + emo_sile
-            elif database[0][10] == 0: 
+            if database[10] == 1:
+                value_spawn = emo_yes
+            elif database[10] == 0: 
                 value_spawn = emo_no
-            else:
-                value_spawn = emo_yes + emo_ping
             if database[0][11] == 1:
-                value_fish = emo_yes + emo_sile
-            elif database[0][11] == 0: 
+                value_fish = emo_yes
+            elif database[11] == 0: 
                 value_fish = emo_no
-            else:
-                value_fish = emo_yes + emo_ping
-            if database[0][12] == 1:
-                value_battle = emo_yes + emo_sile
-            elif database[0][12] == 0: 
+            if database[12] == 1:
+                value_battle = emo_yes
+            elif database[12] == 0: 
                 value_battle = emo_no
-            else:
-                value_battle = emo_yes + emo_ping
-            if database[0][13] == 1:
-                value_quest = emo_yes + emo_sile
-            elif database[0][13] == 0: 
+            if database[13] == 1:
+                value_quest = emo_yes
+            elif database[13] == 0: 
                 value_quest = emo_no
-            else:
-                value_quest = emo_yes + emo_ping
-            if database[0][14] == 1:
+            if database[14] == 1:
                 value_questr = emo_yes + emo_sile
-            elif database[0][14] == 0: 
-                value_quest = emo_no
-            else:
+            elif database[14] == 0: 
+                value_questr = emo_no
+            elif database[4] == 2:
                 value_questr = emo_yes + emo_ping
-            if database[0][15] == 1:
-                value_other = emo_yes + emo_sile
-            elif database[0][15] == 0: 
+            if database[15] == 1:
+                value_other = emo_yes
+            elif database[15] == 0: 
                 value_other = emo_no
+            if database[16] == 0:
+                value_ping = emo_ping
             else:
-                value_other = emo_yes + emo_ping
+                value_ping = emo_sile
             embed = disnake.Embed(
                 title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
             )
@@ -253,6 +273,7 @@ class Coms(commands.Cog):
             embed.add_field(name="Repels: ",inline=True, value=value_repel)
             embed.add_field(name="Starter: ",inline=True, value=value_start)
             embed.add_field(name="Reminder Mode: ", inline=True, value=value_rem)
+            embed.add_field(name="Pings: ", inline=True, value=value_ping)
             embed.add_field(name="",inline=True, value="")
             embed.add_field(name="Spawn: ", inline=True, value=value_spawn)
             embed.add_field(name="Fish: ", inline=True, value=value_fish)
