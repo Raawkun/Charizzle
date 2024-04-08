@@ -824,7 +824,7 @@ class Listener(commands.Cog):
                                 link = ";fish"
                             else:
                                 link = "</fish spawn:1015311084812501026>"
-                            if datarem[0][6]==0:
+                            if datarem[6]==0:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can use {link} again.'
                             else:
                                 if datarem[5] == 0:
