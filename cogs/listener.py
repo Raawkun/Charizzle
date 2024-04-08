@@ -793,75 +793,60 @@ class Listener(commands.Cog):
                     
                         await asyncio.sleep(8.8)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
-                        if datarem[0][10] == 1:
+                        datarem = datarem.fetchone()
+                        if datarem[10] == 1:
                             # desc = "again."
                             # desc = desc[::-1]
                             # desc1=str(sender.display_name)+", you can now use "
                             # desc1=desc1[::-1]
                             # await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1}")
-                            if datarem[0][6]==0:
-                                desc=f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </pokemon:1015311085441654824> again.'
+                            if datarem[5] == 0:
+                                link = ";p"
                             else:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["spawn"]}'
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][10] == 2:
-                            # user = f"<@{str(sender.id)}>"
-                            # desc = "again."
-                            # desc = desc[::-1]
-                            # desc1=", you can now use "
-                            # desc1=desc1[::-1]
-                            # await message.channel.send(f"{desc} </pokemon:1015311085441654824> {desc1} {user}")
-                            if datarem[0][6]==0:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </pokemon:1015311085441654824> again.'
+                                link = "</pokemon:1015311085441654824>"
+                            if datarem[6]==0:
+                                desc=f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
                             else:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["spawn"]}'
-                            await message.channel.send(desc)
+                                if datarem[5] == 0:
+                                    link = ""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["spawn"]} {link}'
+                            if datarem[16] == 1:
+                                await message.channel.send(desc)
+                            else:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                 if _embed.description:
                     if "cast out a" in _embed.description:
                         await asyncio.sleep(24.2)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
-                        datarem = datarem.fetchall()
-                        if datarem[0][11] == 1:
-                            # desc = "again."
-                            # desc = desc[::-1]
-                            # desc1=str(sender.display_name)+", you can now use "
-                            # desc1=desc1[::-1]
-                            # await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1}")
-                            if datarem[0][6]==0:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can use</fish spawn:1015311084812501026> again.'
+                        datarem = datarem.fetchone()
+                        if datarem[11] == 1:
+                            if datarem[5] == 0:
+                                link = ";fish"
                             else:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fish"]}'
-                            await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
-                        elif datarem[0][11] == 2:
-                            # user = f"<@{str(sender.id)}>"
-                            # desc = "again."
-                            # desc = desc[::-1]
-                            # desc1=", you can now use "
-                            # desc1=desc1[::-1]
-                            # await message.channel.send(f"{desc} </fish spawn:1015311084812501026> {desc1} {user}")
+                                link = "</fish spawn:1015311084812501026>"
                             if datarem[0][6]==0:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use </fish spawn:1015311084812501026> again.'
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can use {link} again.'
                             else:
-                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fish"]}'
-                            await message.channel.send(desc)
+                                if datarem[5] == 0:
+                                    link = ""
+                                desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["fish"]} {link}'
+                            if datarem[16] == 1:
+                                await message.channel.send(desc)
+                            else:
+                                await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                     
                     if "from a swap" in _embed.description:
                         await asyncio.sleep(6)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
-                            # desc = str(sender.display_name)+", you can now swap again."
-                            # desc = desc[::-1]
+                            
                             if datarem[0][6]==0:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now ;swap again.'
                             else:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["swap"]}'
                             await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                         elif datarem[0][15] == 2:
-                            # user = f"<@{str(sender.id)}>"
-                            # desc = ", you can now swap again."
-                            # desc = desc[::-1]+user
                             if datarem[0][6]==0:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now ;swap again.'
                             else:
