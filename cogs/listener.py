@@ -1,3 +1,4 @@
+import os
 import random
 import disnake
 from disnake.ext import commands
@@ -96,11 +97,11 @@ class Listener(commands.Cog):
                     entry = int(entry[0])
                     channel = self.client.get_channel(entry)
                     await channel.send(f"Time for a new changelog! Get ready:\n```\n{file_content}\n```\nAnd that's all for today!")
-                with open("changelog_old.txt", "a") as file:
+                with open("changelog_old.txt", "a") as oldfile:
                     old_content = f"\n\n{timestamp}\n{file_content}"
-                    file.write(old_content)
-                with open("changelog.txt", "w"):
-                    pass
+                    oldfile.write(old_content)
+                file ="changelog.txt"
+                os.remove(file)
                 
             else:
                exit
@@ -244,11 +245,11 @@ class Listener(commands.Cog):
             await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
 
         if message.content.lower() == "stfu":
-            await message.channel.send("No u.")
+            await message.channel.reply("No u.",allowed_mentions = disnake.AllowedMentions(replied_user=False))
 
 
         if message.content.lower() == "lol":
-            await message.channel.send("Rofl.")
+            await message.channel.reply("Rofl.", allowed_mentions = disnake.AllowedMentions(replied_user=False))
 
         if message.author.id == 922248409350549564:
             if "our general chat" in message.content.lower():
@@ -260,6 +261,27 @@ class Listener(commands.Cog):
                 #print(username+" welcomed")
                 await message.channel.send("Hey, "+username)
                 await message.channel.send("<a:welcome1:1130245046025846814><a:welcome2:1130245098983137323>")
+            if "Here is some info for new people" in message.content:
+                id = message.content.split("<@")[1]
+                id = id.split(">")[0]
+                desc = f"Hi <@{id}>! Congrats on joining this awesome clan!\nI'm {self.client.display_name} and here to help you to grind as easy & efficient as possible!\nYou may know bots like MeowHelper from other servers - don't worry, I'm way more reliable!\n\n"
+                desc += f"My main work here is to remind you when your PokéMeow command cooldowns are done - and I can either remind with or without pings.\nIf you want to know more about my functions and command, check out ``mInfo``or </info:1177325264351543447>.\n\n"
+                desc += f"Have a good time here! <:GengarHeart:1153729922620215349>"
+                emb = await Auction_embed(self.client, title="Welcome!", description=desc).setup_embed()
+                await message.channel.send(embed=emb)
+
+        if message.author.id == myself:
+            if "<@1161011648585285652> trainer add" in message.content.lower():
+                id = message.content.split("<@")[2]
+                id = id.split(">")[0]
+                role = disnake.utils.get(message.guild.roles, "PAR Trainer")
+                id = message.guild.get_member(int(id))
+                await id.add_roles(role)
+                desc = f"Welcome to our Psycord team, <@{id.id}>!\n\nI'm {self.client.display_name} and I'm here to assist you a bit when playing Psycord!\n"
+                desc += f"\nFeel free to check out ``mInfo Psycord``or </info:1177325264351543447> and choose the tag 'Psycord'."
+                emb = await Auction_embed(self.client,description=desc).setup_embed()
+                await message.channel.send(embed=emb)
+
 
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {message.author.id}')
         database = database.fetchone()

@@ -5,7 +5,7 @@ from disnake.ext import commands
 import datetime
 from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, buyin
-from utility.info_dict import embed_color, cmds, functions, events, info
+from utility.info_dict import embed_color, cmds, functions, events, info, psycord
 
 class Info_Cmd(commands.Cog):
 
@@ -47,6 +47,11 @@ class Info_Cmd(commands.Cog):
                 embed.add_field(name=" ", value=" ",inline=False)
                 embed.add_field(name="Commands",value=events["cmd"])
                 await ctx.send(embed=embed)
+            elif message in ["psy", "psycord","Psy","Psycord"]:
+                embed.add_field(name="**__Outbreaks__**", value=psycord["outbreaks"], inline=False)
+                embed.add_field(name="**__Wild Spawns__**",value=psycord["wild"], inline=False)
+                embed.add_field(name="**__Leftover Codes__**",value=psycord["codes"], inline=False)
+                embed.add_field(name="**__Flexing__**",value=psycord["flex"], inline=False)
         else:
             embed.add_field(name="**__Info Panel__**",value=info["text"])
             await ctx.send(embed=embed)

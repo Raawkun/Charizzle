@@ -513,133 +513,133 @@ class Coms(commands.Cog):
         await ctx.send("Done")
 
 
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
-    async def eventset(self, ctx):
-        data = self.db.execute(f'SELECT * FROM Admin')
-        data = data.fetchall()
-        announce = self.client.get_channel(917890289652346911)
-        log = self.client.get_channel(1166470108068188200)
-        if data[0][4] == 0:
-            self.db.execute(f'UPDATE Admin SET Event = 1')
-            self.db.commit()
-            await ctx.send(f'{self.client.user.display_name}'+"'s Event is now active!")
-            await announce.send(f'{self.client.user.display_name}'+"'s Event is now active! Please refer to ``info event`` for additional information.")
-            await log.send("**Event started**")
-        if data[0][4] == 1:
-            self.db.execute(f'UPDATE Admin SET Event = 0')
-            self.db.commit()
-            data = self.db.execute(f'SELECT * FROM Events')
-            data = data.fetchall()
-            msg = "# - Points - User\n"
-            database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
-            database_table = database_table.fetchall()
-            if database_table:
-                i = 1
-                for row in database_table:
-                    msg += (f'#{i:02} {str(row[2]).ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
-                    i += 1
-                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
-            await announce.send(embed=embed)
-            msg = "# - Payout - User\n"
-            amount = self.db.execute(f'SELECT SUM(Buyin) FROM Events')
-            amount = amount.fetchone()
-            amount = amount[0]
-            print(amount)
-            firstplace = math.ceil(int(amount)*0.5)
-            print(firstplace)
-            secondplace = math.floor(int(amount)*0.3)
-            print(secondplace)
-            thirdplace = math.floor(int(amount)*0.2)
-            print(thirdplace)
-            payouts = [f'{firstplace:,}',f'{secondplace:,}',f'{thirdplace:,}']
-            database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC LIMIT 3")
-            database_table = database_table.fetchall()
-            if database_table:
-                i = 1
-                for row in database_table:
-                    msg += (f'#{i:02} {payouts[i-1].ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
-                    i += 1
-                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
-            await announce.send(embed=embed)
-            await ctx.send("Ended the event. Check <#917890289652346911> for the leaderboard table.")
-            await log.send("**Event ended**")
-            self.db.execute(f'DELETE FROM Events')
-            self.db.commit()
-            # self.db.execute(f'DELETE FROM Events')
-            # self.cb.commit()
+    # @commands.check(Basic_checker().check_management)
+    # @commands.command()
+    # async def eventset(self, ctx):
+    #     data = self.db.execute(f'SELECT * FROM Admin')
+    #     data = data.fetchall()
+    #     announce = self.client.get_channel(917890289652346911)
+    #     log = self.client.get_channel(1166470108068188200)
+    #     if data[0][4] == 0:
+    #         self.db.execute(f'UPDATE Admin SET Event = 1')
+    #         self.db.commit()
+    #         await ctx.send(f'{self.client.user.display_name}'+"'s Event is now active!")
+    #         await announce.send(f'{self.client.user.display_name}'+"'s Event is now active! Please refer to ``info event`` for additional information.")
+    #         await log.send("**Event started**")
+    #     if data[0][4] == 1:
+    #         self.db.execute(f'UPDATE Admin SET Event = 0')
+    #         self.db.commit()
+    #         data = self.db.execute(f'SELECT * FROM Events')
+    #         data = data.fetchall()
+    #         msg = "# - Points - User\n"
+    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
+    #         database_table = database_table.fetchall()
+    #         if database_table:
+    #             i = 1
+    #             for row in database_table:
+    #                 msg += (f'#{i:02} {str(row[2]).ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+    #                 i += 1
+    #             embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+    #         await announce.send(embed=embed)
+    #         msg = "# - Payout - User\n"
+    #         amount = self.db.execute(f'SELECT SUM(Buyin) FROM Events')
+    #         amount = amount.fetchone()
+    #         amount = amount[0]
+    #         print(amount)
+    #         firstplace = math.ceil(int(amount)*0.5)
+    #         print(firstplace)
+    #         secondplace = math.floor(int(amount)*0.3)
+    #         print(secondplace)
+    #         thirdplace = math.floor(int(amount)*0.2)
+    #         print(thirdplace)
+    #         payouts = [f'{firstplace:,}',f'{secondplace:,}',f'{thirdplace:,}']
+    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC LIMIT 3")
+    #         database_table = database_table.fetchall()
+    #         if database_table:
+    #             i = 1
+    #             for row in database_table:
+    #                 msg += (f'#{i:02} {payouts[i-1].ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+    #                 i += 1
+    #             embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+    #         await announce.send(embed=embed)
+    #         await ctx.send("Ended the event. Check <#917890289652346911> for the leaderboard table.")
+    #         await log.send("**Event ended**")
+    #         self.db.execute(f'DELETE FROM Events')
+    #         self.db.commit()
+    #         # self.db.execute(f'DELETE FROM Events')
+    #         # self.cb.commit()
     
-    @commands.command(aliases=["ex"])
-    async def feed(self,ctx, message = None):
-        sender = ctx.author.id
-        print(sender)
-        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender}')
-        data = data.fetchall()
-        if message == None:
-            #print("No extra input")
-            if data:
-                if data[0][4] == 0:
-                    await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
-                else:
-                    newamount = data[0][4]-1
-                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
-                    self.db.commit()
-                    await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
-        elif message == "all":
-            if data:
-                self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + Items, Items == 0 WHERE User_ID = {sender}')
-                self.db.commit()
-                await asyncio.sleep(0.5)
-                await ctx.send("That was yummy! You have 0 cookies left right now.")
-        elif int(message) > 0:
-            print(message)
-            reducer = int(message)
-            if data:
-                if reducer > data[0][4]:
-                    await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
-                else:
-                    self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + {reducer}, Items = Items - {reducer} WHERE User_ID = {sender}')
-                    self.db.commit()
-                    newamount = data[0][4]-reducer
-                    await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
+    # @commands.command(aliases=["ex"])
+    # async def feed(self,ctx, message = None):
+    #     sender = ctx.author.id
+    #     print(sender)
+    #     data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender}')
+    #     data = data.fetchall()
+    #     if message == None:
+    #         #print("No extra input")
+    #         if data:
+    #             if data[0][4] == 0:
+    #                 await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
+    #             else:
+    #                 newamount = data[0][4]-1
+    #                 self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
+    #                 self.db.commit()
+    #                 await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
+    #     elif message == "all":
+    #         if data:
+    #             self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + Items, Items == 0 WHERE User_ID = {sender}')
+    #             self.db.commit()
+    #             await asyncio.sleep(0.5)
+    #             await ctx.send("That was yummy! You have 0 cookies left right now.")
+    #     elif int(message) > 0:
+    #         print(message)
+    #         reducer = int(message)
+    #         if data:
+    #             if reducer > data[0][4]:
+    #                 await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
+    #             else:
+    #                 self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + {reducer}, Items = Items - {reducer} WHERE User_ID = {sender}')
+    #                 self.db.commit()
+    #                 newamount = data[0][4]-reducer
+    #                 await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
 
-    @commands.command(aliases=["inv","inventory"])
-    async def bag(self,ctx):
-        dataad = self.db.execute(f'SELECT * FROM Admin')
-        dataad = dataad.fetchall()
-        if dataad[0][4] == 1:
-            database_table = self.db.execute(f"SELECT * FROM Events WHERE User_ID = {ctx.author.id}")
-            database_table = database_table.fetchall()
-            if database_table == None:
-                msg ="Your inventory is empty."
-            else:
-                msg = "Lava Cookies: "+f'{database_table[0][4]}'+" <:lavacookie:1167592527570935922>"
-        else:
-            msg = "Your inventory is empty."
+    # @commands.command(aliases=["inv","inventory"])
+    # async def bag(self,ctx):
+    #     dataad = self.db.execute(f'SELECT * FROM Admin')
+    #     dataad = dataad.fetchall()
+    #     if dataad[0][4] == 1:
+    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE User_ID = {ctx.author.id}")
+    #         database_table = database_table.fetchall()
+    #         if database_table == None:
+    #             msg ="Your inventory is empty."
+    #         else:
+    #             msg = "Lava Cookies: "+f'{database_table[0][4]}'+" <:lavacookie:1167592527570935922>"
+    #     else:
+    #         msg = "Your inventory is empty."
             
-        embed = await Custom_embed(self.client,title=f'{ctx.author.display_name}'"'s Item Bag",thumb="https://www.pokewiki.de/images/e/ec/Pyrobeutel2.png",description=msg).setup_embed()
-        await ctx.send(embed=embed)
+    #     embed = await Custom_embed(self.client,title=f'{ctx.author.display_name}'"'s Item Bag",thumb="https://www.pokewiki.de/images/e/ec/Pyrobeutel2.png",description=msg).setup_embed()
+    #     await ctx.send(embed=embed)
 
 
-    @commands.command(aliases=["Event","events","Events"])
-    async def event(self, ctx):
-        dataad = self.db.execute(f'SELECT * FROM Admin')
-        dataad = dataad.fetchall()
-        if dataad[0][4] == 1:
-            msg = "#  - Points  - Cookies - User\n"
-            database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
-            database_table = database_table.fetchall()
-            if database_table:
-                i = 1
-                for row in database_table:
-                    points = row[2]
-                    points = f'{points:,}'
-                    msg += (f'{i:02} - {str(points).ljust(7)} - {str(row[3]-1).ljust(6)}  - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
-                    i += 1
-                embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
-                await ctx.send(embed=embed)
-        else:
-            await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")
+    # @commands.command(aliases=["Event","events","Events"])
+    # async def event(self, ctx):
+    #     dataad = self.db.execute(f'SELECT * FROM Admin')
+    #     dataad = dataad.fetchall()
+    #     if dataad[0][4] == 1:
+    #         msg = "#  - Points  - Cookies - User\n"
+    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
+    #         database_table = database_table.fetchall()
+    #         if database_table:
+    #             i = 1
+    #             for row in database_table:
+    #                 points = row[2]
+    #                 points = f'{points:,}'
+    #                 msg += (f'{i:02} - {str(points).ljust(7)} - {str(row[3]-1).ljust(6)}  - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
+    #                 i += 1
+    #             embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
+    #             await ctx.send(embed=embed)
+    #     else:
+    #         await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")
         
     @commands.command()
     async def pin(self, ctx, message_id: int = None):
@@ -806,6 +806,7 @@ class Coms(commands.Cog):
         else:
             await ctx.send("Please reply to a message.")    
 
+    @commands.check(Basic_checker().check_server)
     @commands.check(Basic_checker().check_admin)
     @commands.command(aliases=["bl", "blackl"])
     async def blacklist(self, ctx, action: str = None, userid: int = None):
