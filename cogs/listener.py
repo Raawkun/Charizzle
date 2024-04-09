@@ -245,11 +245,11 @@ class Listener(commands.Cog):
             await message.channel.send("https://media.tenor.com/LC5ripTgbHkAAAAC/kyogre-kyogresmile.gif")
 
         if message.content.lower() == "stfu":
-            await message.channel.reply("No u.",allowed_mentions = disnake.AllowedMentions(replied_user=False))
+            await message.reply("No u.",allowed_mentions = disnake.AllowedMentions(replied_user=False))
 
 
         if message.content.lower() == "lol":
-            await message.channel.reply("Rofl.", allowed_mentions = disnake.AllowedMentions(replied_user=False))
+            await message.reply("Rofl.", allowed_mentions = disnake.AllowedMentions(replied_user=False))
 
         if message.author.id == 922248409350549564:
             if "our general chat" in message.content.lower():
