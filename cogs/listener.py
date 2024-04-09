@@ -196,8 +196,8 @@ class Listener(commands.Cog):
 
 
     @commands.Cog.listener()
-    async def on_member_join(self, member, guild):
-        id = guild.id
+    async def on_member_join(self, member):
+        id = member.guild.id
         if id == 825813023716540426: #Paralympic
             db = self.db.execute(f'SELECT * FROM Blacklist WHERE UserID = {member.id}')
             db = db.fetchall()
@@ -219,8 +219,8 @@ class Listener(commands.Cog):
                 channel = self.client.get_channel(825836238951022602)
                 await channel.send(desc)
         if id == 1227320623567736924: #PokeTour
-            desc = f"Welcome to {guild.name}, <@{member.id}>!"
-            channel = guild.system_channel
+            desc = f"Welcome to {member.guild.name}, <@{member.id}>!"
+            channel = member.guild.system_channel
             await channel.send(desc)
     
 
