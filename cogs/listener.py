@@ -31,6 +31,18 @@ class Listener(commands.Cog):
         _emb.add_field(name="Error:",value=error)
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
+
+    async def online_count(self, memb):
+        guild = memb.guild
+        prev = memb.guild.get_channel(1227354721413759116)
+        prev = int(prev.name.split("=")[1])
+        online_count = sum(1 for member in guild.members if member.status != disnake.Status.offline)
+        #print(f"{online_count} - {prev} as count.")
+        if online_count != prev:
+            # Update the channel name
+            channel = guild.get_channel(1227354721413759116)  # Replace CHANNEL_ID with the ID of your channel
+            if channel:
+                await channel.edit(name=f"👥 Online = {online_count}")
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
@@ -219,9 +231,47 @@ class Listener(commands.Cog):
                 channel = self.client.get_channel(825836238951022602)
                 await channel.send(desc)
         if id == 1227320623567736924: #PokeTour
+            # Welcome msg
             desc = f"Welcome to {member.guild.name}, <@{member.id}>!"
             channel = member.guild.system_channel
             await channel.send(desc)
+            # Member count
+            name = "👥 Members = "
+            online = member.guild.get_channel(1227354661007392799)
+            count = member.guild.member_count
+            name += str(count)
+            await online.edit(name=name)
+            #Online count
+            await asyncio.create_task(self.online_count(member))
+    
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        guild = member.guild
+        if guild.id == 1227320623567736924: #PokeTour
+            desc = f"We say good-bye to <@{member.id}>, I hope they find inner peace. - {member.id}"
+            await member.guild.system_channel.send(desc)
+            # Member Count
+            name = "👥 Members = "
+            online = member.guild.get_channel(1227354661007392799)
+            count = member.guild.member_count
+            name += str(count)
+            await online.edit(name=name)
+            #Online Count
+            await asyncio.create_task(self.online_count(member))
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        guild = after.guild
+        if guild.id == 1227320623567736924: #PokeTour
+            print("update")
+            await asyncio.create_task(self.online_count(after))
+    
+    @commands.Cog.listener()
+    async def on_presence_update(self, before, after):
+        guild = after.guild
+        if guild.id == 1227320623567736924: #PokeTour
+            print("presence update")
+            await asyncio.create_task(self.online_count(after))
     
 
     @commands.Cog.listener()

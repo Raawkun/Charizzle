@@ -9,3 +9,7 @@ At UTC 2024-04-06 08:43:00
 - Instant respone if a Legendary+ spawn got send into the rare spawn channel.
 - Updated emoji reminders.
 - Psycord flex is now per-server. (theoretically)
+
+At UTC 2024-04-10 18:22:02
+- Again improved reminders. Maybe?
+- Added an emote reaction to messages that were reposted in the rare spawn channel.
