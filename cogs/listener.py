@@ -168,7 +168,7 @@ class Listener(commands.Cog):
             elif waiter < current_time:
                 self.db.execute(f'UPDATE Toggle SET Channel = 0, QuestTime = 0, Timer = 0 WHERE User_ID = {userid}')
                 self.db.commit()
-        asyncio.create_task(self.online_loop)
+        asyncio.create_task(self.online_loop())
         print("Time do to ghost stuff!")
             
     @commands.Cog.listener()
@@ -239,6 +239,10 @@ class Listener(commands.Cog):
             desc = f"Welcome to {member.guild.name}, <@{member.id}>!"
             channel = member.guild.system_channel
             await channel.send(desc)
+            roles = [1227356364624498760, 1227356782335230002, 1227356761007329330, 1227358972965687335]
+            for entry in roles:
+                role = member.guild.get_role(entry)
+                await member.add_roles(role)
             # Member count
             name = "👥 Members = "
             online = member.guild.get_channel(1227354661007392799)
