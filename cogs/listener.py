@@ -643,16 +643,27 @@ class Listener(commands.Cog):
                                     number = int(number.split(" ")[0])
                                     #print(number)
                                     datdex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {number}')
-                                    datdex = datdex.fetchall()
+                                    datdex = datdex.fetchone()
                                     #print(datdex[0][1])
                                     current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
-                                    price = _embed.description.split("PokeCoin")[2]
-                                    lowprice = price.split(" ")[1]
-                                    lowprice = int(lowprice.replace(",", ""))
+                                    if "amount for sale" in _embed.description.lower():
+                                        price = _embed.description.split("PokeCoin")[2]
+                                        lowprice = price.split(" ")[1]
+                                        lowprice = int(lowprice.replace(",", ""))
+                                        amount = int(price.split(" ")[5])
+                                    else:
+                                        for entry in _embed.fields:
+                                            if entry.name == "Price each":
+                                                print(entry.value)
+                                                price = entry.value.split("`")[1]
+                                                print(price)
+                                                lowprice = int(price.replace(",", ""))
+                                            if entry.name == "Amount Remaining":
+                                                amount = entry.value.split("`")[1]
+                                                amount = int((amount.split(" ")[0]).replace(",", ""))
                                     #print(lowprice)
-                                    amount = int(price.split(" ")[5])
                                     #print(amount)
-                                    self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0][0]}')
+                                    self.db.execute(f'UPDATE Dex Set LowestVal = {lowprice}, UpdateTime = {current_time}, Amount = {amount} WHERE DexID = {datdex[0]}')
                                     self.db.commit()
                         except Exception as e:
                             asyncio.create_task(self.errorlog(e, message=message, author=sender))
