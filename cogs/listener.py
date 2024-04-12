@@ -31,20 +31,6 @@ class Listener(commands.Cog):
         _emb.add_field(name="Error:",value=error)
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
-
-    async def online_loop(self):
-        guild = self.get_guild(1227320623567736924)
-        while True:
-            #Online-count
-            online = guild.get_channel(1227354721413759116)
-            online_count = sum(1 for member in guild.members if member.status != disnake.Status.offline)
-            if online:
-                await online.edit(name=f"👥 Online = {online_count}")
-            members = guild.get_channel(1227354661007392799)
-            memer_count =sum(1 for member in guild.members if member.bot == False)
-            if members:
-                await members.edit(name=f"👥 Members = {memer_count}")
-            asyncio.sleep(300)
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
@@ -168,7 +154,6 @@ class Listener(commands.Cog):
             elif waiter < current_time:
                 self.db.execute(f'UPDATE Toggle SET Channel = 0, QuestTime = 0, Timer = 0 WHERE User_ID = {userid}')
                 self.db.commit()
-        asyncio.create_task(self.online_loop())
         print("Time do to ghost stuff!")
             
     @commands.Cog.listener()
@@ -243,12 +228,6 @@ class Listener(commands.Cog):
             for entry in roles:
                 role = member.guild.get_role(entry)
                 await member.add_roles(role)
-            # Member count
-            name = "👥 Members = "
-            online = member.guild.get_channel(1227354661007392799)
-            count = member.guild.member_count
-            name += str(count)
-            await online.edit(name=name)
     
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -256,12 +235,6 @@ class Listener(commands.Cog):
         if guild.id == 1227320623567736924: #PokeTour
             desc = f"We say good-bye to <@{member.id}>, I hope they find inner peace. - {member.id}"
             await member.guild.system_channel.send(desc)
-            # Member Count
-            name = "👥 Members = "
-            online = member.guild.get_channel(1227354661007392799)
-            count = member.guild.member_count
-            name += str(count)
-            await online.edit(name=name)
     
 
     @commands.Cog.listener()
@@ -319,7 +292,7 @@ class Listener(commands.Cog):
             if "<@1161011648585285652> trainer add" in message.content.lower():
                 id = message.content.split("<@")[2]
                 id = id.split(">")[0]
-                role = disnake.utils.get(message.guild.roles, "PAR Trainer")
+                role = message.guild.get_role(1199086710659760189)
                 id = message.guild.get_member(int(id))
                 await id.add_roles(role)
                 desc = f"Welcome to our Psycord team, <@{id.id}>!\n\nI'm {self.client.display_name} and I'm here to assist you a bit when playing Psycord!\n"
