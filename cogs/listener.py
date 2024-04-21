@@ -482,12 +482,9 @@ class Listener(commands.Cog):
                 iconname = message.content.split("unlocked ")[1]
                 icon = iconname.split(":")[2]
                 icon = icon.split(">")[0]
-                print(icon)
                 iconname = iconname.split(":")[1]
-                print(iconname)
                 iconname = iconname.replace("_"," ")
                 iconname = iconname.title()
-                print(iconname)
                 authorid = message.content.split("@")[1]
                 authorid = int(authorid.split(">")[0])
                 user = self.client.get_user(authorid)

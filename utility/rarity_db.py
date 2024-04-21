@@ -3,5 +3,5 @@ counts = {"event" : "Event Shiny","fullodd" : "Fullodds Shiny","legendary" : "Le
 countnumber = {"event" : 1, "fullodd" : 2,"legendary" : 3, "item" : 4, "goldenfish" : 5, "shinyfish" : 6, "legendaryfish" : 7, "goldenexp" : 8, "shinyexp" : 9, "legendaryexp" : 10, "icon" : 11}
 embed_color = {"Common" : 0x0855fb,"Uncommon" : 0x13b4e7,"Rare" : 0xfb8908,"SuperRare" : 0xf8f407,"Legendary" : 0xa007f8,"Shiny" : 0xfe98cb,"Golden" : 0xd4b100}
 min_increase = {"Common" : 5000, "Uncommon" : 5000, "Rare" : 5000, "SuperRare" : 5000, "Legendary" : 10000, "Shiny" : 10000, "mega" : "<:megas:1165314244242321410>", "ShinyMega" : 10000, "Golden" : 50000}
-chambers = {"salamencite" : 7133, "cameruptite" : 7112, "meteor" : 7118, "tyranitarite" : 7088, "blastoisinite" : 7010, "gardevoirite" : 7022, "galladite" : 7082, "charidarzite_x" : 7004, "lucarionite" : 7058, "audinite" : 7094}
+chambers = {"salamencite" : 7133, "cameruptite" : 7112, "meteor" : 7118, "tyranitarite" : 7088, "blastoisinite" : 7010, "gardevoirite" : 7022, "galladite" : 7082, "charidarzite_x" : 7004, "lucarionite" : 7058, "audinite" : 7094, "metagrossite" : 7136, "latiosite" : 7142}
 thresholds = {"Common" : 8, "Uncommon" : 6, "Rare" : 4, "SuperRare" : 2}
