@@ -942,7 +942,7 @@ class Coms(commands.Cog):
                 oldmsg = await channel.fetch_message(oldmsg[7])
                 await oldmsg.delete()
             except Exception as e:
-                test = None
+                print(e)
             _embed = await Auction_embed(self.client,title="**New Code**",description=cod).setup_embed()
             _embed.set_author(name=f'{ctx.author.display_name} sponsored a code!',icon_url=ctx.author.display_avatar)
             thx = await ctx.send(f"Thx for gifting a code! Check <#{code_channel}>!")
