@@ -498,7 +498,7 @@ class Listener(commands.Cog):
                 embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                 embed.set_author(name=f'{self.client.get_user(authorid).display_name}'" just found a new icon!", icon_url="https://cdn.discordapp.com/emojis/766701189260771359.webp?size=96&quality=lossless")
                 await announce_channel.send(embed=embed)
-                await log_chn.send(user+" found an icon")
+                await log_chn.send(user.name+" found an icon")
                 await log_chn.send("Its "+iconname)
             if "won the battle!" in message.content:
                 #print("Battle won")
