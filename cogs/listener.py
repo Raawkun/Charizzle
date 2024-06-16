@@ -168,7 +168,7 @@ class Listener(commands.Cog):
         desc += f"The following can be set up in this server at the moment.\n\n**Functions:**\n"
         desc += f"> * __Changelog__: {self.client.user.display_name}'s updates.\n"
         desc += f"> * Usage: ``changelog [set/remove] [channel id]``\n"
-        desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarwspawn [set/remove] [channel id]``\n"
+        desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarespawn [set/remove] [channel id]``\n"
         desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
         desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
 
@@ -601,7 +601,7 @@ class Listener(commands.Cog):
                             #desc = desc[::-1]
                         else:
                             desc = f'{rem_emotes["remind"]} - <@{sender.id}> {rem_emotes["egg"]}'
-                        await message.channel.send(desc)
+                        await message.channel.send(desc)           
             if (len(message.embeds) > 0):
                 _embed = message.embeds[0]
                 color = _embed.color
@@ -742,8 +742,7 @@ class Listener(commands.Cog):
                                         self.db.commit()
                                         print("New in")
 
-
-
+  
                 if "found a wild" in message.content:
                     log_channel = self.client.get_channel(log_channel)
                     if (len(message.embeds) > 0):
