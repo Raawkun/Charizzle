@@ -1322,17 +1322,17 @@ class Listener(commands.Cog):
                     try:
                         if "version" in _embed.description:
                             print("Version in it")
-                            dex=_embed.author.name.split("#")[1]
+                            dex=_embed.author.name.split(" #")[1]
                             #print(dex)
-                            name=_embed.author.name.split("#")[0]
+                            name=_embed.author.name.split(" #")[0]
                             #print(name)
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {dex}')
-                                data = data.fetchall()
+                                data = data.fetchone()
                                 #await log.send(data)
-                                val = data[0][17]
-                                time = data[0][18]
-                                amount = data[0][19]
+                                val = data[17]
+                                time = data[18]
+                                amount = data[19]
                             except:
                                 #await log.send(data)
                                 val = 0
