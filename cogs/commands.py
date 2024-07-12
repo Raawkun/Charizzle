@@ -29,8 +29,8 @@ class Coms(commands.Cog):
         self.client = client
         self.db = connect("database.db")
 
-    
-    
+
+
     current_time = datetime.datetime.utcnow()
     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -41,7 +41,7 @@ class Coms(commands.Cog):
         _emb.add_field(name="Error:",value=error)
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
-        
+
     ############## Server configuration
     @commands.check(Basic_checker().check_admin)
     @commands.command()
@@ -190,7 +190,7 @@ class Coms(commands.Cog):
                     print(entry.display_name)
                     await entry.add_roles(role)
                     file.write(f"Name: {entry.display_name} - ID: {entry.id}, joined: {entry.joined_at}, roles: {entry.roles}\n")
-                    
+
             pass
 
         await ctx.reply(content="Here is the file for the spring cleaning.",file=disnake.File(file, filename="springclean.txt"))
@@ -216,7 +216,7 @@ class Coms(commands.Cog):
         if database:
             if database[2] == 1:
                 value_grazz = emo_yes
-            else: 
+            else:
                 value_grazz = emo_no
             if database[3] == 1:
                 value_repel = emo_yes
@@ -224,7 +224,7 @@ class Coms(commands.Cog):
                 value_repel = emo_no
             if database[4] == 1:
                 value_start = emo_yes
-            else: 
+            else:
                 value_start = emo_no
             if database[5] == 1:
                 value_link = emo_yes
@@ -236,29 +236,29 @@ class Coms(commands.Cog):
                 value_rem = "Emote Style"
             if database[10] == 1:
                 value_spawn = emo_yes
-            elif database[10] == 0: 
+            elif database[10] == 0:
                 value_spawn = emo_no
             if database[0][11] == 1:
                 value_fish = emo_yes
-            elif database[11] == 0: 
+            elif database[11] == 0:
                 value_fish = emo_no
             if database[12] == 1:
                 value_battle = emo_yes
-            elif database[12] == 0: 
+            elif database[12] == 0:
                 value_battle = emo_no
             if database[13] == 1:
                 value_quest = emo_yes
-            elif database[13] == 0: 
+            elif database[13] == 0:
                 value_quest = emo_no
             if database[14] == 1:
                 value_questr = emo_yes + emo_sile
-            elif database[14] == 0: 
+            elif database[14] == 0:
                 value_questr = emo_no
             elif database[4] == 2:
                 value_questr = emo_yes + emo_ping
             if database[15] == 1:
                 value_other = emo_yes
-            elif database[15] == 0: 
+            elif database[15] == 0:
                 value_other = emo_no
             if database[16] == 0:
                 value_ping = emo_ping
@@ -417,10 +417,10 @@ class Coms(commands.Cog):
             embed2.set_footer(icon_url=footer_icon,text=footer_name)
             embed2.set_image(monurl)
             embed2.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll2)+"\n\nRarity: "+monrare))
-            
+
             await ctx.send(embed=embed2)
 
-        else: 
+        else:
             roll1 = random.randint(1, 914)
             database1 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll1}')
             database1 = database1.fetchall()
@@ -434,7 +434,7 @@ class Coms(commands.Cog):
             #print(roll1)
             embed.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll1)+"\n\nRarity: "+monrare))
             await ctx.send(embed=embed)
-        
+
 
 
     @commands.command()
@@ -512,135 +512,6 @@ class Coms(commands.Cog):
         print("Dex_DB created")
         await ctx.send("Done")
 
-
-    # @commands.check(Basic_checker().check_management)
-    # @commands.command()
-    # async def eventset(self, ctx):
-    #     data = self.db.execute(f'SELECT * FROM Admin')
-    #     data = data.fetchall()
-    #     announce = self.client.get_channel(917890289652346911)
-    #     log = self.client.get_channel(1166470108068188200)
-    #     if data[0][4] == 0:
-    #         self.db.execute(f'UPDATE Admin SET Event = 1')
-    #         self.db.commit()
-    #         await ctx.send(f'{self.client.user.display_name}'+"'s Event is now active!")
-    #         await announce.send(f'{self.client.user.display_name}'+"'s Event is now active! Please refer to ``info event`` for additional information.")
-    #         await log.send("**Event started**")
-    #     if data[0][4] == 1:
-    #         self.db.execute(f'UPDATE Admin SET Event = 0')
-    #         self.db.commit()
-    #         data = self.db.execute(f'SELECT * FROM Events')
-    #         data = data.fetchall()
-    #         msg = "# - Points - User\n"
-    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
-    #         database_table = database_table.fetchall()
-    #         if database_table:
-    #             i = 1
-    #             for row in database_table:
-    #                 msg += (f'#{i:02} {str(row[2]).ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
-    #                 i += 1
-    #             embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
-    #         await announce.send(embed=embed)
-    #         msg = "# - Payout - User\n"
-    #         amount = self.db.execute(f'SELECT SUM(Buyin) FROM Events')
-    #         amount = amount.fetchone()
-    #         amount = amount[0]
-    #         print(amount)
-    #         firstplace = math.ceil(int(amount)*0.5)
-    #         print(firstplace)
-    #         secondplace = math.floor(int(amount)*0.3)
-    #         print(secondplace)
-    #         thirdplace = math.floor(int(amount)*0.2)
-    #         print(thirdplace)
-    #         payouts = [f'{firstplace:,}',f'{secondplace:,}',f'{thirdplace:,}']
-    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC LIMIT 3")
-    #         database_table = database_table.fetchall()
-    #         if database_table:
-    #             i = 1
-    #             for row in database_table:
-    #                 msg += (f'#{i:02} {payouts[i-1].ljust(7)} - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
-    #                 i += 1
-    #             embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
-    #         await announce.send(embed=embed)
-    #         await ctx.send("Ended the event. Check <#917890289652346911> for the leaderboard table.")
-    #         await log.send("**Event ended**")
-    #         self.db.execute(f'DELETE FROM Events')
-    #         self.db.commit()
-    #         # self.db.execute(f'DELETE FROM Events')
-    #         # self.cb.commit()
-    
-    # @commands.command(aliases=["ex"])
-    # async def feed(self,ctx, message = None):
-    #     sender = ctx.author.id
-    #     print(sender)
-    #     data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender}')
-    #     data = data.fetchall()
-    #     if message == None:
-    #         #print("No extra input")
-    #         if data:
-    #             if data[0][4] == 0:
-    #                 await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
-    #             else:
-    #                 newamount = data[0][4]-1
-    #                 self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + 1, Items = Items - 1 WHERE User_ID = {sender}')
-    #                 self.db.commit()
-    #                 await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
-    #     elif message == "all":
-    #         if data:
-    #             self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + Items, Items == 0 WHERE User_ID = {sender}')
-    #             self.db.commit()
-    #             await asyncio.sleep(0.5)
-    #             await ctx.send("That was yummy! You have 0 cookies left right now.")
-    #     elif int(message) > 0:
-    #         print(message)
-    #         reducer = int(message)
-    #         if data:
-    #             if reducer > data[0][4]:
-    #                 await ctx.send("Oh no! Looks like there are not enough cookies in your bag!")
-    #             else:
-    #                 self.db.execute(f'UPDATE Events SET ItemsUsed = ItemsUsed + {reducer}, Items = Items - {reducer} WHERE User_ID = {sender}')
-    #                 self.db.commit()
-    #                 newamount = data[0][4]-reducer
-    #                 await ctx.send("That was yummy! You have "+f'{newamount}'+" cookies left right now.")
-
-    # @commands.command(aliases=["inv","inventory"])
-    # async def bag(self,ctx):
-    #     dataad = self.db.execute(f'SELECT * FROM Admin')
-    #     dataad = dataad.fetchall()
-    #     if dataad[0][4] == 1:
-    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE User_ID = {ctx.author.id}")
-    #         database_table = database_table.fetchall()
-    #         if database_table == None:
-    #             msg ="Your inventory is empty."
-    #         else:
-    #             msg = "Lava Cookies: "+f'{database_table[0][4]}'+" <:lavacookie:1167592527570935922>"
-    #     else:
-    #         msg = "Your inventory is empty."
-            
-    #     embed = await Custom_embed(self.client,title=f'{ctx.author.display_name}'"'s Item Bag",thumb="https://www.pokewiki.de/images/e/ec/Pyrobeutel2.png",description=msg).setup_embed()
-    #     await ctx.send(embed=embed)
-
-
-    # @commands.command(aliases=["Event","events","Events"])
-    # async def event(self, ctx):
-    #     dataad = self.db.execute(f'SELECT * FROM Admin')
-    #     dataad = dataad.fetchall()
-    #     if dataad[0][4] == 1:
-    #         msg = "#  - Points  - Cookies - User\n"
-    #         database_table = self.db.execute(f"SELECT * FROM Events WHERE NOT Points = 0 ORDER BY Points DESC, ItemsUsed DESC")
-    #         database_table = database_table.fetchall()
-    #         if database_table:
-    #             i = 1
-    #             for row in database_table:
-    #                 points = row[2]
-    #                 points = f'{points:,}'
-    #                 msg += (f'{i:02} - {str(points).ljust(7)} - {str(row[3]-1).ljust(6)}  - {str(ctx.guild.get_member(row[0])).ljust(7)}\n')
-    #                 i += 1
-    #             embed = await Custom_embed(self.client, title="Event Leaderboard",description=f'```{msg}```').setup_embed()
-    #             await ctx.send(embed=embed)
-    #     else:
-    #         await ctx.send("There's no "+f'{self.client.user.display_name}'+" event running at the moment. Please check <#917890289652346911>.")
-        
     @commands.command()
     async def pin(self, ctx, message_id: int = None):
         checker = 1
@@ -710,7 +581,7 @@ class Coms(commands.Cog):
                     embed.set_author(name=(f'{sender.display_name}'+" won in a megachamber!"),icon_url=f"https://cdn.discordapp.com/emojis/{number}.webp?size=96&quality=lossless")
                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                     embed.set_image(dex[15])
-                    await announce.send(embed=embed)   
+                    await announce.send(embed=embed)
             if len(overseen.embeds) > 0:
                 _embed = overseen.embeds[0]
                 print(overseen)
@@ -742,13 +613,13 @@ class Coms(commands.Cog):
                         embed.set_author(name=(user.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
                         embed.set_image(_embed.image.url)
                         embed.set_thumbnail(url=None)
-                        
+
                         embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                         await announce.send(embed=embed)
                         await ctx.send("Check <#825950637958234133>",embed=embed)
                     else:
                         await ctx.send(f'{data[0][1]} is not rare enough to be posted. If you think this is wrong, ping Blue Flame.')
-            
+
             elif "'s trainer icon!" in overseen.content:
                 print(overseen.content)
                 current_time = overseen.created_at
@@ -804,7 +675,7 @@ class Coms(commands.Cog):
                 await announce.send(embed=embed)
 
         else:
-            await ctx.send("Please reply to a message.")    
+            await ctx.send("Please reply to a message.")
 
     @commands.check(Basic_checker().check_server)
     @commands.check(Basic_checker().check_admin)
@@ -854,12 +725,15 @@ class Coms(commands.Cog):
     #start 0 321 or 4 326
     @commands.check(Basic_checker().check_management)
     @commands.command()
-    async def pic(self, ctx, userid: int = None):
+    async def pic(self, ctx, userid = None):
         if userid == None:
             userid = ctx.author
         else:
-            userid = await self.client.getch_user(userid)
-        
+            if "@" in userid:
+                userid = userid.split("@")[1]
+                userid = userid.split(">")[0]
+            userid = await self.client.getch_user(int(userid))
+
         victory = Image.open("pictures/victory_hall.png")
 
         asset = userid.avatar.with_size(128)
@@ -873,30 +747,6 @@ class Coms(commands.Cog):
         victory.save("pictures/victory.png")
 
         await ctx.send(file=disnake.File("pictures/victory.png"))
-
-    @commands.check(Basic_checker().check_admin)
-    @commands.command()
-    async def dbcleaner(self, ctx):
-        servermem = ctx.guild.members
-        #print(servermem[1])
-        db = self.db.execute(f'SELECT * FROM Toggle')
-        db = db.fetchall()
-        for row in db:
-            username = await self.client.getch_user(row[1])
-            #print(username)
-            if username not in servermem:
-                print(str(username)+" not longer in the server.")
-                self.db.execute(f'DELETE FROM Toggle WHERE User_ID = {username.id}')
-                self.db.commit()
-        db = self.db.execute(f'SELECT * FROM Counter')
-        db = db.fetchall()
-        for row in db:
-            username = await self.client.getch_user(row[0])
-            #print(username)
-            if username not in servermem:
-                print(str(username)+" not longer in the server.")
-                self.db.execute(f'DELETE FROM Counter WHERE User_ID = {username.id}')
-                self.db.commit()
 
     @commands.command()
     async def flex(self, ctx, number: int = None):
@@ -959,7 +809,7 @@ class Coms(commands.Cog):
             await thx.delete()
         else:
             await ctx.send("Please paste the whole message from ``/drops``.")
-    
+
     @commands.check(Basic_checker().check_management)
     @commands.command()
     async def tester(self, ctx, number: int):
@@ -973,7 +823,7 @@ class Coms(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get(msg) as response:
                 gif_data = await response.read()
-        
+
         new_gif_frame = []
 
         gif_data = imageio.get_reader(BytesIO(gif_data), 'GIF')
@@ -982,14 +832,14 @@ class Coms(commands.Cog):
             new_frame = pic.copy()
             new_frame.paste(Image.fromarray(gif_frame).resize((250,250)), (530,50), Image.fromarray(gif_frame).resize((250,250)).convert('RGBA'))
             new_gif_frame.append(new_frame)
-        
+
         print(gif_data.get_meta_data())
 
         new_gif_byte_array = BytesIO()
         new_gif_frame[0].save(
-            new_gif_byte_array, 
-            save_all=True, 
-            append_images=new_gif_frame[1:], 
+            new_gif_byte_array,
+            save_all=True,
+            append_images=new_gif_frame[1:],
             format='GIF',
             duration=gif_data.get_meta_data()["duration"]
         )
@@ -1009,7 +859,7 @@ class Coms(commands.Cog):
 
         # await ctx.send(file=disnake.File("pictures/tested.png"))
 
-    @commands.command(aliases=["stats"])
+    @commands.command(aliases=["buddy","stats"])
     async def bud(self, ctx, user = None):
         if "@" in user:
             #print(user)
@@ -1042,7 +892,7 @@ class Coms(commands.Cog):
                     deff = 20
                     hp = 20
                     spe = 20
-            
+
             if atk > 0 and atk < 5:
                 starsatk = "<:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672><:star0:1197574311200960672>"
             elif atk >= 5 and atk < 10:
@@ -1091,136 +941,6 @@ class Coms(commands.Cog):
         else:
             print(user)
 
-        
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
-    async def auc(self, ctx, amount:int, monid:int, time:int, autobuy:int = None):
-        aucs = self.db.execute(f'SELECT * FROM Auctions WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
-        aucs = aucs.fetchone()
-        if aucs:
-            await ctx.send("Seems like there's already an auction running here.")
-        else:
-            dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {monid}')
-            dex = dex.fetchone()
-            remaining = (datetime.datetime.timestamp(datetime.datetime.now())+(time*60))
-            remaining = int(remaining)
-            autob = True
-            if autobuy == None:
-                autob = False
-                autobuy = 0
-            tit = f"**{ctx.author.display_name}'s Auction**"
-            desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
-            desc += f"**Current Offer:**\n0\n\n"
-            if autob == True:
-                desc += f"**Auto-buy:**\n{autobuy:,}\n\n"
-            else:
-                desc += f"**Auto-buy:**\nN/A\n\n"
-            desc += f"**Highest Bidder:**\nN/A\n\n"
-            desc += f"**Remaining Time:**\n<t:{remaining}:R>"
-            _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
-            _embed.set_image(url=dex[15])
-            self.db.execute(f'INSERT INTO Auctions (MonID, Amount, Rarity, SellerID, Timestamp, Autobuy, CO, ChannelID) VALUES ({monid}, {amount}, "{dex[14]}", {ctx.author.id}, {remaining}, {autobuy},0, {ctx.message.channel.id})')
-            self.db.commit()
-            await ctx.send(embed=_embed)
-            await ctx.send(f"@Auctioneer :blushyblushy:")
-    
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
-    async def bid(self, ctx, amount:int):
-        auc = self.db.execute(f'SELECT * FROM Auctions WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
-        auc = auc.fetchone()
-        if auc:
-            dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {auc[1]}')
-            dex = dex.fetchone()
-            if auc[6] == 0:
-                if amount >= min_increase[auc[3]]+auc[7]:
-                    user = await self.client.fetch_user(auc[4])
-                    tit = f"**{user.display_name}'s Auction**"
-                    desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
-                    desc += f"**Current Offer:**\n{amount:,}\n\n"
-                    desc += f"**Auto-buy:**\nN/A\n\n"
-                    desc += f"**Highest Bidder:**\n<@{ctx.author.id}>\n\n"
-                    desc += f"**Remaining Time:**\n<t:{auc[5]}:R>"
-                    _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
-                    _embed.set_image(url=dex[15])
-                    now = datetime.datetime.timestamp(datetime.datetime.now())
-                    if auc[5]-int(now) > 300:
-                        stamp = auc[5]
-                    else:
-                        stamp = auc[5]+300
-                    if auc[8] != None:
-                        await ctx.send(f"<@{auc[8]}> you have been outbid!")
-                    self.db.execute(f'UPDATE Auctions SET Timestamp = {stamp}, CO = {amount}, BidderID = {ctx.author.id} WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
-                    self.db.commit()
-                    await ctx.send(embed=_embed)
-                    await ctx.send(f"{ctx.author.id} don't forget to show your ``;bal``.")
-                else:
-                    await ctx.send(f"Sorry, but your offer isn't high enough! The minimal increase is {min_increase[auc[3]]:,}.")
-            else:
-                if amount > min_increase[auc[3]]+auc[7] and amount < auc[6]:
-                    user = self.client.fetch_user(auc[4])
-                    tit = f"**{user.display_name}'s Auction**"
-                    
-                    desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
-                    desc += f"**Current Offer:*\n{auc[7]:,}\n\n"
-                    desc += f"**Auto-buy:**\n{auc[6]:,}\n\n"
-                    desc += f"**Highest Bidder:**\n<@{ctx.author.id}>\n\n"
-                    desc += f"**Remaining Time:**\n<t:{auc[5]}:R>"
-                    _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
-                    _embed.set_image(url=dex[15])
-                    now = datetime.datetime.timestamp(datetime.datetime.now)
-                    if auc[5]-int(now) > 300:
-                        stamp = auc[5]
-                    else:
-                        stamp = auc[5]+300
-                    if auc[8] != None:
-                        await ctx.send(f"<@{auc[8]}> you have been outbid!")
-                    self.db.execute(f'UPDATE Auctions SET Timestamp = {stamp}, CO = {amount}, BidderID = {ctx.author.id} WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
-                    self.db.commit()
-                    await ctx.send(embed=_embed)
-                    await ctx.send(f"{ctx.author.id} don't forget to show your ``;bal``.")
-                elif amount < min_increase[auc[3]]+auc[7] and amount < auc[6]:
-                    await ctx.send(f"Sorry, but your offer isn't high enough! The minimal increase is {min_increase[auc[3]]}.")
-                elif amount > auc[6]:
-                    user = self.client.fetch_user(auc[4])
-                    tit = f"**{user.display_name}'s Auction**"
-                    desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
-                    desc += f"**Current Offer:*\n{auc[6]:,}\n\n"
-                    desc += f"**Auto-buy:**\n{auc[6]:,}\n\n"
-                    desc += f"**Highest Bidder:**\n<@{ctx.author.id}>\n\n"
-                    desc += f"**Remaining Time:**\nAuction completed!"
-                    _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
-                    _embed.set_image(url=dex[15])
-                    
-                    self.db.execute(f'UPDATE Auctions SET CO = {auc[6]}, BidderID = {ctx.author.id}, Active = 0 WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
-                    self.db.commit()
-                    _embed.set_footer(text=f"Auction has ended!")
-                    await ctx.send(embed=_embed)
-                    await ctx.send(f"The Auction has ended! <@{ctx.author.id}> please meet <@{auc[4]}> at SELLROOM1 or SELLROOM2")
-        else:
-            await ctx.send("No auction running at the moment.")
-
-    @commands.check(Basic_checker().check_management)
-    @commands.command()
-    async def status(self, ctx):
-        auc = self.db.execute(f'SELECT * FROM Auctions WHERE ChannelID = {ctx.message.channel.id} and Active = 1')
-        auc = auc.fetchone()
-        if auc:
-            dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {auc[1]}')
-            dex = dex.fetchone()
-            user = await self.client.fetch_user(auc[4])
-            tit = f"**{user.display_name}'s Auction**"
-            desc = f"Pokémon:\n{poke_rarity[dex[14]]} **{dex[1]}**\n\n"
-            desc += f"**Current Offer:**\n{auc[7]:,}\n\n"
-            desc += f"**Auto-buy:**\n{auc[6]:,}\n\n"
-            desc += f"**Highest Bidder:**\n<@{auc[8]}>\n\n"
-            desc += f"**Remaining Time:**\n<t:{auc[5]}:R>"
-            _embed = await Auction_embed(self.client, title=tit,colour=embed_color[dex[14]],description=desc).setup_embed()
-            _embed.set_image(url=dex[15])
-            await ctx.send(embed=_embed)
-        else:
-            await ctx.send("No auction running at the moment.")
-            
     @commands.command(aliases=["psy", "ph"])
     async def psyhunt(self, ctx, mode:str = None, *args):
         args = [s.lower() for s in args]
@@ -1280,7 +1000,7 @@ class Coms(commands.Cog):
             await ctx.reply(f"Successfully cleared your Psycord outbreak hunts, {ctx.author.display_name}.")
         else:
             await ctx.reply("Wrong usage, either use ``list, add, delete, clear``.")
-        
+
     @commands.check(Basic_checker().check_admin)
     @commands.command()
     async def readout(self, ctx, mid:int = None, mode:str = None):
@@ -1324,7 +1044,7 @@ class Coms(commands.Cog):
                             desc +=(f"```Color:\n")
                             desc +=(f"{_embed.color}```")
             await ctx.reply(desc)
-        
+
     @commands.command()
     async def invite(self, ctx):
         user = ctx.author
