@@ -1059,7 +1059,7 @@ class Coms(commands.Cog):
         await ctx.reply("Request send. Please check your DMs.")
         await request.send(embed=_emb)
 
-    @commands.check(Basic_checker().check_if_it_is_me())
+    @commands.check(Basic_checker().check_if_it_is_me)
     @commands.command()
     async def testmode(self, ctx):
         db = self.db.execute(f"SELECT TestMode FROM Admin WHERE Server_ID = {ctx.guild.id}")
