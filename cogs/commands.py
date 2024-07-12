@@ -1059,7 +1059,19 @@ class Coms(commands.Cog):
         await ctx.reply("Request send. Please check your DMs.")
         await request.send(embed=_emb)
 
-
+    @commands.check(Basic_checker().check_if_it_is_me())
+    @commands.command()
+    async def testmode(self, ctx):
+        db = self.db.execute(f"SELECT TestMode FROM Admin WHERE Server_ID = {ctx.guild.id}")
+        db = db.fetchone()
+        if db[0] == 1:
+            self.db.execute(f"UPDATE Admin SET TestMode = 0 WHERE Server_ID = {ctx.guild.id}")
+            self.db.commit()
+            await ctx.reply("Testmode deactivated.")
+        else:
+            self.db.execute(f"UPDATE Admin SET TestMode = 1 WHERE Server_ID = {ctx.guild.id}")
+            self.db.commit()
+            await ctx.reply("Testmode activated.")
 
 
 def setup(client):
