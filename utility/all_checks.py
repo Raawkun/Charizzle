@@ -49,7 +49,7 @@ class Basic_checker:
         if ctx.user.id == 352224989367369729:
             return(True)
         else:
-            await ctx.send(f"Sorry, only Pr1nc3✯ can use this command", ephemeral=True)
+            await ctx.send(f"Sorry, only Prof Blue can use this command", ephemeral=True)
             return(False)
 
     async def check_station_channel(self, ctx):
