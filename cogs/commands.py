@@ -1080,7 +1080,7 @@ class Coms(commands.Cog):
         while i < 10000:
             db = self.db.execute(f"SELECT Name FROM Dex WHERE DexID = {i}")
             db = db.fetchone()
-            if db != None:
+            if db != None and db[0].endswith(" "):
                 print(db)
                 db = db[0].strip()
                 self.db.execute(f"UPDATE Dex SET Name = {db} WHERE DexID = {i}")
