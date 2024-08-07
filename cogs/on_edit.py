@@ -53,7 +53,7 @@ class On_Edit(commands.Cog):
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data = data.fetchone()
                             except:
-                                return
+                                await before.channel.send("It seems this Pokémon is not in my database - could you please add it with checking its ``/pokedex entry``?")
                             if before.reference:
                                 ref_msg = await before.channel.fetch_message(before.reference.message_id)
                                 sender = ref_msg.author
@@ -162,7 +162,7 @@ class On_Edit(commands.Cog):
                                     else:
                                         #print("No token")
                                         if "caught a" in _embed.description:
-                                            monname = _embed.description.split("**")[1]+" "
+                                            monname = _embed.description.split("**")[1]
                                             data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
                                             data = data.fetchone()
                                             #print(monname)
@@ -242,7 +242,7 @@ class On_Edit(commands.Cog):
                                             except Exception as e:
                                                 #await log.send(embed=_embed)
                                                 #await log.send(f"Error: {e}, {data}, {before.jump_url}")
-                                                monname = _embed.description.split("**")[1]+" "
+                                                monname = _embed.description.split("**")[1]
                                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
                                                 data = data.fetchone()
                                                 #print(data[1])
