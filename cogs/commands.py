@@ -1073,6 +1073,19 @@ class Coms(commands.Cog):
             self.db.commit()
             await ctx.reply("Testmode activated.")
 
+    @commands.check(Basic_checker().check_if_it_is_me)
+    @commands.command()
+    async def dbcleaner(self, ctx):
+        i = 1
+        while i < 10000:
+            db = self.db.execute(f"SELECT Name FROM Dex WHERE Dex_ID = {i}")
+            db = db.fetchone()
+            if db != None:
+                db = db.stip()
+                self.db.execute(f"UPDATE Dex SET Name = {db} WHERE Dex_ID = {i}")
+                self.db.commit()
+            i = i+1
+
 
 def setup(client):
     client.add_cog(Coms(client))
