@@ -46,7 +46,7 @@ class Basic_checker:
         return(False)
     
     async def check_if_it_is_me(self, ctx):
-        if ctx.user.id == 352224989367369729:
+        if ctx.author.id == 352224989367369729:
             return(True)
         else:
             await ctx.send(f"Sorry, only Prof Blue can use this command", ephemeral=True)
