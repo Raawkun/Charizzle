@@ -1078,12 +1078,12 @@ class Coms(commands.Cog):
     async def dbcleaner(self, ctx):
         i = 1
         while i < 10000:
-            db = self.db.execute(f"SELECT Name FROM Dex WHERE Dex_ID = {i}")
+            db = self.db.execute(f"SELECT Name FROM Dex WHERE DexID = {i}")
             db = db.fetchone()
             if db != None:
                 print(db)
                 db = db.strip()
-                self.db.execute(f"UPDATE Dex SET Name = {db} WHERE Dex_ID = {i}")
+                self.db.execute(f"UPDATE Dex SET Name = {db} WHERE DexID = {i}")
                 self.db.commit()
             i = i+1
 
