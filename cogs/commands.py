@@ -1083,9 +1083,11 @@ class Coms(commands.Cog):
             if db != None and db[0].endswith(" "):
                 print(db)
                 db = db[0].strip()
-                self.db.execute(f"UPDATE Dex SET Name = {db} WHERE DexID = {i}")
+                print(db)
+                self.db.execute(f"UPDATE Dex SET Name = '{db}' WHERE DexID = {i}")
                 self.db.commit()
             i = i+1
+            print(i)
 
 
 def setup(client):
