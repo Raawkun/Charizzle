@@ -1422,7 +1422,7 @@ class Listener(commands.Cog):
                                 embed = await Custom_embed(self.client,title=dexdat[0][1]+" #"+str(dexdat[0][0]),description=msg,thumb=thumb).setup_embed()
                                 await message.channel.send(embed=embed)
                     except Exception as e: 
-                        dex=_embed.author.name.split("#")[1]
+                        dex=_embed.author.name
                         print("Market after dex: "+str(dex)+" - "+sender.display_name)
                         print(e)
         # Only works in specific channels!
