@@ -999,7 +999,7 @@ class Listener(commands.Cog):
                 
                 
                 if _embed.footer.text:
-                    if "battle will begin" in _embed.footer.text:
+                    if "battle starts in" in _embed.footer.text.lower():
                         print("Aha, battling.")
                         await asyncio.sleep(59)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')

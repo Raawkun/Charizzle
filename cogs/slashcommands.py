@@ -171,7 +171,7 @@ class SlashComs(commands.Cog):
                     self.db.execute(f'UPDATE Toggle SET ToggleBattle = 0 WHERE User_ID = {ctx.author.id}')
                     self.db.commit()
                     await ctx.send("Toggled your battle reminders off.", ephemeral= True)
-                elif switch == "bareminder1":
+                else:
                     self.db.execute(f'UPDATE Toggle SET ToggleBattle = 1 WHERE User_ID = {ctx.author.id}')
                     self.db.commit()
                     await ctx.send("Toggled battle reminders on.", ephemeral= True)
