@@ -1081,9 +1081,9 @@ class Coms(commands.Cog):
             db = self.db.execute(f"SELECT Name FROM Dex WHERE DexID = {i}")
             db = db.fetchone()
             if db != None and db[0].endswith(" "):
-                print(db)
+                #print(db)
                 db = db[0].strip()
-                print(db)
+                #print(db)
                 self.db.execute(f"UPDATE Dex SET Name = '{db}' WHERE DexID = {i}")
                 self.db.commit()
             i = i+1
