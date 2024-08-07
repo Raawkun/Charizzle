@@ -165,8 +165,8 @@ class On_Edit(commands.Cog):
                                             monname = _embed.description.split("**")[1]
                                             data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
                                             data = data.fetchone()
-                                            #print(monname)
-                                            #print(data)
+                                            print(monname)
+                                            print(data)
                                             raremon = data[14]
                                             ball = _embed.description.split(" with a")[1]
                                             ball = ball.split("!")[0]
