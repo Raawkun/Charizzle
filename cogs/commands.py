@@ -1074,7 +1074,7 @@ class Coms(commands.Cog):
             await ctx.reply("Testmode activated.")
 
     @commands.command(aliases=["avg","average"])
-    async def averagecheck(self, ctx, userid = None):
+    async def averagecheck(self, ctx, userid:str = None):
         if userid == None:
             userid = ctx.author.id
         elif "@" in userid:
