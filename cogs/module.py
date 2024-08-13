@@ -86,7 +86,7 @@ class Modules(commands.Cog):
         os.remove(file_path)
     async def averagetimer(self):
         while True:
-            cet = pytz.timezone('CET)')
+            cet = pytz.timezone('CET')
             now = datetime.datetime.now(cet)
             days_until_monday = (7-now.weekday())%7
             if days_until_monday == 0 and now.hour >= 14:
@@ -94,6 +94,7 @@ class Modules(commands.Cog):
             next_monday = now + datetime.timedelta(days=days_until_monday)
             next_monday_at_2pm = cet.localize(datetime.datetime(next_monday.year, next_monday.month, next_monday.day, 14, 0, 0))
             time_until = next_monday_at_2pm-now
+            print(f"Setting a LB Timer for {time_until} seconds.")
             await asyncio.sleep(time_until)
             await asyncio.create_task(self.resetaverage(self))
 
