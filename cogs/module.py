@@ -81,8 +81,8 @@ class Modules(commands.Cog):
         conn.close()
         channel = self.client.get_channel(1272981076419149886)
         await channel.send(file=disnake.File(file_path))
-        #self.db.execute(f"DELETE * FROM average")
-        #self.db.commit()
+        self.db.execute(f"DELETE * FROM average")
+        self.db.commit()
         os.remove(file_path)
     async def averagetimer(self):
         while True:
@@ -93,7 +93,7 @@ class Modules(commands.Cog):
                 days_until_monday = 7 
             next_monday = now + datetime.timedelta(days=days_until_monday)
             next_monday_at_2pm = cet.localize(datetime.datetime(next_monday.year, next_monday.month, next_monday.day, 14, 0, 0))
-            next_monday_at_2pm = now + datetime.timedelta(seconds=20)
+            #next_monday_at_2pm = now + datetime.timedelta(seconds=20)
             time_until = next_monday_at_2pm-now
             print(f"Setting a LB Timer for {time_until.total_seconds()} seconds.")
             await asyncio.sleep(time_until.total_seconds())
