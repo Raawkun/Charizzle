@@ -175,7 +175,7 @@ class On_Edit(commands.Cog):
                                             ball = ball.split(" ")[1]
                                             #print("Caught a mon")
                                             color = str(_embed.color)
-                                            asyncio.create_task(Modules.average(self, after))
+                                            asyncio.create_task(Modules.averagecoins(self, after))
                                             description_text = " "
                                             if "retrieved a" in _embed.description:
                                                 #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare","Common", "Uncommon", "SuperRare","Golden"]
