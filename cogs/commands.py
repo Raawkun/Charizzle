@@ -1073,6 +1073,23 @@ class Coms(commands.Cog):
             self.db.commit()
             await ctx.reply("Testmode activated.")
 
+    @commands.command(aliases=["avg","average"])
+    async def averagecheck(self, ctx, userid = None):
+        if userid == None:
+            userid = ctx.author.id
+        elif "@" in userid:
+            userid = (userid.split("@")[1]).split(">")[0]
+        try:
+            db = self.db.execute(f"SELECT avg_coins, catch_count FROM average WHERE UserID = {userid}")
+            db = db.fetchone()
+            avg = db[0]
+            catches = db[1]
+        except:
+            avg = 0
+            catches = 0
+        user = ctx.guild.get_member(userid)
+        await ctx.reply(f"The current average stats for {user.name}:\n**{avg}** coins in **{catches}** catches.\*Stats reset each Mondaz 2pm CET*")
+
     @commands.check(Basic_checker().check_if_it_is_me)
     @commands.command()
     async def dbcleaner(self, ctx):
