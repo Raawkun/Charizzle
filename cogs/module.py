@@ -65,8 +65,10 @@ class Modules(commands.Cog):
             if emb.footer.text:
                 coin = emb.footer.text.split(" earned ")[1]
                 coin = coin.split(" ")[0]
-                if "," in coin:
+                try:
                     coin.replace(",", "")
+                except:
+                    return
                 try:
                     self.db.execute(F"UPDATE average SET coins = coins + {int(coin)}, catch_count = catch_count + 1 WHERE UserID = {sender.id}")
                     self.db.commit()
