@@ -118,6 +118,7 @@ class Listener(commands.Cog):
         print(datetime.datetime.timestamp(datetime.datetime.now()))
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
         asyncio.create_task(self._changelog())
+        asyncio.create_task(Modules.averagetimer(self))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
         reminders = reminders.fetchall()
         #asyncio.create_task(self._psycord_team())

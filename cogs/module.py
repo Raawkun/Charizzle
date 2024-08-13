@@ -1,13 +1,19 @@
+import asyncio
 import datetime
+import os
 import disnake
 from disnake.ext import commands
 import sqlite3
 from sqlite3 import connect
+
+import pytz
 from  utility.rarity_db import poke_rarity, embed_color
 from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, rare_calc, ball_used_low, ball_used_high
 import random
 from utility.all_checks import Basic_checker
+import pandas
+import openpyxl
 
 class Modules(commands.Cog):
 
@@ -67,7 +73,29 @@ class Modules(commands.Cog):
                 except:
                     self.db.execute(f"INSERT UserID = {sender.id}, username = '{sender.name}', catch_count = 1, coins = {int(coin)} INTO average")
                     self.db.commit()
-    
+    async def resetaverage(self):
+        conn = sqlite3.connect('database.db')
+        df = pandas.read_sql_query("SELECT * FROM average ORDER BY catch_count DESC", conn)
+        file_path = "/tmp/exported_data.xlsx"
+        df.to_excel(file_path,index=False,engine='openpyxl')
+        conn.close()
+        channel = self.client.get_channel(1272981076419149886)
+        await channel.send(file=disnake.File(file_path))
+        self.db.execute(f"DELETE * FROM average")
+        self.db.commit()
+        os.remove(file_path)
+    async def averagetimer(self):
+        while True:
+            cet = pytz.timzone('CET)')
+            now = datetime.datetime.now(cet)
+            days_until_monday = (7-now.weekday())%7
+            if days_until_monday == 0 and now.hour >= 14:
+                days_until_monday = 7 
+            next_monday = now + datetime.timedelta(days=days_until_monday)
+            next_monday_at_2pm = cet.localize(datetime.datetime(next_monday.year, next_monday.month, next_monday.day, 14, 0, 0))
+            time_until = next_monday_at_2pm-now
+            await asyncio.sleep(time_until)
+            await asyncio.create_task(self.resetaverage(self))
 
 
 def setup(client):

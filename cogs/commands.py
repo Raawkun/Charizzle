@@ -1077,7 +1077,7 @@ class Coms(commands.Cog):
     @commands.command()
     async def dbcleaner(self, ctx):
         self.db.execute(f'''
-    CREATE TABLE IF NOT EXISTS average (
+    CREATE TABLE IF NOT EXISTS totalaverage (
         UserID INTEGER PRIMARY KEY,  -- UserID as the primary key (automatically unique)
         username TEXT NOT NULL,      -- Username as a string (TEXT type)
         catch_count INTEGER DEFAULT 0,  -- Catch count as an integer, default value 0
