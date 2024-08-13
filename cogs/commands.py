@@ -1076,19 +1076,16 @@ class Coms(commands.Cog):
     @commands.check(Basic_checker().check_if_it_is_me)
     @commands.command()
     async def dbcleaner(self, ctx):
-        i = 1
-        while i < 10000:
-            db = self.db.execute(f"SELECT Name FROM Dex WHERE DexID = {i}")
-            db = db.fetchone()
-            if db != None and db[0].endswith(" "):
-                #print(db)
-                db = db[0].strip()
-                #print(db)
-                self.db.execute(f"UPDATE Dex SET Name = '{db}' WHERE DexID = {i}")
-                self.db.commit()
-            i = i+1
-            print(i)
-
+        self.db.execute(f'''
+    CREATE TABLE IF NOT EXISTS average (
+        UserID INTEGER PRIMARY KEY,  -- UserID as the primary key (automatically unique)
+        username TEXT NOT NULL,      -- Username as a string (TEXT type)
+        catch_count INTEGER DEFAULT 0,  -- Catch count as an integer, default value 0
+        coins INTEGER DEFAULT 0        -- Coins as an integer, default value 0
+    )
+''')
+        self.db.commit()
+            
 
 def setup(client):
     client.add_cog(Coms(client))
