@@ -37,14 +37,16 @@ class Modules(commands.Cog):
                     print(mon)
                     await message.channel.send(mon)
                     desc = ""
+                    i = 1
                     for entry in mon:
                         dex = self.db.execute(f'SELECT DexID, Name, Type_1, Type_2 FROM Dex WHERE DexID = {entry}')
                         dex = dex.fetchone()
                         print(dex)
                         if dex[2] == "darktype" or dex[3] == "darktype":
-                            desc += f"{dex[1]} is a Dark type Pokémon.\n"
+                            desc += f"Team-number {i}: {dex[1]} is a Dark type Pokémon.\n"
+                        i = i + 1
                     if desc != "":
-                        await message.reply(f"@{sender.id}\n{desc}")
+                        await message.reply(f"<@{sender.id}>\n{desc}")
 
 
 def setup(client):
