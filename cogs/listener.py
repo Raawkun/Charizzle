@@ -13,7 +13,7 @@ from utility.drop_chance import drop_pos, buyin
 from utility.info_dict import rem_emotes
 import datetime
 from utility.embed import Custom_embed, Auction_embed
-import modules
+from modules import Modules
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -1002,7 +1002,7 @@ class Listener(commands.Cog):
                 if _embed.footer.text:
                     if "battle starts in" in _embed.footer.text.lower():
                         #print("Aha, battling.")
-                        asyncio.create_task(modules.Modules.darktest(self, message))
+                        asyncio.create_task(Modules.darktest(self, message))
                         await asyncio.sleep(59)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchone()
