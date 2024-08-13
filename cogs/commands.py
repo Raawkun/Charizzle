@@ -1075,13 +1075,13 @@ class Coms(commands.Cog):
 
     @commands.command(aliases=["avg","average"])
     async def averagecheck(self, ctx, userid:str = None):
-        print(userid)
+        #print(userid)
         if userid == None:
             userid = ctx.author.id
-            print(userid)
+            #print(userid)
         elif "@" in userid:
             userid = (userid.split("@")[1]).split(">")[0]
-            print(userid)
+            #print(userid)
         userid = int(userid)
         try:
             db = self.db.execute(f"SELECT avg_coins, catch_count FROM average WHERE UserID = {userid}")
