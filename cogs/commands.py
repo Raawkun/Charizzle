@@ -1088,7 +1088,7 @@ class Coms(commands.Cog):
             avg = 0
             catches = 0
         user = ctx.guild.get_member(userid)
-        await ctx.reply(f"The current average stats for {user.name}:\n**{avg}** coins in **{catches}** catches.\n*Stats reset each Mondaz 2pm CET*")
+        await ctx.reply(f"The current average stats for {user.name}:\n**{avg}** coins in **{catches}** catches.\n*Stats reset each Monday 2pm CET*")
 
     @commands.check(Basic_checker().check_if_it_is_me)
     @commands.command()
