@@ -86,7 +86,7 @@ class Modules(commands.Cog):
         os.remove(file_path)
     async def averagetimer(self):
         while True:
-            cet = pytz.timzone('CET)')
+            cet = pytz.timezone('CET)')
             now = datetime.datetime.now(cet)
             days_until_monday = (7-now.weekday())%7
             if days_until_monday == 0 and now.hour >= 14:
