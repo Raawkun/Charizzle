@@ -72,7 +72,7 @@ class Modules(commands.Cog):
                 try:
                     self.db.execute(F"UPDATE average SET coins = coins + {int(coin)}, catch_count = catch_count + 1 WHERE UserID = {sender.id}")
                     self.db.commit()
-                    self.db.execute(f"UPDATE average SET avg_coins = coins/catch_counts WHERE UserID = {sender.id}")
+                    self.db.execute(f"UPDATE average SET avg_coins = coins/catch_count WHERE UserID = {sender.id}")
                     self.db.commit()
                 except:
                     self.db.execute(f"INSERT INTO average (UserID,username,avg_coins,catch_count,coins) VALUES ({sender.id},'{sender.name}',{int(coin)}, 1, {int(coin)})")
