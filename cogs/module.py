@@ -72,8 +72,10 @@ class Modules(commands.Cog):
                 try:
                     self.db.execute(F"UPDATE average SET coins = coins + {int(coin)}, catch_count = catch_count + 1 WHERE UserID = {sender.id}")
                     self.db.commit()
+                    self.db.execute(f"UPDATE average SET avg_coins = coins/catch_counts WHERE UserID = {sender.id}")
+                    self.db.commit()
                 except:
-                    self.db.execute(f"INSERT UserID = {sender.id}, username = '{sender.name}', catch_count = 1, coins = {int(coin)} INTO average")
+                    self.db.execute(f"INSERT UserID = {sender.id}, username = '{sender.name}',avg_coins = {int(coin)}, catch_count = 1, coins = {int(coin)} INTO average")
                     self.db.commit()
     async def resetaverage(self):
         conn = sqlite3.connect('database.db')
