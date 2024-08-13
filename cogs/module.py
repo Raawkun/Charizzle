@@ -94,8 +94,8 @@ class Modules(commands.Cog):
             next_monday = now + datetime.timedelta(days=days_until_monday)
             next_monday_at_2pm = cet.localize(datetime.datetime(next_monday.year, next_monday.month, next_monday.day, 14, 0, 0))
             time_until = next_monday_at_2pm-now
-            print(f"Setting a LB Timer for {time_until} seconds.")
-            await asyncio.sleep(time_until)
+            print(f"Setting a LB Timer for {time_until.total_seconds()} seconds.")
+            await asyncio.sleep(time_until.total_seconds())
             await asyncio.create_task(self.resetaverage(self))
 
 
