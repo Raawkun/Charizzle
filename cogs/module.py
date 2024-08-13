@@ -66,7 +66,7 @@ class Modules(commands.Cog):
                 coin = emb.footer.text.split(" earned ")[1]
                 coin = coin.split(" ")[0]
                 try:
-                    coin.replace(",", "")
+                    coin = coin.replace(",", "")
                 except:
                     return
                 try:
