@@ -21,7 +21,7 @@ class Modules(commands.Cog):
             sender = ref_msg.author
         elif message.interaction:
             sender = message.interaction.author
-        if sender.id == 475664587736481792:
+        if sender.id == 475664587736481792 or sender.id == 352224989367369729:
             print("Sjaap battle - testing for Dark mons.")
             if len(message.embeds)>0:
                 emb = message.embeds[0]
@@ -32,6 +32,7 @@ class Modules(commands.Cog):
                     opponent = opponent.split("**")[1]
                     print(opponent)
                     mons = emb.description.split(opponent)[2]
+                    print(mons)
                     mon = [mons.split(":")[1], mons.split(": :")[1], mons.split(": :")[2]]
                     print(mon)
                     await message.channel.send(mon)
