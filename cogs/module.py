@@ -97,7 +97,7 @@ class Modules(commands.Cog):
             time_until = next_monday_at_2pm-now
             print(f"Setting a LB Timer for {time_until.total_seconds()} seconds.")
             await asyncio.sleep(time_until.total_seconds())
-            await asyncio.create_task(self.resetaverage(self))
+            await asyncio.create_task(Modules.resetaverage(self))
 
 
 def setup(client):
