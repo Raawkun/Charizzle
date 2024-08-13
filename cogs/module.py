@@ -48,6 +48,27 @@ class Modules(commands.Cog):
                     if desc != "":
                         await message.reply(f"<@{sender.id}>\n{desc}")
 
+    async def averagecoins(self, message):
+        if message.reference:
+            ref_msg = await message.channel.fetch_message(message.reference.message_id)
+            sender = ref_msg.author
+        elif message.interaction:
+            sender = message.interaction.author
+        if len(message.embeds)>0:
+            emb = message.embeds[0]
+            if emb.footer.text:
+                coin = emb.footer.text.split(" earned ")[1]
+                coin = coin.split(" ")[0]
+                if "," in coin:
+                    coin.replace(",", "")
+                try:
+                    self.db.execute(F"UPDATE average SET coins = coins + {int(coin)}, catch_count = catch_count + 1 WHERE UserID = {sender.id}")
+                    self.db.commit()
+                except:
+                    self.db.execute(f"INSERT UserID = {sender.id}, username = '{sender.name}', catch_count = 1, coins = {int(coin)} INTO average")
+                    self.db.commit()
+    
+
 
 def setup(client):
     client.add_cog(Modules(client))
