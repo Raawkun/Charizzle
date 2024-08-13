@@ -1082,6 +1082,7 @@ class Coms(commands.Cog):
         elif "@" in userid:
             userid = (userid.split("@")[1]).split(">")[0]
             print(userid)
+        userid = int(userid)
         try:
             db = self.db.execute(f"SELECT avg_coins, catch_count FROM average WHERE UserID = {userid}")
             db = db.fetchone()
