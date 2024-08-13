@@ -13,7 +13,7 @@ from utility.drop_chance import drop_pos, buyin
 from utility.info_dict import rem_emotes
 import datetime
 from utility.embed import Custom_embed, Auction_embed
-from modules import Modules
+from cogs.module import Modules
 
 # Zeichen zum Kopieren: [ ] { }
 
