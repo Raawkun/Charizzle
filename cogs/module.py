@@ -33,7 +33,7 @@ class Modules(commands.Cog):
                     print(opponent)
                     mons = emb.description.split(opponent)[2]
                     print(mons)
-                    mon = [mons.split(":")[1], mons.split(": :")[1], mons.split(": :")[2]]
+                    mon = [mons.split(":")[1], mons.split(":")[3], mons.split(":")[5]]
                     print(mon)
                     await message.channel.send(mon)
                     desc = ""
