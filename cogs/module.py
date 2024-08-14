@@ -55,6 +55,7 @@ class Modules(commands.Cog):
                         await message.reply(f"<@{sender.id}>\n{desc}")
 
     async def averagecoins(self, message):
+        print("Someone caught.")
         if message.reference:
             ref_msg = await message.channel.fetch_message(message.reference.message_id)
             sender = ref_msg.author
@@ -69,6 +70,7 @@ class Modules(commands.Cog):
                     coin = coin.replace(",", "")
                 except:
                     return
+                print(coin)
                 try:
                     self.db.execute(f"INSERT INTO average VALUES ({sender.id}, '{sender.name}', {int(coin)}, 1, {int(coin)})")
                     self.db.commit()
