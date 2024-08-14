@@ -55,7 +55,7 @@ class Modules(commands.Cog):
                         await message.reply(f"<@{sender.id}>\n{desc}")
 
     async def averagecoins(self, message):
-        print("Someone caught.")
+        #print("Someone caught.")
         if message.reference:
             ref_msg = await message.channel.fetch_message(message.reference.message_id)
             sender = ref_msg.author
@@ -70,18 +70,16 @@ class Modules(commands.Cog):
                     coin = coin.replace(",", "")
                 except:
                     return
-                print(coin)
+                #print(coin)
                 try:
                     self.db.execute(f"INSERT INTO average VALUES ({sender.id}, '{sender.name}', {int(coin)}, 1, {int(coin)})")
                     self.db.commit()
-                    
                 except:
                     try:
                         self.db.execute(F"UPDATE average SET coins = coins + {int(coin)}, catch_count = catch_count + 1 WHERE UserID = {sender.id}")
                         self.db.commit()
                         self.db.execute(f"UPDATE average SET avg_coins = coins/catch_count WHERE UserID = {sender.id}")
                         self.db.commit()
-                        print(f"Updating wasnt possible, added {sender.name} to the lb db.")
                     except Exception as e:
                         print(e)
     async def resetaverage(self):
