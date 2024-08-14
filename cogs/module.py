@@ -70,13 +70,14 @@ class Modules(commands.Cog):
                 except:
                     return
                 try:
-                    self.db.execute(F"UPDATE average SET coins = coins + {int(coin)}, catch_count = catch_count + 1 WHERE UserID = {sender.id}")
+                    self.db.execute(f"INSERT INTO average VALUES ({sender.id}, '{sender.name}', {int(coin)}, 1, {int(coin)})")
                     self.db.commit()
-                    self.db.execute(f"UPDATE average SET avg_coins = coins/catch_count WHERE UserID = {sender.id}")
-                    self.db.commit()
+                    
                 except:
                     try:
-                        self.db.execute(f"INSERT INTO average VALUES ({sender.id}, '{sender.name}', {int(coin)}, 1, {int(coin)})")
+                        self.db.execute(F"UPDATE average SET coins = coins + {int(coin)}, catch_count = catch_count + 1 WHERE UserID = {sender.id}")
+                        self.db.commit()
+                        self.db.execute(f"UPDATE average SET avg_coins = coins/catch_count WHERE UserID = {sender.id}")
                         self.db.commit()
                         print(f"Updating wasnt possible, added {sender.name} to the lb db.")
                     except Exception as e:
