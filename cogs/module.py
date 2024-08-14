@@ -75,8 +75,12 @@ class Modules(commands.Cog):
                     self.db.execute(f"UPDATE average SET avg_coins = coins/catch_count WHERE UserID = {sender.id}")
                     self.db.commit()
                 except:
-                    self.db.execute(f"INSERT INTO average VALUES ({sender.id}, '{sender.name}', {int(coin)}, 1, {int(coin)})")
-                    self.db.commit()
+                    try:
+                        self.db.execute(f"INSERT INTO average VALUES ({sender.id}, '{sender.name}', {int(coin)}, 1, {int(coin)})")
+                        self.db.commit()
+                        print(f"Updating wasnt possible, added {sender.name} to the lb db.")
+                    except Exception as e:
+                        print(e)
     async def resetaverage(self):
         conn = sqlite3.connect('database.db')
         df = pandas.read_sql_query("SELECT * FROM average ORDER BY catch_count DESC", conn)
