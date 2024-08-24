@@ -506,7 +506,7 @@ class Listener(commands.Cog):
                 user = message.content.split("**")[1]
                 user = message.guild.get_member_named(user)
                 npc = message.content.split(":")[1]
-                desc = f"{user.mention} </battle npc:{npc}"
+                desc = f"{user.mention} </battle:1015311084422434819 npc:{npc}"
                 await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
             if "won the battle!" in message.content:
                 #print("Battle won")
