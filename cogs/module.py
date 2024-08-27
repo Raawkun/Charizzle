@@ -84,13 +84,13 @@ class Modules(commands.Cog):
                         print(e)
     async def resetaverage(self):
         conn = sqlite3.connect('database.db')
-        df = pandas.read_sql_query("SELECT * FROM average ORDER BY catch_count DESC", conn)
+        df = pandas.read_sql_query("SELECT * FROM average WHERE catch_count > 299 ORDER BY catch_count DESC", conn)
         file_path = "/tmp/exported_data.xlsx"
         df.to_excel(file_path,index=False,engine='openpyxl')
         conn.close()
         channel = self.client.get_channel(1272981076419149886)
         await channel.send(file=disnake.File(file_path))
-        self.db.execute(f"DELETE * FROM average")
+        self.db.execute(f"DELETE * FROM average WHERE catch_count != None")
         self.db.commit()
         os.remove(file_path)
     async def averagetimer(self):

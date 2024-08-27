@@ -879,8 +879,18 @@ class Coms(commands.Cog):
             exp = random.randint(0,1250000)
             level = int(((4*exp)/5)**(1/3))
             embed = await Custom_embed(self.client, thumb=None, colour=col,title="**Level**: "+str(level)+"\n**Total EXP**: "+str(exp)+"\n**Item**: None").setup_embed()
-            embed.add_field(name="Type",value="*Coming Soon*")
-            embed.add_field(name="Friendship",value="<:fullheart:1197574322907250708><:fullheart:1197574322907250708><:fullheart:1197574322907250708><:fullheart:1197574322907250708><:fullheart:1197574322907250708>")
+            embed.add_field(name="Type",value=f"<@&{tr.id}>")
+            fship = random.randint(0,10)
+            descheart = ""
+            if fship > 0:
+                calc = math.floor(fship/2)
+                descheart += "<:fullheart:1197574322907250708>"*calc
+                if calc%2 == 1:
+                    descheart += "<:halfheart:1278102327617785909>"
+                    calc += 1
+                calc = 5-calc
+                descheart += "<:emptyheart:1278102303974359141>"*calc
+            embed.add_field(name="Friendship",value=descheart)
             atk = random.randint(0,14)
             deff = random.randint(0,14)
             hp = random.randint(0,14)
