@@ -945,7 +945,7 @@ class Listener(commands.Cog):
                                         print("Already a timer running")
                                     else:
                                         print("Oh, a new timer")
-                                        q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))-6
+                                        q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))-8
                                         print(q_time)
                                         q_time = q_time+waiter
                                         channelid = message.channel.id
