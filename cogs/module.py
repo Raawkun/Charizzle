@@ -25,10 +25,10 @@ class Modules(commands.Cog):
         if message.reference:
             ref = await message.channel.fetch_message(message.rererence.message_id)
             sender = ref.author
-        elif:
+        elif message.interaction:
             sender = message.interaction.author
         await async.sleep(1800)
-        await ref.reply("Trainer **Adaman** is ready for the next battle. If its Spooky Hour, you can beat him up again.")
+        await message.channel.send(f"<@{sender.id}> - Trainer **Adaman** is ready for the next battle. If its Spooky Hour, you can beat him up again.")
 
     async def darktest(self, message):
         if message.reference:
