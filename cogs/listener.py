@@ -256,6 +256,9 @@ class Listener(commands.Cog):
         
         if message.author.bot and message.author.id != meow and message.author.id != karp and message.author.id != 1209829454667317288 and message.author.id != 865576698137673739 and message.author.display_name != "Psycord Official #🚨・alerts":
             return
+            
+        if "happy" or "birthday" or "hbd" in message.content.lower() and "1161011648585285652" or "gengar" in message.content.lower():
+            await message.channel.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: "
         
         if message.content.lower() == "trygoogle":
             await message.delete()
