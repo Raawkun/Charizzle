@@ -259,10 +259,10 @@ class Listener(commands.Cog):
             
         if "happy" in message.content.lower():
             if "birthday" in message.content.lower():
-                if message.content.lower().contains("1161011648585285652") or message.content.lower().contains("gengar"):
+                if "1161011648585285652" in message.content.lower() or "gengar" in message.content.lower():
                     await message.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
         elif "hbd" in message.content.lower():
-            if message.content.lower().contains("1161011648585285652") or message.content.lower().contains("gengar"):
+            if "1161011648585285652" in message.content.lower() or "gengar" in message.content.lower():
                 await message.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
                 
         if message.content.lower() == "trygoogle":
