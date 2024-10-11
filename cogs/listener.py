@@ -258,7 +258,7 @@ class Listener(commands.Cog):
             return
             
         if "happy" or "birthday" or "hbd" in message.content.lower() and "1161011648585285652" or "gengar" in message.content.lower():
-            await message.channel.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
+            await message.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
         
         if message.content.lower() == "trygoogle":
             await message.delete()
