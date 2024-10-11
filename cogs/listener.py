@@ -1011,6 +1011,9 @@ class Listener(commands.Cog):
                 if _embed.footer.text:
                     if "battle starts in" in _embed.footer.text.lower():
                         #print("Aha, battling.")
+                        if _embed.description:
+                            if "adaman" in _embed.description.lower():
+                                asyncio.create_task(Modules.adamannpc(self, message))
                         asyncio.create_task(Modules.darktest(self, message))
                         await asyncio.sleep(59)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
