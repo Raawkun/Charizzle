@@ -5,6 +5,7 @@ import disnake
 from disnake.ext import commands
 import sqlite3
 from sqlite3 import connect
+import asyncio
 
 import pytz
 from  utility.rarity_db import poke_rarity, embed_color
@@ -27,7 +28,7 @@ class Modules(commands.Cog):
             sender = ref.author
         elif message.interaction:
             sender = message.interaction.author
-        await async.sleep(1800)
+        await asyncio.sleep(1800)
         await message.channel.send(f"<@{sender.id}> - Trainer **Adaman** is ready for the next battle. If its Spooky Hour, you can beat him up again.")
 
     async def darktest(self, message):
