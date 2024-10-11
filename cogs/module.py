@@ -5,7 +5,6 @@ import disnake
 from disnake.ext import commands
 import sqlite3
 from sqlite3 import connect
-import asyncio
 
 import pytz
 from  utility.rarity_db import poke_rarity, embed_color
