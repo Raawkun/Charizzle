@@ -20,6 +20,15 @@ class Modules(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
+        
+    async def adamannpc(self, message):
+        if message.reference:
+            ref = await message.channel.fetch_message(message.rererence.message_id)
+            sender = ref.author
+        elif:
+            sender = message.interaction.author
+        await async.sleep(1800)
+        await ref.reply("Trainer **Adaman** is ready for the next battle. If its Spooky Hour, you can beat him up again.")
 
     async def darktest(self, message):
         if message.reference:
