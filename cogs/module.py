@@ -23,7 +23,7 @@ class Modules(commands.Cog):
         
     async def adamannpc(self, message):
         if message.reference:
-            ref = await message.channel.fetch_message(message.rererence.message_id)
+            ref = await message.channel.fetch_message(message.reference.message_id)
             sender = ref.author
         elif message.interaction:
             sender = message.interaction.author
