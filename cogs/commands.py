@@ -289,92 +289,6 @@ class Coms(commands.Cog):
     async def faq(self, ctx):
         await ctx.send("The FAQ Channel is here: <#1161686361091350608>")
 
-    @commands.command()
-    async def hunt(self, ctx, mode:str = None, mon = None,amount:int = None):
-        staff = 837611415070048277
-        staff = ctx.guild.get_role(837611415070048277)
-        if mode == None:
-            desc = f"Placeholder.\nUse either ``add, delete,reset,list,clear,show,active``."
-            await ctx.reply(desc)
-        elif mode == "add":
-            if staff not in ctx.author.roles:
-                await ctx.reply("Unauthorized try to access that command. You have no power here.")
-            else:
-                if mon == None:
-                    await ctx.reply("Please insert a Pokémon Name or ID.")
-                else:
-                    try:
-                        if int(mon) == True:
-                            dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {mon}')
-                            dex = dex.fetchone()
-                    except:
-                        mon = mon.capitalize()
-                        mon = mon+" "
-                        dex = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{mon}"')
-                        dex = dex.fetchone()
-                    if amount == None:
-                        amount = thresholds[dex[14]]
-                    hunts = self.db.execute(f'SELECT * FROM HuntMons')
-                    hunts = hunts.fetchall()
-                    i = 0
-                    for entry in hunts:
-                        if dex[1] in entry[1]:
-                            await ctx.reply("That Pokémon is currently hunted.")
-                            i = 1
-                    if i == 0:
-                        self.db.execute(f'INSERT INTO HuntMons VALUES ({dex[0]}, "{dex[1]}", {amount})')
-                        self.db.commit()
-                        self.db.execute(f'ALTER TABLE HuntMembers ADD {dex[1]} INT')
-                        self.db.commit()
-                        await ctx.reply(f'Added **{dex[1]}** to the hunt, current threshold is **{amount}**')
-        elif mode == "delete":
-            if staff not in ctx.author.roles:
-                await ctx.reply("Unauthorized try to access that command. You have no power here.")
-            else:
-                if mon == None:
-                    await ctx.reply("Please insert a Pokémon Name or ID.")
-                else:
-                    if int(mon):
-                        dex = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {mon}')
-                        dex = dex.fetchone()
-                    else:
-                        mon = mon.capitalize()
-                        dex = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{mon}"')
-                        dex = dex.fetchone()
-                    hunts = self.db.execute(f'SELECT * FROM HuntMons')
-                    hunts = hunts.fetchall()
-                    i = 0
-                    print(dex)
-                    print(hunts)
-                    for entry in hunts:
-                        if dex[1] in entry[1]:
-                            self.db.execute(f'DELETE FROM HuntMons WHERE MonID = {dex[0]}')
-                            self.db.commit()
-                            self.db.execute(f'ALTER TABLE HuntMembers DROP {dex[1]}')
-                            self.db.commit()
-                            await ctx.reply(f"Deleted {dex[1]} from the hunt table.")
-        elif mode == "clear" or mode == "reset":
-            if staff not in ctx.author.roles:
-                await ctx.reply("Unauthorized try to access that command. You have no power here.")
-            else:
-                self.db.execute(f'DELETE FROM HuntMons')
-                self.db.commit()
-                self.db.execute(f'DELETE FROM HuntMembers')
-                self.db.commit()
-                await ctx.reply(f"Cleared the whole hunt table.")
-        elif mode == "list" or mode == "show" or mode == "active":
-            hunts = self.db.execute(f'SELECT * FROM HuntMons')
-            hunts = hunts.fetchall()
-            if hunts:
-                desc = "\n"
-                for entry in hunts:
-                    desc += f"> * {entry[1]}, minimum amount: {entry[2]}\n"
-                _embed = await Auction_embed(self.client,title="**Current Hunts**", description=desc).setup_embed()
-                await ctx.reply(embed=_embed)
-            else:
-                await ctx.reply("There are no hunts at the moment.")
-
-
 
     @commands.command()
     async def calc(self, ctx, operation:str):
@@ -389,51 +303,19 @@ class Coms(commands.Cog):
         gengar_bot = self.client.get_user(1161011648585285652)
         footer_icon = gengar_bot.display_avatar.url
         footer_name = "Mega Gengar"
-        if message == "hunt":
-            roll1 = random.randint(1, 479)
-            database1 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll1}')
-            database1 = database1.fetchall()
-            roll2 = random.randint(1, 479)
-            while roll2 == roll1:
-                roll2 = random.randint(1, 479)
-            database2 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll2}')
-            database2 = database2.fetchall()
-            #print(roll1)
-            #print(roll2)
-            monname = database1[0][1]
-            monurl = database1[0][15]
-            monrare = database1[0][14]
-            embed = disnake.Embed(title="Your first Pokémon is **"+str(roll1)+"**.", color=0x807ba6)
-            embed.set_footer(icon_url=footer_icon,text=footer_name)
-            embed.set_author(name="PNG (Pokémon Number Generator)",icon_url="https://cdn.discordapp.com/emojis/862641822404050964.png")
-            embed.set_image(monurl)
-            embed.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll1)+"\n\nRarity: "+monrare+"\n\n"))
-            await ctx.send(embed=embed)
-            embed2 = disnake.Embed(title="Your second Pokémon is **"+str(roll2)+"**.", color=0x807ba6)
-            embed2.set_author(name="PNG (Pokémon Number Generator)",icon_url="https://cdn.discordapp.com/emojis/862641822404050964.png")
-            monname = database2[0][1]
-            monurl = database2[0][15]
-            monrare = database2[0][14]
-            embed2.set_footer(icon_url=footer_icon,text=footer_name)
-            embed2.set_image(monurl)
-            embed2.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll2)+"\n\nRarity: "+monrare))
-
-            await ctx.send(embed=embed2)
-
-        else:
-            roll1 = random.randint(1, 914)
-            database1 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll1}')
-            database1 = database1.fetchall()
-            monname = database1[0][1]
-            monurl = database1[0][15]
-            monrare = database1[0][14]
-            embed = disnake.Embed(title="Your Pokémon is **"+str(roll1)+"**.", color=0x807ba6)
-            embed.set_footer(icon_url=footer_icon,text=footer_name)
-            embed.set_author(name="PNG (Pokémon Number Generator)",icon_url="https://cdn.discordapp.com/emojis/862641822404050964.png")
-            embed.set_image(monurl)
-            #print(roll1)
-            embed.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll1)+"\n\nRarity: "+monrare))
-            await ctx.send(embed=embed)
+        roll1 = random.randint(1, 943)
+        database1 = self.db.execute(f'SELECT * FROM Dex WHERE DexID = {roll1}')
+        database1 = database1.fetchall()
+        monname = database1[0][1]
+        monurl = database1[0][15]
+        monrare = database1[0][14]
+        embed = disnake.Embed(title="Your Pokémon is **"+str(roll1)+"**.", color=0x807ba6)
+        embed.set_footer(icon_url=footer_icon,text=footer_name)
+        embed.set_author(name="PNG (Pokémon Number Generator)",icon_url="https://cdn.discordapp.com/emojis/862641822404050964.png")
+        embed.set_image(monurl)
+        #print(roll1)
+        embed.add_field(name=(monname), inline=True,value=("Dex Number: "+str(roll1)+"\n\nRarity: "+monrare))
+        await ctx.send(embed=embed)
 
 
 

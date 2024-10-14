@@ -36,7 +36,7 @@ class On_Edit(commands.Cog):
         
         if before.author.id == 664508672713424926:  #Meow
             if before.pinned != after.pinned:
-                print(f"{before.author.display_name} pinned a message.")
+                return
             if before.pinned == after.pinned:
                 ##### Rare Spawn #####
                 Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
@@ -92,46 +92,6 @@ class On_Edit(commands.Cog):
                                                     anno = await announce.send(embed=embed)
                                                     emoji = '🔔'
                                                     await after.add_reaction(emoji)
-                                            dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {guild.id}')
-                                            dataev = dataev.fetchall()
-                                            if dataev[0][4] == 1:
-                                                dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                                dataev = dataev.fetchall()
-                                                if dataev:
-                                                    used = dataev[0][3]
-                                                    
-                                                    #print(used)
-                                                    #print(rare_calc[raremon])
-                                                    if raremon in ["Common", "Uncommon", "Rare"]:
-                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_low[ball]*random.random()))*(1000+(used*6))
-                                                    else:
-                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_high[ball]*random.random()))*(1000+(used*6))
-                                                    #print(points)
-                                                    points = round(points)
-                                                    await before.channel.send("Your catch earned a score of **"f'{int(points):,}'"** points!")
-                                                    if points > dataev[0][2]:
-                                                        self.db.execute(f'UPDATE Events SET Points = {points} WHERE User_ID = {sender.id}')
-                                                        self.db.commit()
-                                                    item_count = dataev[0][3]
-                                                    #print(item_count)
-                                                    fish_odds = (1/drop_pos["fish"])
-                                                    #print(fish_odds)
-                                                    odds = 0
-                                                    #if coin_type == "hunt":
-                                                    odds = fish_odds
-
-                                                    roll = random.random()
-
-                                                    if odds > roll:
-                                                        #print("Find coins")
-                                                        await before.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                                                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                                        data = data.fetchone()
-                                                        old_amount = data[4]
-                                                        new_amount = 1+old_amount
-                                                        self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                                                        self.db.commit()
-                                            
                                         if "broke out" in _embed.description:
                                             raremon = data[14]
                                             ball = _embed.description.split(" out of the")[1]
@@ -191,54 +151,10 @@ class On_Edit(commands.Cog):
                                                     embed.set_author(name=(f'{sender.display_name}'+" just caught a:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                                    anno = await announce.send(embed=embed)
+                                                    await announce.send(embed=embed)
                                                     emoji = '🔔'
                                                     await after.add_reaction(emoji)
-                                            dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {guild.id}')
-                                            dataev = dataev.fetchall()
-                                            if dataev[0][4] == 1:
-                                                dataev = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                                dataev = dataev.fetchall()
-                                                if dataev:
-                                                    raremon = data[0][14]
-                                                    used = dataev[0][3]
-                                                    ball = _embed.description.split(" with a")[1]
-                                                    ball = ball.split("!")[0]
-                                                    ball = ball.split(" ")[1]
-                                                    #print(used)
-                                                    print(f'{raremon}'", "f'{rare_calc[raremon]}')
-                                                    #print(rare_calc[raremon])
-                                                    if raremon in ["Common", "Uncommon", "Rare"]:
-                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_low[ball]*random.random()))*(1000+(used*6))
-                                                    else:
-                                                        points = ((used * (random.uniform(0.5,1.2)))* (rare_calc[raremon]*random.uniform(0.85,1.15)) * (ball_used_high[ball]*random.random()))*(1000+(used*6))
-                                                        #print(points)
-                                                    points = round(points)
-                                                    await before.channel.send("Your catch earned a score of **"f'{int(points):,}'"** points!")
-                                                    if points > dataev[0][2]:
-                                                        self.db.execute(f'UPDATE Events SET Points = {points} WHERE User_ID = {sender.id}')
-                                                        self.db.commit()
-
-
-                                                    item_count = dataev[0][3]
-                                                    #print(item_count)
-                                                    hunt_odds = ((1/drop_pos["hunt"]))
-                                                    #print(hunt_odds)
-                                                    odds = 0
-                                                    #if coin_type == "hunt":
-                                                    odds = hunt_odds
-
-                                                    roll = random.random()
-                                                    #print(roll)
-                                                    if odds > roll:
-                                                        #print("Find coins")
-                                                        await before.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                                                        data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                                        data = data.fetchall()
-                                                        old_amount = data[0][4]
-                                                        new_amount = 1+old_amount
-                                                        self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                                                        self.db.commit()
+                                            
                                         if "broke out" in _embed.description:
                                             try:
                                                 raremon = data[14]
@@ -262,7 +178,7 @@ class On_Edit(commands.Cog):
                                                     embed.set_author(name=(f'{sender.display_name}'+" almost caught a:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                                    anno = await announce.send(embed=embed)
+                                                    await announce.send(embed=embed)
                                                     emoji = '🔔'
                                                     await after.add_reaction(emoji)
                                         if "ran away" in _embed.description:
@@ -276,7 +192,7 @@ class On_Edit(commands.Cog):
                                                     embed.set_author(name=(sender.display_name+" was too slow for:"), icon_url=_embed.author.icon_url)
                                                     embed.set_image(_embed.image.url)
                                                     embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
-                                                    anno = await announce.send(embed=embed)
+                                                    await announce.send(embed=embed)
                                                     emoji = '🔔'
                                                     await after.add_reaction(emoji)
 
@@ -360,60 +276,6 @@ class On_Edit(commands.Cog):
                                 print("wild spawn")
                                 await log.send(f"<@352224989367369729> Original message: [Click here]({after.jump_url})\n",embed=emb)
                                 await after.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
-            if (len(before.embeds) > 0):
-                _embed = before.embeds[0]
-                if _embed.title:
-                    if "paralympics | members" in _embed.title.lower():
-                        print("Members table")
-                        counter = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = 825813023716540426')
-                        counter = counter.fetchone()
-                        counter = int(counter[9])
-                        if int(round(datetime.datetime.timestamp(datetime.datetime.utcnow()))+3600)>(counter+608400):
-                            #print(_embed.description)
-                            desc = _embed.description.split("Total TBs")[1]
-                            desc = desc.split("\n")
-                            #print(desc)
-                            for entry in desc:
-                                #print(f"Entry: {entry}")
-                                try:
-                                    name = entry.split("|")[0]
-                                    #print(name)
-                                    if "🦁" in name:
-                                        name = name.split("🦁")[1]
-                                    elif "🐻" in name:
-                                        name = name.split("🐻")[1]
-                                    elif "🦊" in name:
-                                        name = name.split("🦊")[1]
-                                    elif "🐰" in name:
-                                        name = name.split("🐰")[1]
-                                    name = name.replace(" ", "")
-                                    #print(f"Name: {name}")
-                                    try:
-                                        old = self.db.execute(f'SELECT * FROM PsycordTeam WHERE User = "{name}"')
-                                        old = old.fetchone()
-                                        #print(old)
-                                        oldpoint = int(old[1])
-                                        average = int(old[3])
-                                        count = int(old[4])+1
-                                    except:
-                                        oldpoint = 0
-                                        average = 0
-                                        count = 1
-                                    points = int((entry.split("|")[1].replace(",", "")).replace(" ", ""))
-                                    print(f'{name}, {points}')
-                                    if average != 0:
-                                        newavg = (average*count-1)+points
-                                        average = newavg / (count+1)
-                                    elif average == 0 and count > 1:
-                                        newavg = oldpoint+points
-                                        average = int(round(newavg / 2))
-                                    self.db.execute(f'INSERT or REPLACE INTO PsycordTeam VALUES ("{name}", {points}, {oldpoint}, {average}, {count})')
-                                    self.db.commit()
-                                    self.db.execute(f'UPDATE Admin SET TeamUpdate = {counter+608400}')
-                                    self.db.commit()
-                                    print(f"Next Update will be at {counter+608400}")
-                                except Exception as e:
-                                    print(e)
 
 
 def setup(client):

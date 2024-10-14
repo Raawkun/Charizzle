@@ -57,23 +57,7 @@ class Listener(commands.Cog):
         self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Channel = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
 
-    async def _psycord_team(self):
-        last = self.db.execute(f'SELECT TeamUpdate FROM Admin WHERE Server_ID = 825813023716540426')
-        last = last.fetchone()
-        last = last[0]
-        print(f'Last Psycord Team Update: {last}')
-        if (last+608400)>int(round(datetime.datetime.timestamp(datetime.datetime.utcnow()))+3600):
-            waiter = (last+608400)-int(round(datetime.datetime.timestamp(datetime.datetime.utcnow()))+3600)
-            print(f'Not ready, sleeping for {waiter}')
-            await asyncio.sleep(waiter)
-            channel = self.client.get_channel(1201300833304854538)
-            await channel.send(f"<@&1199086710659760189>\nPlease use ``/team members`` in <#1201300833304854538> and scroll through the sites for the leaderboard.")
-            self.db.execute(f'UPDATE Admin SET TeamUpdate = {last+608400} WHERE Server_ID = 825813023716540426')
-            self.db.commit()
-        else:
-            channel = self.client.get_channel(1201300833304854538)
-            await channel.send(f"<@&1199086710659760189>\nPlease use ``/team members`` in <#1201300833304854538> and scroll through the sites for the leaderboard.")
-
+    
     async def _changelog(self):
         log = self.client.get_channel(1210143608355823647)
         current_time = datetime.datetime.utcnow()
@@ -260,10 +244,20 @@ class Listener(commands.Cog):
         if "happy" in message.content.lower():
             if "birthday" in message.content.lower():
                 if "1161011648585285652" in message.content.lower() or "gengar" in message.content.lower():
-                    await message.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
+                    if current_time.day == 9 and current_time.month == 10:
+                        await message.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
+                    else:
+                        next_bd = datetime.datetime(current_time.year+1, 9,10,tzinfo=current_time.tzinfo)
+                        next = next_bd - current_time
+                        await message.reply(f"Thx <@{message.author.id}>, but my birthday is October 9th, so in {next} days.")
         elif "hbd" in message.content.lower():
             if "1161011648585285652" in message.content.lower() or "gengar" in message.content.lower():
-                await message.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
+                if current_time.day == 9 and current_time.month == 10:
+                    await message.reply(f"Thx <@{message.author.id}>! And happy spooky season! :ghost: ")
+                else:
+                    next_bd = datetime.datetime(current_time.year+1, 9,10,tzinfo=current_time.tzinfo)
+                    next = next_bd - current_time
+                    await message.reply(f"Thx <@{message.author.id}>, but my birthday is October 9th, so in {next} days.")
                 
         if message.content.lower() == "trygoogle":
             await message.delete()
@@ -279,7 +273,7 @@ class Listener(commands.Cog):
         if message.content.lower() == "lol":
             await message.reply("Rofl.", allowed_mentions = disnake.AllowedMentions(replied_user=False))
 
-        if message.author.id == 922248409350549564:
+        if message.author.id == karp:
             if "our general chat" in message.content.lower():
                 username = message.content
                 username = username.split(">")[0]
@@ -289,7 +283,7 @@ class Listener(commands.Cog):
                 #print(username+" welcomed")
                 await message.channel.send("Hey, "+username)
                 await message.channel.send("<a:welcome1:1130245046025846814><a:welcome2:1130245098983137323>")
-            if "Here is some info for new people" in message.content:
+            if "here is some info for new people" in message.content.lower():
                 id = message.content.split("<@")[1]
                 id = id.split(">")[0]
                 desc = f"Hi <@{id}>! Congrats on joining this awesome clan!\nI'm {self.client.display_name} and here to help you to grind as easy & efficient as possible!\nYou may know bots like MeowHelper from other servers - don't worry, I'm way more reliable!\n\n"
@@ -365,51 +359,8 @@ class Listener(commands.Cog):
                     emb = message.embeds[0]
                     await log.send(embed=emb)
                     if "a wild " in emb.title.lower():
-                        print("wild spawn")
-                        await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
-                        
-                        
-        if message.channel.id == 1201300833304854538: #Psycord Extra
-            if message.author.id == 865576698137673739:
-                #print(f"Message from {message.author}")
-                #print(len(message.embeds))
-                if len(message.embeds) > 0:
-                    print("With embed")
-                    _embed = message.embeds[0]
-                    if "paralympics | members" in _embed.title.lower():
-                        print("Members table")
-                        counter = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = 825813023716540426')
-                        counter = counter.fetchone()
-                        if (round(datetime.datetime.timestamp(datetime.datetime.now))+3600)>(counter+608400):
-                            desc = _embed.description
-                            desc = desc.split["Total TBs"](1)
-                            desc = desc.split[":"]
-                            i = 0
-                            for entry in desc:
-                                if i % 2 == 0:
-                                    name = entry.split["|"](0)
-                                    try:
-                                        old = self.db.execute(f'SELECT * FROM PsycordTeam WHERE User = "{name}"')
-                                        old = old.fetchone()
-                                        print(old)
-                                        oldpoint = int(old[1])
-                                        average = int(old[3])
-                                        count = int(old[4])+1
-                                    except:
-                                        oldpoint = 0
-                                        average = 0
-                                        count = 1
-                                    points = int(entry.split["|"](1)).replace(",", "")
-                                    print(f'{name}, {points}')
-                                    if average != 0:
-                                        newavg = (average*count-1)+points
-                                        average = newavg / (count+1)
-                                    self.db.execute(f'INSERT or REPLACE INTO PsycordTeam VALUES ("{name}", {points}, {oldpoint}, {average}, {count})')
-                                    self.db.commit()
-                                    self.db.execute(f'UPDATE Admin SET TeamUpdate = {counter+608400}')
-                                    self.db.commit()
-                                    print(f"Next Update will be at {counter+608400}")
-                
+                        #print("wild spawn")
+                        await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")   
 
         ######## Straymon Checker
         if message.channel.id == 825836268332122122:
@@ -510,33 +461,6 @@ class Listener(commands.Cog):
                 await announce_channel.send(embed=embed)
                 await log_chn.send(user.name+" found an icon")
                 await log_chn.send("Its "+iconname)
-            if "won the battle!" in message.content:
-                #print("Battle won")
-                dataev = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {message.guild.id}')
-                dataev = dataev.fetchone()
-                if dataev[6] == 1:
-                    username = message.content.split("**")[1]
-                    username = message.guild.get_member_named(username)
-                    #print(username)
-                    #print(username.id)
-                    data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {username.id}')
-                    data = data.fetchall()
-                    if data:
-
-                        item_count = data[0][3]
-                        battle_odds = ((1/(drop_pos["battle"])) * (1 + (0.01 * item_count)))
-                        odds = 0
-                        # if coin_type == "battle":
-                        odds = battle_odds
-
-                        roll = random.random()
-
-                        if odds > roll:
-                            await message.channel.send("You've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                            old_amount = data[0][4]
-                            new_amount = 1+old_amount
-                            self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {username.id}')
-                            self.db.commit()
             if "from completing challenge" in message.content:
                 if message.reference:
                     ref_msg = await message.channel.fetch_message(message.reference.message_id)
