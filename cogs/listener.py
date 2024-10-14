@@ -249,7 +249,7 @@ class Listener(commands.Cog):
                     else:
                         next_bd = datetime.datetime(current_time.year+1, 9,10,tzinfo=current_time.tzinfo)
                         next = next_bd - current_time
-                        await message.reply(f"Thx <@{message.author.id}>, but my birthday is October 9th, so in {next} days.")
+                        await message.reply(f"Thx <@{message.author.id}>, but my birthday is October 9th, so in {next.days} days.")
         elif "hbd" in message.content.lower():
             if "1161011648585285652" in message.content.lower() or "gengar" in message.content.lower():
                 if current_time.day == 9 and current_time.month == 10:
@@ -257,7 +257,7 @@ class Listener(commands.Cog):
                 else:
                     next_bd = datetime.datetime(current_time.year+1, 9,10,tzinfo=current_time.tzinfo)
                     next = next_bd - current_time
-                    await message.reply(f"Thx <@{message.author.id}>, but my birthday is October 9th, so in {next} days.")
+                    await message.reply(f"Thx <@{message.author.id}>, but my birthday is October 9th, so in {next.days} days.")
                 
         if message.content.lower() == "trygoogle":
             await message.delete()
