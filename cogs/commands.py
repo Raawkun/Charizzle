@@ -172,6 +172,17 @@ class Coms(commands.Cog):
         user = ctx.guild.get_member(userid)
         msg = " ".join(args)
         await user.send(msg)
+        
+    @commands.check(Basic_checker().check_management)
+    @commands.command()
+    async def welcome(self, ctx):
+        await ctx.delete()
+                
+        desc = f"Hi! Congrats on joining this awesome clan!\nI'm {self.client.user.display_name} and here to help you to grind as easy & efficient as possible!\nYou may know bots like MeowHelper from other servers - don't worry, I'm way more reliable!\n\n"
+        desc += f"My main work here is to remind you when your PokéMeow command cooldowns are done - and I can either remind with or without pings.\nIf you want to know more about my functions and command, check out ``mInfo``or </info:1177325264351543447>.\n\n"
+        desc += f"Have a good time here! <:GengarHeart:1153729922620215349>"
+        emb = await Auction_embed(self.client, title="Welcome!", description=desc).setup_embed()
+        await ctx.channel.send(embed=emb)
 
     @commands.check(Basic_checker().check_server)
     @commands.check(Basic_checker().check_admin)
