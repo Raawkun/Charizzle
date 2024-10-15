@@ -286,7 +286,7 @@ class Listener(commands.Cog):
             if "here is some info for new people" in message.content.lower():
                 id = message.content.split("<@")[1]
                 id = id.split(">")[0]
-                desc = f"Hi <@{id}>! Congrats on joining this awesome clan!\nI'm {self.client.display_name} and here to help you to grind as easy & efficient as possible!\nYou may know bots like MeowHelper from other servers - don't worry, I'm way more reliable!\n\n"
+                desc = f"Hi <@{id}>! Congrats on joining this awesome clan!\nI'm {self.client.user.display_name} and here to help you to grind as easy & efficient as possible!\nYou may know bots like MeowHelper from other servers - don't worry, I'm way more reliable!\n\n"
                 desc += f"My main work here is to remind you when your PokéMeow command cooldowns are done - and I can either remind with or without pings.\nIf you want to know more about my functions and command, check out ``mInfo``or </info:1177325264351543447>.\n\n"
                 desc += f"Have a good time here! <:GengarHeart:1153729922620215349>"
                 emb = await Auction_embed(self.client, title="Welcome!", description=desc).setup_embed()
