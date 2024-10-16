@@ -40,7 +40,7 @@ class On_Edit(commands.Cog):
             if before.pinned == after.pinned:
                 ##### Rare Spawn #####
                 Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
-                #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
+                Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
                 if (len(before.embeds) > 0):
                     befembed = before.embeds[0]
                     if "may continue playing" in after.content.lower():
