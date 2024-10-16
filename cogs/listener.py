@@ -561,9 +561,9 @@ class Listener(commands.Cog):
                                     else:
                                         for entry in _embed.fields:
                                             if entry.name == "Price each":
-                                                print(entry.value)
+                                                #print(entry.value)
                                                 price = entry.value.split("`")[1]
-                                                print(price)
+                                                #print(price)
                                                 lowprice = int(price.replace(",", ""))
                                             if entry.name == "Amount Remaining":
                                                 amount = entry.value.split("`")[1]
@@ -1171,52 +1171,6 @@ class Listener(commands.Cog):
                             embed.set_image(data_cb[0][15])
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce_channel.send(embed=embed)
-
-
-        data = self.db.execute(f'SELECT * FROM Admin') #Checks my Admin Toggle db
-        data = data.fetchall()
-        log = 1166470108068188200
-        #Bot-testing = 825958388349272106, buy-in-sponsoring = 920260648045273088, Meow-grind 1 = 1037323228961579049
-        if message.channel.id == 920260648045273088:  #Checks for the Bot-testing channel
-            log = self.client.get_channel(1166470108068188200) #Setting up my log channel ^^
-            if data[0][4] == 1: #If "Event" is turned on
-                #print("Its active")
-                if message.author.id == meow:
-                    #print("From Meow")
-                    if " PokeCoins!" in message.content: #Looking for oaid PokeCoins
-                        #print("There are coins")
-                        try:
-                            ref_msg = await message.channel.fetch_message(message.reference.message_id)  # Command with ;
-                            sender = ref_msg.author
-                            #print("Ref")
-                        except:
-                            ref_msg = message.interaction #Command with /
-                            sender = ref_msg.author
-                            #print("Int")
-                        amount = message.content.split("<:PokeCoin:666879070650236928> ")[1] #Splitting the msg of Meow after the Coin Emote
-                        amount = amount.split(" ")[0] #Splitting it again at the Space behind the Number
-                        #print(amount)
-                        try:
-                            amount = int(amount.replace(",", "")) #Replacing any , if there are any
-                        except:
-                            amount = int(amount)
-                        if amount >= buyin: #Checking for a minimum amount
-                            update = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}') #Connecting to the event db
-                            update = update.fetchall()
-                            if update: #Is the User in the db already?
-                                #print("We know them!")
-                                newamount = (update[0][1])+amount #Taking the old amount they paid in & putting the new onto that
-                                print(newamount)
-                                self.db.execute(f'UPDATE Events SET Buyin = {newamount} WHERE User_ID = {sender.id}') #Updating that dude
-                                self.db.commit()
-                                await message.channel.send("You were already bought in, your total is now "f'{newamount:,}')
-                                await log.send(f'{sender}'+"'s entry got updated, +"+f'{amount}'+", now: "+f'{newamount}'+" -- "+f'{sender.id}')
-                            else: #Not in the db? Must be new then
-                                #print("Someone new")
-                                self.db.execute(f'INSERT INTO Events VALUES ({sender.id}, {amount}, 0, 1, 0)')
-                                self.db.commit()
-                                await message.channel.send("You've entered this "+f'{self.client.user.display_name}'+"'s Event.")
-                                await log.send(f'{sender}'+" paid "f'{amount}'" & joined this event. -- "+f'{sender.id}')
 
 
         log_channel = 1164544776985653319
