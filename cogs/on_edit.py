@@ -45,8 +45,11 @@ class On_Edit(commands.Cog):
                     befembed = before.embeds[0]
                     if "may continue playing" in after.content.lower():
                         return
-                    _embed = after.embeds[0]
-                    color = _embed.color
+                    if (len(after.embeds) > 0):
+                        _embed = after.embeds[0]
+                        color = _embed.color
+                    else:
+                        return
                     if _embed.description == True:
                         if "fished out a" in after.description:
                             if data[11] == 1:
