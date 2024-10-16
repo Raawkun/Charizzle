@@ -397,14 +397,13 @@ class Listener(commands.Cog):
                 elif message.interaction:
                     sender = message.interaction.author
                 monname = message.content.split("**")[1]
-                monname = monname+" "
                 print(monname)
-                data = self.db.execute(f'SELECT * FROM Dex WHERE Name LIKE "{monname}"')
-                data = data.fetchall()
+                data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
+                data = data.fetchone()
                 #print(data)
-                url = data[0][15]
+                url = data[15]
                 #print(url)
-                monname = data[0][1]
+                monname = data[1]
                 print(monname)
                 current_time = message.created_at
                 timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -1009,43 +1008,21 @@ class Listener(commands.Cog):
                                 await message.channel.send(desc)
                     if "hatched" in _embed.author.name:
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                        data_egg = data_egg.fetchall()
+                        data_egg = data_egg.fetchone()
                         sender = ref_msg.author
-                        raremon = poke_rarity[(data_egg[0][14])]
+                        raremon = poke_rarity[(data_egg[14])]
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
                         #print(Rare_Spawned)
                         #Rare_Spawned = ["Golden","Event", "Legendary", "Shiny", "Rare", "SuperRare"]
                         if data_egg[0][14] in Rare_Spawned or str(data_egg[0][0]) in eggexcl:
                             print("Its in the one list!")
-                            print(str(data_egg[0][0]))
-                            embed = disnake.Embed(title=raremon+" **"+data_egg[0][1]+"** \nDex: #"+str(data_egg[0][0]), color=color,description=description_text)
+                            print(str(data_egg[0]))
+                            embed = disnake.Embed(title=raremon+" **"+data_egg[1]+"** \nDex: #"+str(data_egg[0]), color=color,description=description_text)
                             embed.set_author(name=(sender.display_name+" just hatched an exclusive:"),icon_url="https://cdn.discordapp.com/emojis/689325070015135745.gif?size=96&quality=lossless")
                             embed.set_image(_embed.image.url)
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce_channel.send(embed=embed)
 
-                        dataev = self.db.execute(f'SELECT * FROM Admin')
-                        dataev = dataev.fetchall()
-                        if dataev[0][4] == 1:
-                            print("Event active")
-                            print("Egg hatched")
-
-                            egg_odds = (1/drop_pos["egg"])
-                            odds = egg_odds
-
-                            roll = random.random()
-
-                            if odds > roll:
-                                print(sender)
-                                print(sender.id)
-                                data = self.db.execute(f'SELECT * FROM Events WHERE User_ID = {sender.id}')
-                                data = data.fetchall()
-                                if data:
-                                    await message.channel.send(str(sender.display_name)+", you've found a <:lavacookie:1167592527570935922>! Feed it to me with ``feed``.")
-                                    old_amount = data[0][4]
-                                    new_amount = 1+old_amount
-                                    self.db.execute(f'UPDATE Events SET Items = {new_amount} WHERE User_ID = {sender.id}')
-                                    self.db.commit()
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchone()
@@ -1067,7 +1044,6 @@ class Listener(commands.Cog):
 
                         
                     if "opened " in _embed.author.name:
-                        print("Box opening")
                         if _embed.image:
                             #print("Theres a spawn")
                             data_box = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
