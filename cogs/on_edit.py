@@ -117,6 +117,7 @@ class On_Edit(commands.Cog):
                                 if "ran away" in _embed.description:
                                     #print(f"Something ran away; {data[1]}")
                                     author = sender.display_name+" was too slow for:"
+                                raremon = poke_rarity[(data[14])]
                                 description_text += f"Original message: [Click here]({before.jump_url})\n"
                                 embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=color,description=description_text)
                                 embed.set_author(name=author, icon_url=_embed.author.icon_url)
