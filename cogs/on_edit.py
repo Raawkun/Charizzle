@@ -80,7 +80,7 @@ class On_Edit(commands.Cog):
                                 #print(f"{data[1]} - {data[14]}")
                             except:
                                 try:
-                                    name = _embed.description.split("**")[3]
+                                    name = _embed.description.split("**")[1]
                                     data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{name}"')
                                     data = data.fetchone()
                                     raremon = data[14]
