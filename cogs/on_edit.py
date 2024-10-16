@@ -66,7 +66,7 @@ class On_Edit(commands.Cog):
                             elif data[12]:
                                 await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
                     if _embed.footer.text:
-                        if "pokemon roll" in _embed.footer.text:
+                        if "pokemon roll" in _embed.footer.text.lower():
                             print("There's been a roll")
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
