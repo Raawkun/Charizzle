@@ -59,8 +59,13 @@ class On_Edit(commands.Cog):
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data = data.fetchone()
                             except:
-                                await before.channel.send("It seems this Pokémon is not in my database - could you please add it with checking its ``/pokedex entry``?")
-                                return
+                                try:
+                                    name = _embed.description.split("**")[3]
+                                    data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{name}"')
+                                    data = data.fetchone()
+                                except:
+                                    await before.channel.send("It seems this Pokémon is not in my database - could you please add it with checking its ``/pokedex entry``?")
+                                    return
                             if data[11] == 1:
                                 await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
                             elif data[12]:
@@ -74,8 +79,14 @@ class On_Edit(commands.Cog):
                                 raremon = data[14]
                                 #print(f"{data[1]} - {data[14]}")
                             except:
-                                await before.channel.send("It seems this Pokémon is not in my database - could you please add it with checking its ``/pokedex entry``?")
-                                return
+                                try:
+                                    name = _embed.description.split("**")[3]
+                                    data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{name}"')
+                                    data = data.fetchone()
+                                    raremon = data[14]
+                                except:
+                                    await before.channel.send("It seems this Pokémon is not in my database - could you please add it with checking its ``/pokedex entry``?")
+                                    return
                             if before.reference:
                                 ref_msg = await before.channel.fetch_message(before.reference.message_id)
                                 sender = ref_msg.author
