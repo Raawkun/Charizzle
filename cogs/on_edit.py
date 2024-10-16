@@ -40,21 +40,21 @@ class On_Edit(commands.Cog):
             if before.pinned == after.pinned:
                 ##### Rare Spawn #####
                 Rare_Spawns = ["Event", "Legendary", "Shiny","Golden"]
-                Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
+                #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
                 if (len(before.embeds) > 0):
-                    print("Edit with Embed")
+                    #print("Edit with Embed")
                     befembed = before.embeds[0]
                     if "may continue playing" in after.content.lower():
                         return
                     if (len(after.embeds) > 0):
                         _embed = after.embeds[0]
                         color = _embed.color
-                        print("After embed")
+                        #print("After embed")
                     else:
                         return
                     if _embed.description:
                         if "fished out a" in _embed.description:
-                            print("Fishyyyy")
+                            #print("Fishyyyy")
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data = data.fetchone()
@@ -67,7 +67,7 @@ class On_Edit(commands.Cog):
                                 await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
                     if _embed.footer.text:
                         if "pokemon roll" in _embed.footer.text.lower():
-                            print("There's been a roll")
+                            #print("There's been a roll")
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                                 data = data.fetchone()
@@ -83,10 +83,10 @@ class On_Edit(commands.Cog):
                                 ref_msg = before.interaction.user
                                 sender = ref_msg
                             if raremon in Rare_Spawns or _embed.color == 0xe9270b:
-                                print("Theres a rare spawn.")
+                                #print("Theres a rare spawn.")
                                 description_text = " "
                                 if "caught a" in _embed.description:
-                                    print(f"Something got caught; {data[1]}")
+                                    #print(f"Something got caught; {data[1]}")
                                     if "retrieved a" in _embed.description:
                                         #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare","Common", "Uncommon", "SuperRare","Golden"]
                                         item = _embed.description.split("retrieved")[1]
@@ -99,12 +99,12 @@ class On_Edit(commands.Cog):
                                         author = sender.display_name+" just caught a:"
 
                                 if "broke out" in _embed.description:
-                                    print(f"Something broke out; {data[1]}")
+                                    #print(f"Something broke out; {data[1]}")
                                     author = sender.display_name+" almost caught a:"
                                     
                                                     
                                 if "ran away" in _embed.description:
-                                    print(f"Something ran away; {data[1]}")
+                                    #print(f"Something ran away; {data[1]}")
                                     author = sender.display_name+" was too slow for:"
                                 description_text += f"Original message: [Click here]({before.jump_url})\n"
                                 embed = disnake.Embed(title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]), color=color,description=description_text)
