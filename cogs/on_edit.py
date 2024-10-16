@@ -43,6 +43,8 @@ class On_Edit(commands.Cog):
                 #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
                 if (len(before.embeds) > 0):
                     befembed = before.embeds[0]
+                    if "may continue playing" in after.content.lower():
+                        return
                     _embed = after.embeds[0]
                     color = _embed.color
                     if _embed.description == True:
