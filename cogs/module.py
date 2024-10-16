@@ -99,7 +99,7 @@ class Modules(commands.Cog):
         conn.close()
         channel = self.client.get_channel(1272981076419149886)
         await channel.send(file=disnake.File(file_path))
-        self.db.execute(f"DELETE * FROM average WHERE catch_count != None")
+        self.db.execute(f"DELETE * FROM average WHERE userid != None")
         self.db.commit()
         os.remove(file_path)
     async def averagetimer(self):
