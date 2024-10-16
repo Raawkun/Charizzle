@@ -43,16 +43,15 @@ class On_Edit(commands.Cog):
                 #Rare_Spawns = ["Event", "Legendary", "Shiny", "Rare", "SuperRare","Golden"]
                 if (len(before.embeds) > 0):
                     befembed = before.embeds[0]
-                    guild = before.guild
-                    if after.description == True:
+                    _embed = after.embeds[0]
+                    color = _embed.color
+                    if _embed.description == True:
                         if "fished out a" in after.description:
                             if data[11] == 1:
                                 await before.channel.send("Watch out! This one is a <:shin:1165314036909494344> Pokémon!")
                             elif data[12]:
                                 await before.channel.send("Watch out! This one is a <:gold:1165319370801692786> Pokémon!")
                     if befembed.footer.text == True:
-                        _embed = after.embeds[0]
-                        color = _embed.color
                         if "pokemon roll" in befembed.footer.text:
                             try:
                                 data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')

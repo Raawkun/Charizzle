@@ -1014,7 +1014,7 @@ class Listener(commands.Cog):
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
                         #print(Rare_Spawned)
                         #Rare_Spawned = ["Golden","Event", "Legendary", "Shiny", "Rare", "SuperRare"]
-                        if data_egg[0][14] in Rare_Spawned or str(data_egg[0][0]) in eggexcl:
+                        if data_egg[14] in Rare_Spawned or str(data_egg[0]) in eggexcl:
                             print("Its in the one list!")
                             print(str(data_egg[0]))
                             embed = disnake.Embed(title=raremon+" **"+data_egg[1]+"** \nDex: #"+str(data_egg[0]), color=color,description=description_text)
