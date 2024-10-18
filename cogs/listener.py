@@ -350,6 +350,12 @@ class Listener(commands.Cog):
                         for entry in hunts:
                             desc += f'<@{entry[0]}> '
                         await message.channel.send(desc)
+            if "Distortion" in emb.title:
+                if message.guild.id == 825813023716540426:
+                    place = emb.description.split("open in ")[1]
+                    place = place.split(" ")[1]
+                    place = place.split("!")[0]
+                    await message.channel.send(f"<@&1296833633700675737>\nA Space-Time Distortion opened up at **{place}** - good luck hunting!")
         
         if message.channel.id == 1199807047294795878: ##Psycord Channel
             if message.author.id == 865576698137673739:  
