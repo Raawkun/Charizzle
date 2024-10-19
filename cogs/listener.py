@@ -352,7 +352,7 @@ class Listener(commands.Cog):
                         await message.channel.send(desc)
             if "Distortion" in emb.title:
                 if message.guild.id == 825813023716540426:
-                    place = emb.description.split(": ")[1]
+                    place = emb.description.split("open in ")[1]
                     place = place.split("!")[0]
                     await message.channel.send(f"<@&1296833633700675737>\nA Space-Time Distortion opened up at **{place}** - good luck hunting!")
         
