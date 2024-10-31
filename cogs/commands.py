@@ -148,6 +148,10 @@ class Coms(commands.Cog):
                 await ctx.reply()
         else:
             await ctx.reply()
+            
+    @commands.command()
+    async def boost(self, ctx):
+        await ctx.reply(f"__Here are the Psycord stat boosts:__\n> ✨Shiny - HP\n> 🌑Shadow - Attack\n> 🏵️ Noble - Speed\n> 💎 Crystal - Defense\n> 🌸 Pinkan - Special Defense\n> 💀 Dark - Special Attack")
 
     @commands.command()
     async def dm(self, ctx, userid, *args):
