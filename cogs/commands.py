@@ -1,3 +1,4 @@
+import io
 import math
 import random
 from typing import Any
@@ -919,6 +920,7 @@ class Coms(commands.Cog):
                 await ctx.send("Please use a message ID or answer to a message.")
                 checker = 0
         if checker == 1:
+            desc_check = 0
             ref_msg = await ctx.channel.fetch_message(mid)
             desc = f"Name:{ref_msg.author.display_name}\nID: {ref_msg.author.id}\n"
             if ref_msg.content != None:
@@ -929,8 +931,16 @@ class Coms(commands.Cog):
                     print("Its an embed...")
                     if ref_msg.content != None:
                         if _embed.description != None:
-                            desc +=("```Desc:\n")
-                            desc +=(f"{_embed.description}```\n")
+                            length = len(_embed.description)
+                            print(length)
+                            if length > 1000:
+                                desc +=("```Desc:\nCheck Attachment below.")
+                                txt_file = io.StringIO(_embed.description)
+                                txt_file.name = "desc.txt"
+                                desc_check = 1
+                            else:
+                                desc +=("```Desc:\n")
+                                desc +=(f"{_embed.description}```\n")
                             print("with a description....")
                         if _embed.footer != None:
                             desc +=("```Footer:\n")
@@ -961,7 +971,10 @@ class Coms(commands.Cog):
                             desc +=(f"```Color:\n")
                             desc +=(f"{_embed.color}```")
                             print("with a color.")
-            await ctx.reply(desc)
+            if desc_check == 1:
+                await ctx.reply(desc, file = disnake.File(txt_file, txt_file.name))
+            else:
+                await ctx.reply(desc)
 
     @commands.command()
     async def invite(self, ctx):
