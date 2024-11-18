@@ -559,10 +559,10 @@ class Listener(commands.Cog):
                             stars = int(valuables[5].split(")")[0])
                             comet = int(valuables[6].split(")")[0])
                             if nuggets > 10:
-                                big_nuggets = big_nuggets + (nuggets/10).floor
+                                big_nuggets = big_nuggets + (nuggets//10)
                                 nuggets = nuggets%10
                             if pearls > 10:
-                                big_pearls = big_pearls + (pearls/10).floor
+                                big_pearls = big_pearls + (pearls//10)
                                 pearls = pearls%10
                             coins = (nuggets*2000)+(pearls*2000)+(big_nuggets*30000)+(big_pearls*30000)+(stars*15000)+(comet*60000)
                             rp = (nuggets*1)+(pearls*1)+(big_nuggets*15)+(big_pearls*15)+(stars*10)+(comet*25)
