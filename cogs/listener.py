@@ -550,7 +550,7 @@ class Listener(commands.Cog):
                         try:
                             desc = _embed.description
                             current_points = desc.split("Research Points**: ")[1]
-                            current_points = int(current_points.split("**")[0])
+                            current_points = int((current_points.split("**")[0]).replace(",", ""))
                             valuables = desc.split("(")
                             nuggets = int(valuables[1].split(")")[0])
                             big_nuggets = int(valuables[2].split(")")[0])
@@ -566,7 +566,7 @@ class Listener(commands.Cog):
                                 pearls = pearls%10
                             coins = (nuggets*2000)+(pearls*2000)+(big_nuggets*30000)+(big_pearls*30000)+(stars*15000)+(comet*60000)
                             rp = (nuggets*1)+(pearls*1)+(big_nuggets*15)+(big_pearls*15)+(stars*10)+(comet*25)
-                            description_text = f'If you exchange all your Nuggets for Big Nuggets and Pearls for Big Pearls beforehand, you should get\n\nPokeCoins: {coins:,} {emote_list["coins"]}\nRP: {rp:,} {emote_list["rp"]}\n\nTotal RP after exchange: {current_points+rp} {emote_list["rp"]}'
+                            description_text = f'If you exchange all your Nuggets for Big Nuggets and Pearls for Big Pearls beforehand, you should get\n\nPokeCoins: {coins:,} {emote_list["coins"]}\nRP: {rp:,} {emote_list["rp"]}\n\nTotal RP after exchange: {(current_points+rp):,} {emote_list["rp"]}'
                             footer_text = f"This calculation does not check for owned relics or fossils."
                             embed = disnake.Embed(title="Your current exchangeable valuables:",timestamp=current_time,color=embed_color, description=description_text)
                             embed.set_author(name="Research Calculation Centre") 
