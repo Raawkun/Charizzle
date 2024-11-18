@@ -10,7 +10,7 @@ from main import client
 from utility.rarity_db import poke_rarity, chambers
 from utility.egglist import eggexcl
 from utility.drop_chance import drop_pos, buyin
-from utility.info_dict import rem_emotes
+from utility.info_dict import rem_emotes, emote, embed_color
 import datetime
 from utility.embed import Custom_embed, Auction_embed
 from cogs.module import Modules
@@ -547,7 +547,33 @@ class Listener(commands.Cog):
                 Rare_Spawned = ["Event", "Legendary", "Shiny", "Golden"]
                 if _embed.author:
                     if "Research Lab" in _embed.author.name:
-                        print("Research Lab")
+                        try:
+                            desc = _embed.description
+                            current_points = desc.split("Research Points**: ")[1]
+                            current_points = int(current_points.split("**")[0])
+                            valuables = desc.split("(")
+                            nuggets = valuables[0].split(")")[0]
+                            big_nuggets = valuables[1].split(")")[0]
+                            pearls = valuables[2].split(")")[0]
+                            big_pearls = valuables[3].split(")")[0]
+                            stars = valuables[4].split(")")[0]
+                            comet = valuables[5].split(")")[0]
+                            if nuggets > 10:
+                                big_nuggets = big_nuggets + (nuggets/10).floor
+                                nuggets = nuggets%10
+                            if pearls > 10:
+                                big_pearls = big_pearls + (pearls/10).floor
+                                pearls = pearls%10
+                            coins = (nuggets*2000)+(pearls*2000)+(big_nuggets*30000)+(big_pearls*30000)+(stars*15000)+(comet*60000)
+                            rp = (nuggets*1)+(pearls*1)+(big_nuggets*15)+(big_pearls*15)+(stars*10)+(comet*25)
+                            description_text = f"If you exchange all your Nuggets for Big_Nuggets and Pearls for Big_Pearls beforehand, you should get\n\nPokeCoins: {coins} {emote["coins"]}\nRP: {rp} {emote["rp"]}"
+                            footer_text = f"This calculation does not check for owned relics or fossils."
+                            embed = disnake.Embed(title="Your current exchangeable valuables:",timestamp=current_time,color=embed_color, description=description_text)
+                            embed.set_author(name="Research Calculation Centre") 
+                            embed.set_footer(text=footer_text)
+                            await message.reply(embed=embed)
+                        except Exception as e:
+                            print(f"Research Lab Error: {e}")
                     if "Global Market " in _embed.author.name:
                         print("Market going on")
                         try:
