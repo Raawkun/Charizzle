@@ -546,6 +546,8 @@ class Listener(commands.Cog):
                 #print(_embed.author.name)
                 Rare_Spawned = ["Event", "Legendary", "Shiny", "Golden"]
                 if _embed.author:
+                    if "Research Lab" in _embed.author.name:
+                        print("Research Lab")
                     if "Global Market " in _embed.author.name:
                         print("Market going on")
                         try:
