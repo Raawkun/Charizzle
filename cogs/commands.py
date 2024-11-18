@@ -926,32 +926,41 @@ class Coms(commands.Cog):
             if mode == "embed":
                 if (len(ref_msg.embeds) > 0):
                     _embed = ref_msg.embeds[0]
+                    print("Its an embed...")
                     if ref_msg.content != None:
                         if _embed.description != None:
                             desc +=("```Desc:\n")
                             desc +=(f"{_embed.description}```\n")
+                            print("with a description....")
                         if _embed.footer != None:
                             desc +=("```Footer:\n")
                             desc +=(f"{_embed.footer.text}```\n")
+                            print("with a footer....")
                         if _embed.title != None:
                             desc +=("```Title:")
                             desc +=(f"{_embed.title}```\n")
+                            print("with a title...")
                         if _embed.fields != None:
                             desc +=("```Fields:")
                             desc +=(f"{_embed.fields}```\n")
+                            print("with fields...")
                         if _embed.image != None:
                             desc +=("```Image:")
                             desc +=(f"{_embed.image.url}```\n")
+                            print("with an image...")
                         if _embed.thumbnail.url != None:
                             desc +=("```Thumb:")
                             desc +=(f"{_embed.thumbnail.url}```\n")
+                            print("with a thumb...")
                         if _embed.author.name != None:
                             desc +=("```Author:")
                             desc +=(f"{_embed.author.name}\n")
                             desc +=(f"{_embed.author.icon_url}```\n")
+                            print("with an author...")
                         if _embed.color != None:
                             desc +=(f"```Color:\n")
                             desc +=(f"{_embed.color}```")
+                            print("with a color.")
             await ctx.reply(desc)
 
     @commands.command()
