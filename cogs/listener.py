@@ -571,6 +571,7 @@ class Listener(commands.Cog):
                             embed = disnake.Embed(title="Your current exchangeable valuables:",timestamp=current_time,color=embed_color, description=description_text)
                             embed.set_author(name="Research Calculation Centre") 
                             embed.set_footer(text=footer_text)
+                            embed.set_thumbnail(url="https://media.discordapp.net/attachments/1088391118384807997/1308177781703708684/IMG_9481.jpg?ex=673cfeff&is=673bad7f&hm=42cb718ff77260db27caaf10c8a2dd3037ff0b5f25418d0c2b6f50cb1b2c72d1&")
                             await message.reply(embed=embed)
                         except Exception as e:
                             print(f"Research Lab Error: {e}")
