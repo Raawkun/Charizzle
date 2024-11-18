@@ -552,12 +552,12 @@ class Listener(commands.Cog):
                             current_points = desc.split("Research Points**: ")[1]
                             current_points = int(current_points.split("**")[0])
                             valuables = desc.split("(")
-                            nuggets = int(valuables[0].split(")")[0])
-                            big_nuggets = int(valuables[1].split(")")[0])
-                            pearls = int(valuables[2].split(")")[0])
-                            big_pearls = int(valuables[3].split(")")[0])
-                            stars = int(valuables[4].split(")")[0])
-                            comet = int(valuables[5].split(")")[0])
+                            nuggets = int(valuables[1].split(")")[0])
+                            big_nuggets = int(valuables[2].split(")")[0])
+                            pearls = int(valuables[3].split(")")[0])
+                            big_pearls = int(valuables[4].split(")")[0])
+                            stars = int(valuables[5].split(")")[0])
+                            comet = int(valuables[6].split(")")[0])
                             if nuggets > 10:
                                 big_nuggets = big_nuggets + (nuggets/10).floor
                                 nuggets = nuggets%10
