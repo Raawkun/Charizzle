@@ -99,8 +99,8 @@ class Listener(commands.Cog):
     async def on_ready(self):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
-        print(datetime.datetime.timestamp(datetime.datetime.now()))
-        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="that mInfo"))
+        print(datetime.datetime.now())
+        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="some wild Pidgey"))
         asyncio.create_task(self._changelog())
         asyncio.create_task(Modules.averagetimer(self))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
@@ -968,9 +968,8 @@ class Listener(commands.Cog):
                 if _embed.footer.text:
                     if "battle starts in" in _embed.footer.text.lower():
                         #print("Aha, battling.")
-                       # if "adaman" in _embed.description.lower():
-                            #print("Adaman battle")
-                            #asyncio.create_task(Modules.adamannpc(self, message))
+                        if "xmas steven** to a battle" in _embed.description.lower():
+                            asyncio.create_task(Modules.adamannpc(self, message))
                         #asyncio.create_task(Modules.darktest(self, message))
                         await asyncio.sleep(59)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')

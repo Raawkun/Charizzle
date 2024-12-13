@@ -28,7 +28,7 @@ class Modules(commands.Cog):
         elif message.interaction:
             sender = message.interaction.author
         await asyncio.sleep(300)
-        await message.channel.send(f"<@{sender.id}> - Trainer **Adaman** is ready for the next battle. If its Spooky Hour, you can beat him up again.\n**Don't forget to set the right team!!!**")
+        await message.channel.send(f"<@{sender.id}> - Trainer **Xmas Steven** is ready for the next battle.\n**Don't forget to set the right team!!!** <:493:1213076751559819294>")
 
     # async def darktest(self, message):
     #     if message.reference:
