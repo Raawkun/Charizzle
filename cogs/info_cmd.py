@@ -18,6 +18,19 @@ class Info_Cmd(commands.Cog):
     current_time = datetime.datetime.utcnow()
     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
 
+    async def info_cmd(self):
+        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
+        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+        embed.set_thumbnail(url=embed.footer.icon_url)
+        
+        embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)
+        embed.add_field(name="**__Random__**", value=cmds["random"],inline=False)
+        embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
+        embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
+        embed.add_field(name=" ", value=" ",inline=False)
+        embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
+        return(embed)
+
     @commands.command(aliases = ["Info"])
     async def info(self, ctx, message = None):
         embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
@@ -25,12 +38,7 @@ class Info_Cmd(commands.Cog):
         embed.set_thumbnail(url=embed.footer.icon_url)
         if message:
             if message in ["commands","cmds","Commands","Cmds"]:
-                embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)
-                embed.add_field(name="**__Random__**", value=cmds["random"],inline=False)
-                embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
-                embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
-                embed.add_field(name=" ", value=" ",inline=False)
-                embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
+                embed = self.info_cmd
                 await ctx.send(embed=embed)
             elif message in ["functions","Functions","funct"]:
                 embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
