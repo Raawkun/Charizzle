@@ -187,27 +187,6 @@ class On_Edit(commands.Cog):
                                     
                                 print("Explore: Ran away")
 
-        if before.author.id == 865576698137673739: ## Psycord
-            #if before.pinned == after.pinned:
-            if len(after.embeds) > 0:
-                print("An embed?")
-                log = self.client.get_channel(1221565506902032444)
-                emb = after.embeds[0]
-                await log.send(f"Original message: [Click here]({after.jump_url})\n",embed=emb)
-                if emb.title != None:
-                    #await log.send(f"Original message: [Click here]({after.jump_url})\n",embed=emb)
-                    if "a wild " in emb.title.lower():
-                        if "caught" in emb.title.lower():
-                            exit
-                        for reaction in emb.reactions:
-                            if reaction.me:
-                                exit
-                            else:
-                                emoji = '🔔'
-                                await after.add_reaction(emoji)
-                                print("wild spawn")
-                                await log.send(f"<@352224989367369729> Original message: [Click here]({after.jump_url})\n",embed=emb)
-                                await after.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")
 
 
 def setup(client):

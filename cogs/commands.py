@@ -57,10 +57,7 @@ class Coms(commands.Cog):
             desc += f"> * __Changelog__: {self.client.user.display_name}'s updates.\n"
             desc += f"> * Usage: ``changelog [set/remove] [channel id]``\n"
             desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarespawn [set/remove] [channel id]``\n"
-            desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
-            desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``"
-            desc += f"> * __Psycord Flex Channel__: Custom made starboard for Psycord. Usable with replying ``flex`` on a Psycord message.\n> * Usage: ``psyflex [set/remove] [channel id]``\n\n\n*Parameters in [] are mandatory.*"
-
+            
             _emb = await Auction_embed(self.client,title=title, description=desc).setup_embed()
 
             await ctx.reply(embed = _emb)
@@ -100,60 +97,8 @@ class Coms(commands.Cog):
                 await ctx.reply(f"I've removed PokéMeow rare spawn updates from this server.")
             else:
                 await ctx.reply()
-        elif defo == "psyflex":
-            if mode == "add" or mode == "set":
-                try:
-                    log = self.client.get_channel(channel)
-                    self.db.execute(f'UPDATE Admin SET PsyFlex = {channel} WHERE Server_ID = {guild.id}')
-                    self.db.commit()
-                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to receive Psycord flex messages. ``flex`` is the command to use for that.").setup_embed()
-                    await log.send(embed=_emb)
-                    await ctx.reply(f"Successfully set <#{args[0]}> as your flex channel for Psycord.")
-                except Exception as e:
-                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
-                    await ctx.reply("Please enter a Channel ID.")
-            elif mode == "remove" or mode == "delete":
-                self.db.execute(f'UPDATE Admin SET PsyFlex = NULL WHERE Server_ID = {guild.id}')
-                self.db.commit()
-                await ctx.reply(f"I've removed Psycord flex posts from this server.")
-            else:
-                await ctx.reply()
-        elif defo == "outbreaks":
-            if mode == "add" or mode == "set":
-                try:
-                    log = self.client.get_channel(channel)
-                    print(log)
-                    self.db.execute(f'UPDATE Admin SET PsyhuntFeed = {args[0]} WHERE Server_ID = {guild.id}')
-                    self.db.commit()
-                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up this channel to check for Psycord outbreaks.").setup_embed()
-                    await log.send(embed=_emb)
-                    await ctx.reply(f"Successfully set <#{args[0]}> as your Psycord outbreaks feed channel.")
-                except Exception as e:
-                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
-                    await ctx.reply("Wrong usage, please refer back to the command usage.")
-            elif mode == "role":
-                try:
-                    log = guild.get_role(channel)
-                    self.db.execute(f'UPDATE Admin SET PsyhuntRole = {args[0]} WHERE Server_ID = {guild.id}')
-                    self.db.commit()
-                    _emb = await Auction_embed(self.client, description=f"<@{ctx.author.id}> has set up <@&{args[0]}> to ping for Psycord spawns.").setup_embed()
-                    await ctx.reply(embed=_emb)
-                except Exception as e:
-                    asyncio.create_task(self.errorlog(e, ctx.author, guild, args[0]))
-                    await ctx.reply("Please enter a Channel ID.")
-            elif mode == "remove" or mode == "delete":
-                self.db.execute(f'UPDATE Admin SET PsyhuntFeed = NULL WHERE Server_ID = {guild.id}')
-                self.db.commit()
-                await ctx.reply(f"I've removed psycord outbreak pings from this server.")
-            else:
-                await ctx.reply()
-        else:
-            await ctx.reply()
+        
             
-    @commands.command()
-    async def boost(self, ctx):
-        await ctx.reply(f"__Here are the Psycord stat boosts:__\n> ✨Shiny - HP\n> 🌑Shadow - Attack\n> 🏵️ Noble - Speed\n> 💎 Crystal - Defense\n> 🌸 Pinkan - Special Defense\n> 💀 Dark - Special Attack")
-
     @commands.command()
     async def dm(self, ctx, userid, *args):
         try:
@@ -848,66 +793,6 @@ class Coms(commands.Cog):
             print(user)
         else:
             print(user)
-
-    @commands.command(aliases=["psy", "ph"])
-    async def psyhunt(self, ctx, mode:str = None, *args):
-        args = [s.lower() for s in args]
-        mon = " ".join(args)
-        #print(mon)
-        if mode == None:
-            await ctx.send("Placeholder.\nPlease use either ``list, add, delete, clear``.")
-        elif mode.lower() == "list":
-            hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
-            hunts = hunts.fetchall()
-            if hunts == None:
-                await ctx.reply("You're not hunting for any outbreaks.")
-            else:
-                desc = "you're currently hunting "
-                if len(hunts) == 1:
-                    desc += hunts[0][1]
-                    print(hunts[0][1].title())
-                else:
-                    print(hunts)
-                    i = 0
-                    for entry in hunts:
-                        if i == len(hunts):
-                            desc += f'{entry[1].title()}.'
-                        else:
-                            desc += f'{entry[1].title()}, '
-                        i += 1
-                await ctx.reply(f"{ctx.author.display_name }, {desc}")
-        elif mode.lower() == "add":
-            if mon == None:
-                await ctx.reply("Please specify a suitable Pokémon to hunt.")
-            else:
-                hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
-                hunts = hunts.fetchall()
-                i = 0
-                for entry in hunts:
-                    if mon in entry[1]:
-                        await ctx.reply("You're already looking for that Pokémon.")
-                        i = 1
-                if i == 0:
-                    self.db.execute(f'INSERT INTO PsyHunt (UserID, Mon, ServerID) VALUES ({ctx.author.id}, "{mon}", {ctx.guild.id})')
-                    self.db.commit()
-                    await ctx.reply(f"{ctx.author.display_name}, I've added {mon.title()} to your Outbreak hunting list.")
-        elif mode.lower() == "delete" or mode.lower() == "remove":
-            if mon == None:
-                await ctx.send("Please specify a suitable entry from your hunt list to delete.")
-            else:
-                hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE UserID = {ctx.author.id}')
-                hunts = hunts.fetchall()
-                for entry in hunts:
-                    if mon in entry[1]:
-                        self.db.execute(f'DELETE FROM PsyHunt WHERE Mon = "{mon}" AND UserID = {ctx.author.id}')
-                        self.db.commit()
-                        await ctx.send(f"{ctx.author.display_name}, {mon.title()} is now deleted from your Psycord huntlist.")
-        elif mode.lower() == "clear":
-            self.db.execute(f'DELETE FROM PsyHunt WHERE UserID = {ctx.author.id}')
-            self.db.commit()
-            await ctx.reply(f"Successfully cleared your Psycord outbreak hunts, {ctx.author.display_name}.")
-        else:
-            await ctx.reply("Wrong usage, either use ``list, add, delete, clear``.")
 
     @commands.check(Basic_checker().check_admin)
     @commands.command()

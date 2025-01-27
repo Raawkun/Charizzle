@@ -105,7 +105,6 @@ class Listener(commands.Cog):
         asyncio.create_task(Modules.averagetimer(self))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
         reminders = reminders.fetchall()
-        #asyncio.create_task(self._psycord_team())
         print(reminders)
         for row in reminders:
             channelid = row[8]
@@ -155,9 +154,7 @@ class Listener(commands.Cog):
         desc += f"> * __Changelog__: {self.client.user.display_name}'s updates.\n"
         desc += f"> * Usage: ``changelog [set/remove] [channel id]``\n"
         desc += f"> * __PokéMeow Rare Spawns__: A solid feed for Meow spawns.\n> * Usage: ``rarespawn [set/remove] [channel id]``\n"
-        desc += f"> * __Psycord Outbreaks & Wild Spawns__: If you have the outbreak feed from Psycord set up in your server, you can get pings when a certain Pokémon has an outbreak and there can be pings whenever a wild Pokémon gets spawned due to server activity.\n"
-        desc += f"> * Usage: ``outbreaks [add/remove] [channel id]`` for outbreak pings.\n> * Usage: ``outbreaks [role] [role id]``\n\n\n*Parameters in [] are mandatory.*"
-
+     
         _emb = disnake.Embed(title=f"{self.client.user.display_name}'s Setup",description=desc,colour=0x807ba6)
         _emb.set_footer(text=f'Provided by {self.client.user.display_name}',icon_url=f'{self.client.user.avatar}')
         text = f"Thanks for choosing <@{self.client.user.id}>!"
@@ -238,7 +235,7 @@ class Listener(commands.Cog):
         current_time = datetime.datetime.utcnow()
         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
         
-        if message.author.bot and message.author.id != meow and message.author.id != karp and message.author.id != 1209829454667317288 and message.author.id != 865576698137673739 and message.author.display_name != "Psycord Official #🚨・alerts":
+        if message.author.bot and message.author.id != meow and message.author.id != karp and message.author.id != 1209829454667317288 and message.author.id != 865576698137673739:
             return
             
         if "happy" in message.content.lower():
@@ -292,18 +289,6 @@ class Listener(commands.Cog):
                 emb = await Auction_embed(self.client, title="Welcome!", description=desc).setup_embed()
                 await message.channel.send(embed=emb)
 
-        if message.author.id == myself:
-            if "<@1161011648585285652> trainer add" in message.content.lower():
-                id = message.content.split("<@")[2]
-                id = id.split(">")[0]
-                role = message.guild.get_role(1199086710659760189)
-                id = message.guild.get_member(int(id))
-                await id.add_roles(role)
-                desc = f"Welcome to our Psycord team, <@{id.id}>!\n\nI'm {self.client.display_name} and I'm here to assist you a bit when playing Psycord!\n"
-                desc += f"\nFeel free to check out ``mInfo Psycord``or </info:1177325264351543447> and choose the tag 'Psycord'."
-                emb = await Auction_embed(self.client,description=desc).setup_embed()
-                await message.channel.send(embed=emb)
-
 
         database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {message.author.id}')
         database = database.fetchone()
@@ -322,70 +307,6 @@ class Listener(commands.Cog):
                     await message.add_reaction(emoji)
                     await message.add_reaction(emoji2)
 
-        ######## Psycord Outbreak Listener
-        outbreaks = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {message.guild.id}')
-        outbreaks = outbreaks.fetchone()
-        #print(outbreaks)
-        if message.channel.id == int(outbreaks[2]): #Feed channel
-            print("Feed channel")
-            print(f'{message.guild.name}')
-            if len(message.embeds) > 0:
-                emb = message.embeds[0]
-                if "Reported" in emb.title:
-                    mon = emb.description.split("**")[1]
-                    outb = mon.lower()
-                    hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}" AND ServerID = {message.guild.id}')
-                    hunts = hunts.fetchall()
-                    desc = f"An outbreak of **{mon}** started! Gather, fellow hunters! \n"
-                    for entry in hunts:
-                        desc += f'<@{entry[0]}> '
-                    await message.channel.send(desc)
-                    if "Prof. Oak" in emb.description:
-                        mon = emb.description.split("**")[7]
-                        print(mon)
-                        outb = mon.lower()
-                        hunts = self.db.execute(f'SELECT * FROM PsyHunt WHERE Mon = "{outb}" AND ServerID = {message.guild.id}')
-                        hunts = hunts.fetchall()
-                        desc = f"**{mon}** is the connected Pokémon for the current Outbreak! Let's purify! \n"
-                        for entry in hunts:
-                            desc += f'<@{entry[0]}> '
-                        await message.channel.send(desc)
-            if "Distortion" in emb.title:
-                if message.guild.id == 825813023716540426:
-                    place = emb.description.split("open in ")[1]
-                    place = place.split("!")[0]
-                    await message.channel.send(f"<@&1296833633700675737>\nA Space-Time Distortion opened up at **{place}** - good luck hunting!")
-        
-        if message.channel.id == 1199807047294795878: ##Psycord Channel
-            if message.author.id == 865576698137673739:  
-                log = self.client.get_channel(1221565506902032444)
-                #await log.send(f"{message}\n>>>\n{message.content}")
-                if len(message.embeds) > 0:
-                    emb = message.embeds[0]
-                    await log.send(embed=emb)
-                    if "a wild " in emb.title.lower():
-                        #print("wild spawn")
-                        await message.channel.send(f"A wild Pokémon spawned! <@&1217752336508784681>")   
-
-        ######## Straymon Checker
-        if message.channel.id == 825836268332122122:
-            if message.author.id == meow:
-                if len(message.embeds) > 0:
-                    _embed = message.embeds[0]
-                    if "PokeMeow Clans" in _embed.author.name:
-                        if "Welcome to" in _embed.description:
-                            if "Straymons" in _embed.description:
-                                if message.reference:
-                                    ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                                elif message.interaction:
-                                    ref_msg = message.interaction.author
-                                member = ref_msg.author
-                                target_role = 1203087005127548928
-                                target_role = message.guild.get_role(target_role)
-                                if target_role and target_role not in member.roles:
-                                    await member.add_roles(target_role)
-                                    await message.channel.send(f"Welcome, <@{member.id}>! I've added the <@&1203087005127548928> role to you", allowed_mentions = disnake.AllowedMentions(users = False, roles= False))
-                                
         ########Rare Spawn Listener 825958388349272106 #bot-testing channel
         receiver_channel = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {message.guild.id}') # rare-spawns
         receiver_channel = receiver_channel.fetchone()
