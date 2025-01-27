@@ -591,68 +591,6 @@ class Coms(commands.Cog):
 
         await ctx.send(file=disnake.File("pictures/victory.png"))
 
-    @commands.command()
-    async def flex(self, ctx, number: int = None):
-        flex = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {ctx.guild.id}')
-        flex = flex.fetchone()
-        if flex[10] != 0:
-            flexchannel = int(flex[10])
-            flexchannel = self.client.get_channel(flexchannel)
-            if number == None:
-                if ctx.message.reference:
-                    spawn = ctx.message.reference.message_id
-                    spawn = await ctx.channel.fetch_message(spawn)
-                    _embed = spawn.embeds[0]
-                    await ctx.message.reply(f"Done! Check <#{flexchannel.id}> to see the result!")
-                    await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
-                else:
-                    await ctx.send("Please answer to a message or use its ID.")
-            elif number != None:
-                spawn = await ctx.channel.fetch_message(number)
-                _embed = spawn.embeds[0]
-                await ctx.message.reply(f"Done! Check <#{flexchannel.id}> to see the result!")
-                await flexchannel.send(f'Original Message: [Click here]({spawn.jump_url})',embed=_embed)
-        else:
-            await ctx.message.reply("Your server has not yet setup a flex channel for psycord spawns. Please ask your server admin about it.")
-
-    @commands.command()
-    async def code(self, ctx, *lines):
-        code_channel = 1213234583949021255
-        channel = self.client.get_channel(code_channel)
-        cod = ' '.join(lines)
-        firsthalf = cod.split("Expires")[0]
-        secondhalf = cod.split(firsthalf)[1]
-        #print(firsthalf)
-        #print(secondhalf)
-        cod = firsthalf+"\n"+secondhalf
-        #print(cod)
-        if "Expires on:" in cod:
-            #print("Its in")
-            await ctx.message.delete()
-            oldmsg = self.db.execute(f'SELECT * FROM Admin')
-            oldmsg = oldmsg.fetchone()
-            try:
-                oldmsg = await channel.fetch_message(oldmsg[7])
-                await oldmsg.delete()
-            except Exception as e:
-                print(e)
-            _embed = await Auction_embed(self.client,title="**New Code**",description=cod).setup_embed()
-            _embed.set_author(name=f'{ctx.author.display_name} sponsored a code!',icon_url=ctx.author.display_avatar)
-            thx = await ctx.send(f"Thx for gifting a code! Check <#{code_channel}>!")
-            first = await channel.send(embed=_embed)
-            react = self.client.get_emoji(825954837384265770)
-            await first.add_reaction(react)
-            desc = "<:GengarHeart:1153729922620215349> To submit a code in here just use the command: ``mcode message``\n \n<:GengarHeart:1153729922620215349> React to the <:hype:825954837384265770> Emote if you've claimed the code!\n"
-            _membed = await Auction_embed(self.client,title="**How to donate:**",description=desc).setup_embed()
-            msg = await channel.send(embed=_membed)
-            id = msg.id
-            self.db.execute(f'UPDATE Admin SET Stickymsg = {id}')
-            self.db.commit()
-            await asyncio.sleep(5)
-            await thx.delete()
-        else:
-            await ctx.send("Please paste the whole message from ``/drops``.")
-
     @commands.check(Basic_checker().check_management)
     @commands.command()
     async def tester(self, ctx, number: int):
