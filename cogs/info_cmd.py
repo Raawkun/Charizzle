@@ -38,7 +38,7 @@ class Info_Cmd(commands.Cog):
         embed.set_thumbnail(url=embed.footer.icon_url)
         if message:
             if message in ["commands","cmds","Commands","Cmds"]:
-                embed = self.info_cmd()
+                embed = await self.info_cmd()
                 await ctx.send(embed=embed)
             elif message in ["functions","Functions","funct"]:
                 embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
