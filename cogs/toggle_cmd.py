@@ -35,6 +35,47 @@ class Remd_Buttons(disnake.ui.Button):
         except Exception as e:
             print(e)
 
+class RemButton(disnake.ui.Button):
+    def __init__(self, user_id,entry):
+        super().__init__(label=f"{entry}", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}")
+        self.user_id = user_id
+        self.entry = entry
+        self.db = connect("database.db")
+
+    async def callback(self, interaction: disnake.MessageInteraction):
+        try:
+            await interaction.response.defer()
+            if interaction.user.id != self.user_id:
+                exit
+            
+            if interaction.component.custom_id == self.custom_id:
+                view = ReminderView(self.user_id)
+                for item in view.children:
+                    if isinstance(item, disnake.ui.Button):
+                        if item.custom_id == self.custom_id:
+                            if item.style == disnake.ButtonStyle.green:
+                                item.style = disnake.ButtonStyle.red
+                                self.db.execute(f"UPDATE Toggle SET {self.entry} == 0 WHERE User_ID = {self.user_id}")
+                                if self.entry == "Linked":
+                                    msg = f"Deactivated linked slash commands in the notification."
+                                elif self.entry == "Emotes":
+                                    msg = f"Deactivated emote-only notifications."
+                                else:
+                                    msg = f"Deactivated that notification."
+                            else:
+                                item.style = disnake.ButtonStyle.green
+                                self.db.execute(f"UPDATE Toggle SET {self.entry} == 1 WHERE User_ID = {self.user_id}")
+                                if self.entry == "Linked":
+                                    msg = f"Activated linked slash commands in the notification."
+                                elif self.entry == "Emotes":
+                                    msg = f"Activated emote-only notifications."
+                                else:
+                                    msg = f"Activated that notification."
+                            self.db.commit()
+            await interaction.edit_original_response(view=view)
+        except Exception as e:
+            print(e)
+
 #Function Buttons
 class Fnct_Buttons(disnake.ui.Button):
     def __init__(self, user_id):
@@ -63,7 +104,7 @@ class Fnct_Buttons(disnake.ui.Button):
         except Exception as e:
             print(e)
             
-class RazzButton(disnake.ui.Button):
+class FuncButton(disnake.ui.Button):
     def __init__(self, user_id,entry):
         super().__init__(label=f"{entry}", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}")
         self.user_id = user_id
@@ -77,7 +118,7 @@ class RazzButton(disnake.ui.Button):
                 exit
             
             if interaction.component.custom_id == self.custom_id:
-                view = disnake.ui.View.from_message(interaction.message)
+                view = Fnct_Buttons(self.user_id)
                 for item in view.children:
                     if isinstance(item, disnake.ui.Button):
                         if item.custom_id == self.custom_id:
@@ -124,14 +165,14 @@ class ReminderView(disnake.ui.View):
         super().__init__()
         self.add_item(BackButton(user_id))
         for entry in reminders:
-            self.add_item(RazzButton(user_id,entry))
+            self.add_item(RemButton(user_id,entry))
 
 class FunctionView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
         self.add_item(BackButton(user_id))
         for entry in functions:
-            self.add_item(RazzButton(user_id,entry))
+            self.add_item(FuncButton(user_id,entry))
 
 class ToggleView(disnake.ui.View):
     def __init__(self, user_id):
