@@ -30,7 +30,7 @@ class Remd_Buttons(disnake.ui.Button):
                     else:
                         item.style = disnake.ButtonStyle.red
                     i+=1
-        await interaction.response.edit_message(view=view)
+        await interaction.edit_original_response(view=view)
 
 #Function Buttons
 class Fnct_Buttons(disnake.ui.Button):
@@ -55,7 +55,7 @@ class Fnct_Buttons(disnake.ui.Button):
                     else:
                         item.style = disnake.ButtonStyle.red
                     i+=1
-        await interaction.response.edit_message(view=view)
+        await interaction.edit_original_response(view=view)
             
 class RazzButton(disnake.ui.Button):
     def __init__(self, user_id,entry):
