@@ -42,7 +42,7 @@ class CmdButton(disnake.ui.Button):
             exit
         
         msg = await info_cmd(self, interaction)
-        await interaction.response.edit_message(msg)
+        await interaction.response.edit_message(embed=msg)
 
 class FnctButton(disnake.ui.Button):
     def __init__(self, user_id):
