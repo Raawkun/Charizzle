@@ -100,7 +100,7 @@ class RazzButton(disnake.ui.Button):
                                 else:
                                     msg = f"Activated that notification."
                             self.db.commit()
-            await interaction.edit_original_response(msg, view=view)
+            await interaction.edit_original_response(view=view)
         except Exception as e:
             print(e)
 
