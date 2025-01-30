@@ -15,22 +15,25 @@ class Remd_Buttons(disnake.ui.Button):
         self.db = connect("database.db")
 
     async def callback(self, interaction:disnake.MessageInteraction):
-        await interaction.response.defer()
-        if interaction.user.id != self.user_id:
-            exit
-        data = self.db.execute(f"SELECT ToggleSpawn,ToggleFish,ToggleBattle,ToggleQuest,ToggleQuestTimer,ToggleOthers FROM Toggle WHERE User_ID = {self.user_id}")
-        data = data.fetchone()
-        view = ReminderView(self.user_id)
-        i = 0
-        for item in view.children:
-            if isinstance(item, disnake.ui.Button):
-                if item.label in reminders:
-                    if data[i] == 1:
-                        item.style = disnake.ButtonStyle.green
-                    else:
-                        item.style = disnake.ButtonStyle.red
-                    i+=1
-        await interaction.edit_original_response(view=view)
+        try:
+            await interaction.response.defer()
+            if interaction.user.id != self.user_id:
+                exit
+            data = self.db.execute(f"SELECT ToggleSpawn,ToggleFish,ToggleBattle,ToggleQuest,ToggleQuestTimer,ToggleOthers FROM Toggle WHERE User_ID = {self.user_id}")
+            data = data.fetchone()
+            view = ReminderView(self.user_id)
+            i = 0
+            for item in view.children:
+                if isinstance(item, disnake.ui.Button):
+                    if item.label in reminders:
+                        if data[i] == 1:
+                            item.style = disnake.ButtonStyle.green
+                        else:
+                            item.style = disnake.ButtonStyle.red
+                        i+=1
+            await interaction.edit_original_response(view=view)
+        except Exception as e:
+            print(e)
 
 #Function Buttons
 class Fnct_Buttons(disnake.ui.Button):
@@ -40,22 +43,25 @@ class Fnct_Buttons(disnake.ui.Button):
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
-        await interaction.response.defer()
-        if interaction.user.id != self.user_id:
-            exit
-        data = self.db.execute(f"SELECT Grazz, Repel, Starter, Linked, Emotes, Ping FROM Toggle WHERE User_ID = {self.user_id}")
-        data = data.fetchone()
-        view = FunctionView(self.user_id)
-        i = 0
-        for item in view.children:
-            if isinstance(item, disnake.ui.Button):
-                if item.label in functions:
-                    if data[i] == 1:
-                        item.style = disnake.ButtonStyle.green
-                    else:
-                        item.style = disnake.ButtonStyle.red
-                    i+=1
-        await interaction.edit_original_response(view=view)
+        try:
+            await interaction.response.defer()
+            if interaction.user.id != self.user_id:
+                exit
+            data = self.db.execute(f"SELECT Grazz, Repel, Starter, Linked, Emotes, Ping FROM Toggle WHERE User_ID = {self.user_id}")
+            data = data.fetchone()
+            view = FunctionView(self.user_id)
+            i = 0
+            for item in view.children:
+                if isinstance(item, disnake.ui.Button):
+                    if item.label in functions:
+                        if data[i] == 1:
+                            item.style = disnake.ButtonStyle.green
+                        else:
+                            item.style = disnake.ButtonStyle.red
+                        i+=1
+            await interaction.edit_original_response(view=view)
+        except Exception as e:
+            print(e)
             
 class RazzButton(disnake.ui.Button):
     def __init__(self, user_id,entry):
@@ -65,35 +71,38 @@ class RazzButton(disnake.ui.Button):
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
-        await interaction.response.defer()
-        if interaction.user.id != self.user_id:
-            exit
-        
-        if interaction.component.custom_id == self.custom_id:
-            view = disnake.ui.View.from_message(interaction.message)
-            for item in view.children:
-                if isinstance(item, disnake.ui.Button):
-                    if item.custom_id == self.custom_id:
-                        if item.style == disnake.ButtonStyle.green:
-                            item.style = disnake.ButtonStyle.red
-                            self.db.execute(f"UPDATE Toggle SET {self.entry} == 0 WHERE User_ID = {self.user_id}")
-                            if self.entry == "Linked":
-                                msg = f"Deactivated linked slash commands in the notification."
-                            elif self.entry == "Emotes":
-                                msg = f"Deactivated emote-only notifications."
+        try:
+            await interaction.response.defer()
+            if interaction.user.id != self.user_id:
+                exit
+            
+            if interaction.component.custom_id == self.custom_id:
+                view = disnake.ui.View.from_message(interaction.message)
+                for item in view.children:
+                    if isinstance(item, disnake.ui.Button):
+                        if item.custom_id == self.custom_id:
+                            if item.style == disnake.ButtonStyle.green:
+                                item.style = disnake.ButtonStyle.red
+                                self.db.execute(f"UPDATE Toggle SET {self.entry} == 0 WHERE User_ID = {self.user_id}")
+                                if self.entry == "Linked":
+                                    msg = f"Deactivated linked slash commands in the notification."
+                                elif self.entry == "Emotes":
+                                    msg = f"Deactivated emote-only notifications."
+                                else:
+                                    msg = f"Deactivated that notification."
                             else:
-                                msg = f"Deactivated that notification."
-                        else:
-                            item.style = disnake.ButtonStyle.green
-                            self.db.execute(f"UPDATE Toggle SET {self.entry} == 1 WHERE User_ID = {self.user_id}")
-                            if self.entry == "Linked":
-                                msg = f"Activated linked slash commands in the notification."
-                            elif self.entry == "Emotes":
-                                msg = f"Activated emote-only notifications."
-                            else:
-                                msg = f"Activated that notification."
-                        self.db.commit()
-        await interaction.edit_original_response(msg, view=view)
+                                item.style = disnake.ButtonStyle.green
+                                self.db.execute(f"UPDATE Toggle SET {self.entry} == 1 WHERE User_ID = {self.user_id}")
+                                if self.entry == "Linked":
+                                    msg = f"Activated linked slash commands in the notification."
+                                elif self.entry == "Emotes":
+                                    msg = f"Activated emote-only notifications."
+                                else:
+                                    msg = f"Activated that notification."
+                            self.db.commit()
+            await interaction.edit_original_response(msg, view=view)
+        except Exception as e:
+            print(e)
 
 class BackButton(disnake.ui.Button):
     def __init__(self,user_id):
@@ -104,8 +113,11 @@ class BackButton(disnake.ui.Button):
         await interaction.response.defer()
         if interaction.user.id != self.user_id:
             exit
-        view = ToggleView(self.user_id)
-        await interaction.edit_original_response(view=view)
+        try:
+            view = ToggleView(self.user_id)
+            await interaction.edit_original_response(view=view)
+        except Exception as e:
+            print(e)
 
 class ReminderView(disnake.ui.View):
     def __init__(self, user_id):
