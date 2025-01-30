@@ -116,11 +116,19 @@ class FuncButton(disnake.ui.Button):
             await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
-            
+            data = self.db.execute(f"SELECT Grazz, Repel, Starter, Linked, Emotes, Ping FROM Toggle WHERE User_ID = {self.user_id}")
+            data = data.fetchone()
+            i=0
             if interaction.component.custom_id == self.custom_id:
                 view = FunctionView(self.user_id)
                 for item in view.children:
                     if isinstance(item, disnake.ui.Button):
+                        if item.label in functions:
+                            if data[i] == 1:
+                                item.style = disnake.ButtonStyle.green
+                            else:
+                                item.style = disnake.ButtonStyle.red
+                            i+=1
                         if item.custom_id == self.custom_id:
                             if item.style == disnake.ButtonStyle.green:
                                 item.style = disnake.ButtonStyle.red
