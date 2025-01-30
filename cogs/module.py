@@ -8,7 +8,8 @@ from sqlite3 import connect
 
 import pytz
 from  utility.rarity_db import poke_rarity, embed_color
-from utility.embed import Custom_embed
+from utility.embed import Custom_embed, Auction_embed
+from utility.info_dict import cmds,functions
 from utility.drop_chance import drop_pos, rare_calc, ball_used_low, ball_used_high
 import random
 from utility.all_checks import Basic_checker
@@ -117,6 +118,30 @@ class Modules(commands.Cog):
             await asyncio.sleep(time_until.total_seconds())
             await asyncio.create_task(Modules.resetaverage(self))
 
+    async def info_cmd(self):
+        embed = await Custom_embed(self,description=f'{self.client.user.display_name}'+" overview",colour=embed_color).setup_embed()
+        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+        embed.set_thumbnail(url=embed.footer.icon_url)
+        
+        embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)
+        embed.add_field(name="**__Random__**", value=cmds["random"],inline=False)
+        embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
+        embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
+        embed.add_field(name=" ", value=" ",inline=False)
+        embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
+        return(embed)
+    
+    async def info_funct(self):
+        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
+        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+        embed.set_thumbnail(url=embed.footer.icon_url)
+        
+        embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
+        embed.add_field(name="**__Rare Spawns__**",value=functions["rare"],inline=False)
+        embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
+        embed.add_field(name=" ", value=" ",inline=False)
+        embed.add_field(name="Miscellaneous Functions",value=functions["misc"], inline=False)
+        return(embed)
  
 def setup(client):
     client.add_cog(Modules(client))

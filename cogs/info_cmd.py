@@ -6,6 +6,7 @@ import datetime
 from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, buyin
 from utility.info_dict import embed_color, cmds, functions, info
+from cogs.module import Modules
 
 class CmdButton(disnake.ui.Button):
     def __init__(self, user_id):
@@ -17,7 +18,7 @@ class CmdButton(disnake.ui.Button):
         if interaction.user.id != self.user_id:
             exit
 
-        msg = await asyncio.create_task(Info_Cmd.info_cmd(self))
+        msg = await asyncio.create_task(Modules.info_cmd(self))
         await interaction.response.edit_message(msg)
 
 class FnctButton(disnake.ui.Button):
@@ -29,7 +30,7 @@ class FnctButton(disnake.ui.Button):
         
         if interaction.user.id != interaction.message.interaction.author.id:
             exit
-        msg = await asyncio.create_task(Info_Cmd.info_funct(self))
+        msg = await asyncio.create_task(Modules.info_funct(self))
         await interaction.response.edit_message(msg)
 
 class GuessView(disnake.ui.View):
@@ -47,31 +48,6 @@ class Info_Cmd(commands.Cog):
     
     current_time = datetime.datetime.utcnow()
     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-
-    async def info_cmd(self):
-        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
-        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
-        embed.set_thumbnail(url=embed.footer.icon_url)
-        
-        embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)
-        embed.add_field(name="**__Random__**", value=cmds["random"],inline=False)
-        embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
-        embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
-        embed.add_field(name=" ", value=" ",inline=False)
-        embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
-        return(embed)
-    
-    async def info_funct(self):
-        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
-        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
-        embed.set_thumbnail(url=embed.footer.icon_url)
-        
-        embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
-        embed.add_field(name="**__Rare Spawns__**",value=functions["rare"],inline=False)
-        embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
-        embed.add_field(name=" ", value=" ",inline=False)
-        embed.add_field(name="Miscellaneous Functions",value=functions["misc"], inline=False)
-        return(embed)
 
         
 
