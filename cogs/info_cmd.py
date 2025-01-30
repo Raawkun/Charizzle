@@ -5,7 +5,7 @@ from disnake.ext import commands
 import datetime
 from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, buyin
-from utility.info_dict import embed_color, cmds, functions, events, info
+from utility.info_dict import embed_color, cmds, functions, info
 
 class CmdButton(disnake.ui.Button):
     def __init__(self, user_id, active_games):
