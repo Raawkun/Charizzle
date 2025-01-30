@@ -51,7 +51,7 @@ class FnctButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction):
         
-        if interaction.user.id != self.user.id:
+        if interaction.user.id != self.user_id:
             exit
         msg = await info_funct(self,interaction)
         await interaction.response.edit_message(embed=msg)
