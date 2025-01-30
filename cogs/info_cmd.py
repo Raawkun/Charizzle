@@ -7,13 +7,45 @@ from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, buyin
 from utility.info_dict import embed_color, cmds, functions, events, info
 
+class CmdButton(disnake.ui.Button):
+    def __init__(self, user_id, active_games):
+        super().__init__(label="Make Your Guess", style=disnake.ButtonStyle.primary, custom_id=f"vault_button_{user_id}")
+        self.user_id = user_id
+        self.active_games = active_games
+
+    async def callback(self, interaction: disnake.MessageInteraction):
+        
+        if interaction.user.id != interaction.message.interaction.author.id:
+            exit
+
+        msg = await asyncio.create_task(Info_Cmd.info_cmd())
+        await interaction.response.edit_message(msg)
+
+class FnctButton(disnake.ui.Button):
+    def __init__(self, user_id, active_games):
+        super().__init__(label="Make Your Guess", style=disnake.ButtonStyle.primary, custom_id=f"vault_button_{user_id}")
+        self.user_id = user_id
+        self.active_games = active_games
+
+    async def callback(self, interaction: disnake.MessageInteraction):
+        
+        if interaction.user.id != interaction.message.interaction.author.id:
+            exit
+        msg = await asyncio.create_task(Info_Cmd.info_funct())
+        await interaction.response.edit_message(msg)
+
+class GuessView(disnake.ui.View):
+    def __init__(self, user_id):
+        super().__init__()
+        self.add_item(CmdButton(user_id))
+        self.add_item(FnctButton(user_id))
+
 class Info_Cmd(commands.Cog):
 
     def __init__(self, client):
         self.client = client
         self.db = connect("database.db")
 
-    
     
     current_time = datetime.datetime.utcnow()
     timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -30,6 +62,20 @@ class Info_Cmd(commands.Cog):
         embed.add_field(name=" ", value=" ",inline=False)
         embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
         return(embed)
+    
+    async def info_funct(self):
+        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
+        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+        embed.set_thumbnail(url=embed.footer.icon_url)
+        
+        embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
+        embed.add_field(name="**__Rare Spawns__**",value=functions["rare"],inline=False)
+        embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
+        embed.add_field(name=" ", value=" ",inline=False)
+        embed.add_field(name="Miscellaneous Functions",value=functions["misc"], inline=False)
+        return(embed)
+
+        
 
     @commands.command(aliases = ["Info"])
     async def info(self, ctx, message = None):
@@ -41,23 +87,11 @@ class Info_Cmd(commands.Cog):
                 embed = await self.info_cmd()
                 await ctx.send(embed=embed)
             elif message in ["functions","Functions","funct"]:
-                embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
-                embed.add_field(name="**__Rare Spawns__**",value=functions["rare"],inline=False)
-                embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
-                embed.add_field(name=" ", value=" ",inline=False)
-                embed.add_field(name="Miscellanous Functions",value=functions["misc"], inline=False)
-                await ctx.send(embed=embed)
-            elif message in ["event", "events","ev","Event","Events", "Ev"]:
-                embed.add_field(name="**__Events__**",value=events["event"],inline=False)
-                embed.add_field(name="**__Possible Activites__**",value=events["active"],inline=False)
-                embed.add_field(name="**__Point System__**",value=events["points"],inline=False)
-                embed.add_field(name="**__Feeding__**",value=events["feed"],inline=False)
-                embed.add_field(name=" ", value=" ",inline=False)
-                embed.add_field(name="Commands",value=events["cmd"])
+                embed = await self.info_funct()
                 await ctx.send(embed=embed)
         else:
             embed.add_field(name="**__Info Panel__**",value=info["text"])
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed,view=GuessView(ctx.author.id))
         
 
 
