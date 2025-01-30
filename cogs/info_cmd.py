@@ -50,7 +50,7 @@ class HomeButton(disnake.ui.Button):
         msg = await info_home(self, interaction)
 
         if interaction.component.custom_id == self.custom_id:
-            view = disnake.ui.View.from_message(interaction.message)
+            view = GuessView(self.user_id)
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
@@ -72,7 +72,7 @@ class CmdButton(disnake.ui.Button):
         msg = await info_cmd(self, interaction)
 
         if interaction.component.custom_id == self.custom_id:
-            view = disnake.ui.View.from_message(interaction.message)
+            view = GuessView(self.user_id)
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
@@ -95,7 +95,7 @@ class FnctButton(disnake.ui.Button):
         msg = await info_funct(self,interaction)
 
         if interaction.component.custom_id == self.custom_id:
-            view = disnake.ui.View.from_message(interaction.message)
+            view = GuessView(self.user_id)
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
