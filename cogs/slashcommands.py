@@ -277,8 +277,7 @@ class SlashComs(commands.Cog):
                 type=3,
                 choices=[
                     OptionChoice("Commands", "cmnds"),
-                    OptionChoice("Functions", "functions"),
-                    OptionChoice("Event", "event")
+                    OptionChoice("Functions", "functions")
                 ],
                 required=False
             ), ],
@@ -302,14 +301,6 @@ class SlashComs(commands.Cog):
             embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
             embed.add_field(name=" ", value=" ",inline=False)
             embed.add_field(name="Miscellanous Functions",value=functions["misc"], inline=False)
-            await ctx.send(embed=embed)
-        elif switch == "event":
-            embed.add_field(name="**__Events__**",value=events["event"],inline=False)
-            embed.add_field(name="**__Possible Activites__**",value=events["active"],inline=False)
-            embed.add_field(name="**__Point System__**",value=events["points"],inline=False)
-            embed.add_field(name="**__Feeding__**",value=events["feed"],inline=False)
-            embed.add_field(name=" ", value=" ",inline=False)
-            embed.add_field(name="Commands",value=events["cmd"])
             await ctx.send(embed=embed)
         else:
             embed.add_field(name="**__Info Panel__**",value=info["text"])
