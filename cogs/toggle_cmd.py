@@ -203,7 +203,7 @@ class Toggle_Cmd(commands.Cog):
                 embed.add_field(name="Other Commands: ", inline=True, value=value_other)
                 embed.set_thumbnail(footer_icon)
                 await ctx.send(embed=embed,view=ToggleView(user_id=ctx.author.id))
-        except Exception as e:
+        except Exception.with_traceback as e:
             print(e)
 
 def setup(client):
