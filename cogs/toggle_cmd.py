@@ -55,7 +55,7 @@ class Fnct_Buttons(disnake.ui.Button):
             
 class RazzButton(disnake.ui.Button):
     def __init__(self, user_id,entry):
-        super().__init__(label="Home", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}")
+        super().__init__(label=f"{entry}", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}")
         self.user_id = user_id
         self.entry = entry
         self.db = connect("database.db")
@@ -90,15 +90,28 @@ class RazzButton(disnake.ui.Button):
                         self.db.commit()
         await interaction.response.edit_message(msg,view=view)
 
+class BackButton(disnake.ui.Button):
+    def __init__(self,user_id):
+        super().__init__(label="Back", style=disnake.ButtonStyle.primary,custom_id=f"back_button_{user_id}")
+        self.user_id = user_id
+
+    async def callback(self, interaction: disnake.MessageInteraction):
+        if interaction.user.id != self.user_id:
+            exit
+        view = ToggleView(self.user_id)
+        await interaction.response.edit_message(view=view)
+
 class ReminderView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
+        self.add_item(BackButton(user_id))
         for entry in reminders:
             self.add_item(RazzButton(user_id,entry))
 
 class FunctionView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
+        self.add_item(BackButton(user_id))
         for entry in functions:
             self.add_item(RazzButton(user_id,entry))
 
