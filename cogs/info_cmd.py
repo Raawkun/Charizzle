@@ -7,7 +7,7 @@ from utility.embed import Custom_embed
 from utility.info_dict import embed_color, cmds, functions, info
 
 async def info_cmd(self, ctx):
-    embed = await Custom_embed(self,description=f'{ctx.me.display_name}'+" overview",colour=embed_color).setup_embed()
+    embed = disnake.Embed(description=f'{ctx.me.display_name}'+" overview",colour=embed_color)
     embed.set_footer(text=f'{ctx.me.display_name}', icon_url=f'{ctx.me.avatar}')
     embed.set_thumbnail(url=embed.footer.icon_url)
     
