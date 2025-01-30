@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlite3 import connect
 import disnake
 
-from cogs import commands
+from disnake.ext import commands
 
 toggles = ["Grazz","Repel","Starter","Linked","Emotes","ToggleSpawn","ToggleFish","ToggleBattle","ToggleQuest","ToggleQuestTimer","ToggleOthers","Ping"]
 functions = ["Grazz", "Repel","Starter","Linked","Emotes","Ping"]
