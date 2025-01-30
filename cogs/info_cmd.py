@@ -17,7 +17,7 @@ class CmdButton(disnake.ui.Button):
         if interaction.user.id != self.user_id:
             exit
 
-        msg = await asyncio.create_task(Info_Cmd.info_cmd())
+        msg = await asyncio.create_task(Info_Cmd.info_cmd(self))
         await interaction.response.edit_message(msg)
 
 class FnctButton(disnake.ui.Button):
@@ -29,7 +29,7 @@ class FnctButton(disnake.ui.Button):
         
         if interaction.user.id != interaction.message.interaction.author.id:
             exit
-        msg = await asyncio.create_task(Info_Cmd.info_funct())
+        msg = await asyncio.create_task(Info_Cmd.info_funct(self))
         await interaction.response.edit_message(msg)
 
 class GuessView(disnake.ui.View):
