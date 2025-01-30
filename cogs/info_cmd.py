@@ -9,7 +9,7 @@ from utility.info_dict import embed_color, cmds, functions, info
 
 class CmdButton(disnake.ui.Button):
     def __init__(self, user_id):
-        super().__init__(label="Commands", style=disnake.ButtonStyle.primary, custom_id=f"vault_button_{user_id}")
+        super().__init__(label="Commands", style=disnake.ButtonStyle.primary, custom_id=f"cmd_button_{user_id}")
         self.user_id = user_id
 
     async def callback(self, interaction: disnake.MessageInteraction):
@@ -22,7 +22,7 @@ class CmdButton(disnake.ui.Button):
 
 class FnctButton(disnake.ui.Button):
     def __init__(self, user_id):
-        super().__init__(label="Functions", style=disnake.ButtonStyle.primary, custom_id=f"vault_button_{user_id}")
+        super().__init__(label="Functions", style=disnake.ButtonStyle.primary, custom_id=f"fnct_button_{user_id}")
         self.user_id = user_id
 
     async def callback(self, interaction: disnake.MessageInteraction):
