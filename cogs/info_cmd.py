@@ -20,8 +20,8 @@ async def info_cmd(self, ctx):
     return(embed)
 
 async def info_funct(self,ctx):
-    embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
-    embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+    embed = disnake.Embed(description=f'{ctx.me.display_name}'+" overview",colour=embed_color)
+    embed.set_footer(text=f'{ctx.me.display_name}', icon_url=f'{ctx.me.avatar}')
     embed.set_thumbnail(url=embed.footer.icon_url)
     
     embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
