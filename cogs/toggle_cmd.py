@@ -23,11 +23,12 @@ class Remd_Buttons(disnake.ui.Button):
         i = 0
         for item in view.children:
             if isinstance(item, disnake.ui.Button):
-                if data[i] == 1:
-                    item.style = disnake.ButtonStyle.green
-                else:
-                    item.style = disnake.ButtonStyle.red
-                i+=1
+                if item.label in reminders:
+                    if data[i] == 1:
+                        item.style = disnake.ButtonStyle.green
+                    else:
+                        item.style = disnake.ButtonStyle.red
+                    i+=1
         await interaction.response.edit_message(view=view)
 
 #Function Buttons
@@ -46,11 +47,12 @@ class Fnct_Buttons(disnake.ui.Button):
         i = 0
         for item in view.children:
             if isinstance(item, disnake.ui.Button):
-                if data[i] == 1:
-                    item.style = disnake.ButtonStyle.green
-                else:
-                    item.style = disnake.ButtonStyle.red
-                i+=1
+                if item.label in functions:
+                    if data[i] == 1:
+                        item.style = disnake.ButtonStyle.green
+                    else:
+                        item.style = disnake.ButtonStyle.red
+                    i+=1
         await interaction.response.edit_message(view=view)
             
 class RazzButton(disnake.ui.Button):
