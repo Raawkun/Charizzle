@@ -65,6 +65,7 @@ class RazzButton(disnake.ui.Button):
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
+        await interaction.response.defer()
         if interaction.user.id != self.user_id:
             exit
         
@@ -92,7 +93,7 @@ class RazzButton(disnake.ui.Button):
                             else:
                                 msg = f"Activated that notification."
                         self.db.commit()
-        await interaction.edit_original_message(msg, view=view)
+        await interaction.edit_original_response(msg, view=view)
 
 class BackButton(disnake.ui.Button):
     def __init__(self,user_id):
