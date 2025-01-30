@@ -84,15 +84,23 @@ class Info_Cmd(commands.Cog):
         embed.set_thumbnail(url=embed.footer.icon_url)
         if message:
             if message in ["commands","cmds","Commands","Cmds"]:
-                embed = await self.info_cmd()
-                await ctx.send(embed=embed)
+                try:
+                    embed = await self.info_cmd()
+                    await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+                except Exception as e:
+                    print(e)
             elif message in ["functions","Functions","funct"]:
-                embed = await self.info_funct()
-                await ctx.send(embed=embed)
+                try:
+                    embed = await self.info_funct()
+                    await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+                except Exception as e:
+                    print(e)
         else:
-            embed.add_field(name="**__Info Panel__**",value=info["text"])
-            await ctx.send(embed=embed,view=GuessView(ctx.author.id))
-        
+            try:
+                embed.add_field(name="**__Info Panel__**",value=info["text"])
+                await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+            except Exception as e:
+                print(e)
 
 
 def setup(client):
