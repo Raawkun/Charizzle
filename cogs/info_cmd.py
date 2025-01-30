@@ -41,7 +41,7 @@ class CmdButton(disnake.ui.Button):
         if interaction.user.id != self.user_id:
             exit
         
-        msg = await asyncio.create_task(info_cmd(self,interaction))
+        msg = await info_cmd(self, interaction)
         await interaction.response.edit_message(msg)
 
 class FnctButton(disnake.ui.Button):
@@ -49,7 +49,7 @@ class FnctButton(disnake.ui.Button):
         super().__init__(label="Functions", style=disnake.ButtonStyle.primary, custom_id=f"fnct_button_{user_id}")
         self.user_id = user_id
 
-    async def callback(self, interaction: disnake.MessageInteraction, ctx):
+    async def callback(self, interaction: disnake.MessageInteraction):
         
         if interaction.user.id != interaction.message.interaction.author.id:
             exit
