@@ -54,9 +54,10 @@ class HomeButton(disnake.ui.Button):
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
-                        self.disabled = True
+                        item.style = disnake.ButtonStyle.gray
                     else:
                         item.disabled = False
+                        item.style = disnake.ButtonStyle.primary
         await interaction.response.edit_message(embed=msg,view=view)
 class CmdButton(disnake.ui.Button):
     def __init__(self, user_id):
@@ -75,9 +76,11 @@ class CmdButton(disnake.ui.Button):
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
-                        self.disabled = True
+                        item.disabled = True
+                        item.style = disnake.ButtonStyle.gray
                     else:
                         item.disabled = False
+                        item.style = disnake.ButtonStyle.primary
         await interaction.response.edit_message(embed=msg)
 
 class FnctButton(disnake.ui.Button):
@@ -96,9 +99,10 @@ class FnctButton(disnake.ui.Button):
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
-                        self.disabled = True
+                        item.style = disnake.ButtonStyle.gray
                     else:
                         item.disabled = False
+                        item.style = disnake.ButtonStyle.primary
         await interaction.response.edit_message(embed=msg)
 
 class GuessView(disnake.ui.View):
