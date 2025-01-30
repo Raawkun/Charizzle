@@ -24,7 +24,7 @@ async def info_cmd(self, ctx):
     embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
     embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
     embed.add_field(name=" ", value=" ",inline=False)
-    embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
+    embed.add_field(name="Miscellaneous Cmds", value=cmds["misc"],inline=False)
     return(embed)
 
 async def info_funct(self,ctx):
@@ -48,7 +48,16 @@ class HomeButton(disnake.ui.Button):
         if interaction.user.id != self.user_id:
             exit
         msg = await info_home(self, interaction)
-        await interaction.response.edit_message(embed=msg)
+
+        if interaction.component.custom_id == self.custom_id:
+            view = disnake.ui.View.from_message(interaction.message)
+            for item in view.children:
+                if isinstance(item, disnake.ui.Button):
+                    if item.custom_id == self.custom_id:
+                        self.disabled = True
+                    else:
+                        item.disabled = False
+        await interaction.response.edit_message(embed=msg,view=view)
 class CmdButton(disnake.ui.Button):
     def __init__(self, user_id):
         super().__init__(label="Commands", style=disnake.ButtonStyle.primary, custom_id=f"cmd_button_{user_id}")
@@ -60,6 +69,15 @@ class CmdButton(disnake.ui.Button):
             exit
         
         msg = await info_cmd(self, interaction)
+
+        if interaction.component.custom_id == self.custom_id:
+            view = disnake.ui.View.from_message(interaction.message)
+            for item in view.children:
+                if isinstance(item, disnake.ui.Button):
+                    if item.custom_id == self.custom_id:
+                        self.disabled = True
+                    else:
+                        item.disabled = False
         await interaction.response.edit_message(embed=msg)
 
 class FnctButton(disnake.ui.Button):
@@ -72,6 +90,15 @@ class FnctButton(disnake.ui.Button):
         if interaction.user.id != self.user_id:
             exit
         msg = await info_funct(self,interaction)
+
+        if interaction.component.custom_id == self.custom_id:
+            view = disnake.ui.View.from_message(interaction.message)
+            for item in view.children:
+                if isinstance(item, disnake.ui.Button):
+                    if item.custom_id == self.custom_id:
+                        self.disabled = True
+                    else:
+                        item.disabled = False
         await interaction.response.edit_message(embed=msg)
 
 class GuessView(disnake.ui.View):
