@@ -90,7 +90,7 @@ class RazzButton(disnake.ui.Button):
                             else:
                                 msg = f"Activated that notification."
                         self.db.commit()
-        await interaction.response.edit_message(msg,view=view)
+        await interaction.response.edit_message(view=view)
 
 class BackButton(disnake.ui.Button):
     def __init__(self,user_id):
