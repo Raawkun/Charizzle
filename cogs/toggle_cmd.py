@@ -15,6 +15,7 @@ class Remd_Buttons(disnake.ui.Button):
         self.db = connect("database.db")
 
     async def callback(self, interaction:disnake.MessageInteraction):
+        interaction.response.defer()
         if interaction.user.id != self.user_id:
             exit
         data = self.db.execute(f"SELECT ToggleSpawn,ToggleFish,ToggleBattle,ToggleQuest,ToggleQuestTimer,ToggleOthers FROM Toggle WHERE User_ID = {self.user_id}")
@@ -29,7 +30,7 @@ class Remd_Buttons(disnake.ui.Button):
                     else:
                         item.style = disnake.ButtonStyle.red
                     i+=1
-        await interaction.response.edit_message(view=view)
+        await interaction.edit_original_message(view=view)
 
 #Function Buttons
 class Fnct_Buttons(disnake.ui.Button):
@@ -39,6 +40,7 @@ class Fnct_Buttons(disnake.ui.Button):
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
+        interaction.response.defer()
         if interaction.user.id != self.user_id:
             exit
         data = self.db.execute(f"SELECT Grazz, Repel, Starter, Linked, Emotes, Ping FROM Toggle WHERE User_ID = {self.user_id}")
@@ -53,7 +55,7 @@ class Fnct_Buttons(disnake.ui.Button):
                     else:
                         item.style = disnake.ButtonStyle.red
                     i+=1
-        await interaction.response.edit_message(view=view)
+        await interaction.edit_original_message(view=view)
             
 class RazzButton(disnake.ui.Button):
     def __init__(self, user_id,entry):
@@ -90,7 +92,7 @@ class RazzButton(disnake.ui.Button):
                             else:
                                 msg = f"Activated that notification."
                         self.db.commit()
-        await interaction.response.edit_message(view=view)
+        await interaction.edit_original_message(msg, view=view)
 
 class BackButton(disnake.ui.Button):
     def __init__(self,user_id):
@@ -98,10 +100,11 @@ class BackButton(disnake.ui.Button):
         self.user_id = user_id
 
     async def callback(self, interaction: disnake.MessageInteraction):
+        interaction.response.defer()
         if interaction.user.id != self.user_id:
             exit
         view = ToggleView(self.user_id)
-        await interaction.response.edit_message(view=view)
+        await interaction.edit_original_message(view=view)
 
 class ReminderView(disnake.ui.View):
     def __init__(self, user_id):
