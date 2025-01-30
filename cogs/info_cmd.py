@@ -5,7 +5,15 @@ from disnake.ext import commands
 import datetime
 from utility.embed import Custom_embed
 from utility.info_dict import embed_color, cmds, functions, info
+from disnake import Message, Option, OptionChoice, OptionType, ApplicationCommandInteraction
 
+async def info_home(self, ctx):
+    embed = disnake.Embed(description=f'{ctx.me.display_name}'+" overview",colour=embed_color)
+    embed.set_footer(text=f'{ctx.me.display_name}', icon_url=f'{ctx.me.avatar}')
+    embed.set_thumbnail(url=embed.footer.icon_url)
+
+    embed.add_field(name="**__Info Panel__**",value=info["text"])
+    return(embed)
 async def info_cmd(self, ctx):
     embed = disnake.Embed(description=f'{ctx.me.display_name}'+" overview",colour=embed_color)
     embed.set_footer(text=f'{ctx.me.display_name}', icon_url=f'{ctx.me.avatar}')
@@ -31,6 +39,16 @@ async def info_funct(self,ctx):
     embed.add_field(name="Miscellaneous Functions",value=functions["misc"], inline=False)
     return(embed)
 
+class HomeButton(disnake.ui.Button):
+    def __init__(self, user_id):
+        super().__init__(label="Home", style=disnake.ButtonStyle.primary,custom_id=f"hm_button_{user_id}")
+        self.user_id = user_id
+
+    async def callback(self, interaction: disnake.MessageInteraction):
+        if interaction.user.id != self.user_id:
+            exit
+        msg = await info_home(self, interaction)
+        await interaction.response.edit_message(embed=msg)
 class CmdButton(disnake.ui.Button):
     def __init__(self, user_id):
         super().__init__(label="Commands", style=disnake.ButtonStyle.primary, custom_id=f"cmd_button_{user_id}")
@@ -59,6 +77,7 @@ class FnctButton(disnake.ui.Button):
 class GuessView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
+        self.add_item(HomeButton(user_id))
         self.add_item(CmdButton(user_id))
         self.add_item(FnctButton(user_id))
 
@@ -98,6 +117,43 @@ class Info_Cmd(commands.Cog):
                 await ctx.send(embed=embed,view=GuessView(ctx.author.id))
             except Exception as e:
                 print(e)
+
+
+    @commands.slash_command(name="info", description="Important informations about the bot and its functions.",options=
+                [Option(
+                name="switch",
+                description="Choose a switch to know more.",
+                type=3,
+                choices=[
+                    OptionChoice("Commands", "cmnds"),
+                    OptionChoice("Functions", "functions")
+                ],
+                required=False
+            ), ],
+            )
+    async def _info(self,ctx,switch = None):
+        await ctx.response.defer()
+        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
+        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+        embed.set_thumbnail(url=embed.footer.icon_url)
+        if switch == "cmnds":
+            embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)
+            embed.add_field(name="**__Random__**", value=cmds["random"],inline=False)
+            embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
+            embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
+            embed.add_field(name=" ", value=" ",inline=False)
+            embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
+            await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+        elif switch == "functions":
+            embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
+            embed.add_field(name="**__Rare Spawns__**",value=functions["rare"],inline=False)
+            embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
+            embed.add_field(name=" ", value=" ",inline=False)
+            embed.add_field(name="Miscellanous Functions",value=functions["misc"], inline=False)
+            await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+        else:
+            embed.add_field(name="**__Info Panel__**",value=info["text"])
+            await ctx.send(embed=embed,view=GuessView(ctx.author.id))
 
 
 def setup(client):

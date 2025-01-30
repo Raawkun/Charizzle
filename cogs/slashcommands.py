@@ -270,41 +270,6 @@ class SlashComs(commands.Cog):
     async def _faq(self, ctx):
         await ctx.send("The FAQ Channel is here: <#1161686361091350608>",ephemeral=True)
         
-    @commands.slash_command(name="info", description="Important informations about the bot and its functions.",options=
-                [Option(
-                name="switch",
-                description="Choose a switch to know more.",
-                type=3,
-                choices=[
-                    OptionChoice("Commands", "cmnds"),
-                    OptionChoice("Functions", "functions")
-                ],
-                required=False
-            ), ],
-            )
-    async def _info(self,ctx,switch = None):
-        await ctx.response.defer()
-        embed = disnake.Embed(description=f'{self.client.user.display_name}'+" overview",color = embed_color)
-        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
-        embed.set_thumbnail(url=embed.footer.icon_url)
-        if switch == "cmnds":
-            embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)
-            embed.add_field(name="**__Random__**", value=cmds["random"],inline=False)
-            embed.add_field(name="**__Clan Hunts__**", value=cmds["hunt"],inline=False)
-            embed.add_field(name="**__Top Count__**",value=cmds["topcount"], inline=False)
-            embed.add_field(name=" ", value=" ",inline=False)
-            embed.add_field(name="Miscellanous Cmds", value=cmds["misc"],inline=False)
-            await ctx.send(embed=embed)
-        elif switch == "functions":
-            embed.add_field(name="**__Boost notifier__**",value=functions["boost"],inline=False)
-            embed.add_field(name="**__Rare Spawns__**",value=functions["rare"],inline=False)
-            embed.add_field(name="**__Reminders__**",value=functions["remind"], inline=False)
-            embed.add_field(name=" ", value=" ",inline=False)
-            embed.add_field(name="Miscellanous Functions",value=functions["misc"], inline=False)
-            await ctx.send(embed=embed)
-        else:
-            embed.add_field(name="**__Info Panel__**",value=info["text"])
-            await ctx.send(embed=embed)
     
     @commands.check(Basic_checker().check_admin)
     @commands.slash_command(name="setup", description="First setup of the bot (can be changed later too ofc).", 
