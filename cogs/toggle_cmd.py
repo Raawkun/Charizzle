@@ -100,7 +100,6 @@ class BackButton(disnake.ui.Button):
         self.user_id = user_id
 
     async def callback(self, interaction: disnake.MessageInteraction):
-        interaction.response.defer()
         if interaction.user.id != self.user_id:
             exit
         view = ToggleView(self.user_id)
