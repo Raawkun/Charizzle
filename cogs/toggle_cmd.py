@@ -105,7 +105,7 @@ class FunctionView(disnake.ui.View):
 class ToggleView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
-        self.add.item()
+        self.add.item(Remd_Buttons(user_id))
         self.add_item(Fnct_Buttons(user_id))
 
 class Toggle_Cmd(commands.Cog):
