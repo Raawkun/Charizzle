@@ -82,7 +82,7 @@ class CmdButton(disnake.ui.Button):
                     else:
                         item.disabled = False
                         item.style = disnake.ButtonStyle.primary
-        await interaction.response.edit_message(embed=msg)
+        await interaction.response.edit_message(embed=msg,view=view)
 
 class FnctButton(disnake.ui.Button):
     def __init__(self, user_id):
@@ -105,7 +105,7 @@ class FnctButton(disnake.ui.Button):
                     else:
                         item.disabled = False
                         item.style = disnake.ButtonStyle.primary
-        await interaction.response.edit_message(embed=msg)
+        await interaction.response.edit_message(embed=msg,view=view)
 
 class GuessView(disnake.ui.View):
     def __init__(self, user_id):
