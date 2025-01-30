@@ -14,7 +14,7 @@ class CmdButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction):
         
-        if interaction.user.id != interaction.message.interaction.author.id:
+        if interaction.user.id != self.user_id:
             exit
 
         msg = await asyncio.create_task(Info_Cmd.info_cmd())
