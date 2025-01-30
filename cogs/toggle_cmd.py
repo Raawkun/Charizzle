@@ -118,7 +118,7 @@ class FuncButton(disnake.ui.Button):
                 exit
             
             if interaction.component.custom_id == self.custom_id:
-                view = Fnct_Buttons(self.user_id)
+                view = FunctionView(self.user_id)
                 for item in view.children:
                     if isinstance(item, disnake.ui.Button):
                         if item.custom_id == self.custom_id:
