@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from sqlite3 import connect
 import disnake
 
