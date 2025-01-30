@@ -54,6 +54,7 @@ class HomeButton(disnake.ui.Button):
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
+                        item.disabled = True
                         item.style = disnake.ButtonStyle.gray
                     else:
                         item.disabled = False
@@ -99,6 +100,7 @@ class FnctButton(disnake.ui.Button):
             for item in view.children:
                 if isinstance(item, disnake.ui.Button):
                     if item.custom_id == self.custom_id:
+                        item.disabled = True
                         item.style = disnake.ButtonStyle.gray
                     else:
                         item.disabled = False
