@@ -51,10 +51,10 @@ class FnctButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction):
         
-        if interaction.user.id != interaction.message.interaction.author.id:
+        if interaction.user.id != self.user.id:
             exit
-        msg = await asyncio.create_task(info_funct(self,interaction))
-        await interaction.response.edit_message(msg)
+        msg = await info_funct(self,interaction)
+        await interaction.response.edit_message(embed=msg)
 
 class GuessView(disnake.ui.View):
     def __init__(self, user_id):
