@@ -19,7 +19,7 @@ class Remd_Buttons(disnake.ui.Button):
             exit
         data = self.db.execute(f"SELECT ToggleSpawn,ToggleFish,ToggleBattle,ToggleQuest,ToggleQuestTimer,ToggleOthers FROM Toggle WHERE User_ID = {self.user_id}")
         data = data.fetchone()
-        view = FunctionView(self.user_id)
+        view = ReminderView(self.user_id)
         i = 0
         for item in view.children:
             if isinstance(item, disnake.ui.Button):
