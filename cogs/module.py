@@ -118,9 +118,9 @@ class Modules(commands.Cog):
             await asyncio.sleep(time_until.total_seconds())
             await asyncio.create_task(Modules.resetaverage(self))
 
-    async def info_cmd(self):
-        embed = await Custom_embed(self,description=f'{self.client.user.display_name}'+" overview",colour=embed_color).setup_embed()
-        embed.set_footer(text=f'{self.client.user.display_name}', icon_url=f'{self.client.user.avatar}')
+    async def info_cmd(self, ctx):
+        embed = await Custom_embed(self,description=f'{ctx.me.display_name}'+" overview",colour=embed_color).setup_embed()
+        embed.set_footer(text=f'{ctx.me.display_name}', icon_url=f'{ctx.me.avatar}')
         embed.set_thumbnail(url=embed.footer.icon_url)
         
         embed.add_field(name="**__Toggle__**",value=cmds["toggle"],inline=False)

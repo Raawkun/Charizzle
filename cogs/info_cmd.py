@@ -9,16 +9,16 @@ from utility.info_dict import embed_color, cmds, functions, info
 from cogs.module import Modules
 
 class CmdButton(disnake.ui.Button):
-    def __init__(self, user_id):
+    def __init__(self, user_id,ctx):
         super().__init__(label="Commands", style=disnake.ButtonStyle.primary, custom_id=f"cmd_button_{user_id}")
         self.user_id = user_id
 
-    async def callback(self, interaction: disnake.MessageInteraction):
+    async def callback(self, interaction: disnake.MessageInteraction,ctx):
         
         if interaction.user.id != self.user_id:
             exit
-
-        msg = await asyncio.create_task(Modules.info_cmd(self))
+        
+        msg = await asyncio.create_task(Modules.info_cmd(ctx))
         await interaction.response.edit_message(msg)
 
 class FnctButton(disnake.ui.Button):
