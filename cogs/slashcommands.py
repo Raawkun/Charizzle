@@ -7,7 +7,7 @@ import datetime
 from utility.embed import Custom_embed, Auction_embed
 from utility.all_checks import Basic_checker
 from utility.rarity_db import counts, countnumber
-from utility.info_dict import embed_color,cmds,functions,info,events
+from utility.info_dict import embed_color,cmds,functions,info
 
 class SlashComs(commands.Cog):
 
