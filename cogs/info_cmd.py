@@ -34,10 +34,10 @@ class FnctButton(disnake.ui.Button):
         await interaction.response.edit_message(msg)
 
 class GuessView(disnake.ui.View):
-    def __init__(self, user_id):
+    def __init__(self, user_id,ctx):
         super().__init__()
-        self.add_item(CmdButton(user_id))
-        self.add_item(FnctButton(user_id))
+        self.add_item(CmdButton(user_id,ctx))
+        self.add_item(FnctButton(user_id,ctx))
 
 class Info_Cmd(commands.Cog):
 
@@ -60,19 +60,19 @@ class Info_Cmd(commands.Cog):
             if message in ["commands","cmds","Commands","Cmds"]:
                 try:
                     embed = await self.info_cmd()
-                    await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+                    await ctx.send(embed=embed,view=GuessView(ctx.author.id,ctx))
                 except Exception as e:
                     print(e)
             elif message in ["functions","Functions","funct"]:
                 try:
                     embed = await self.info_funct()
-                    await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+                    await ctx.send(embed=embed,view=GuessView(ctx.author.id,ctx))
                 except Exception as e:
                     print(e)
         else:
             try:
                 embed.add_field(name="**__Info Panel__**",value=info["text"])
-                await ctx.send(embed=embed,view=GuessView(ctx.author.id))
+                await ctx.send(embed=embed,view=GuessView(ctx.author.id,ctx))
             except Exception as e:
                 print(e)
 
