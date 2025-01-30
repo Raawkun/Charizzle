@@ -101,10 +101,11 @@ class BackButton(disnake.ui.Button):
         self.user_id = user_id
 
     async def callback(self, interaction: disnake.MessageInteraction):
+        await interaction.response.defer()
         if interaction.user.id != self.user_id:
             exit
         view = ToggleView(self.user_id)
-        await interaction.edit_original_message(view=view)
+        await interaction.edit_original_response(view=view)
 
 class ReminderView(disnake.ui.View):
     def __init__(self, user_id):
