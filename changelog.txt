@@ -1,0 +1,5 @@
+Starting the new year with some changes!
+
+- 'info' and 'toggle' got a new design - now using buttons to be able to switch through pages and change settings!
+
+If you have any ideas/feedback on exisiting features or features you're missing, feel free to suggest them!
