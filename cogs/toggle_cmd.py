@@ -1,7 +1,7 @@
 import datetime
 from sqlite3 import connect
 import disnake
-
+from disnake import Option, OptionChoice
 from disnake.ext import commands
 
 toggles = ["Grazz","Repel","Starter","Linked","Emotes","ToggleSpawn","ToggleFish","ToggleBattle","ToggleQuest","ToggleQuestTimer","ToggleOthers","Ping"]
@@ -245,6 +245,42 @@ class Toggle_Cmd(commands.Cog):
                 await ctx.send(embed=embed,view=ToggleView(user_id=ctx.author.id))
         except Exception as e:
             print(f"{e}")
+
+        #Toggle command from Pr1nce
+    @commands.slash_command(
+        name="toggle",
+        description="Toggle bot actions",
+        )
+    async def _toggle(self, ctx):
+        await ctx.response.defer()
+        try:
+            user_id = ctx.author.id
+            database = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {user_id}')
+            database = database.fetchone()
+            author_url = "https://cdn.discordapp.com/emojis/1153729922620215349.webp?size=96&quality=lossless"
+            author_name = ctx.author.display_name
+            gengar_bot = self.client.get_user(1161011648585285652)
+            footer_icon = gengar_bot.display_avatar.url
+            footer_name = gengar_bot.display_name+" I "+self.timestamp
+            emo_yes = ":white_check_mark:"
+            emo_no = ":x:"
+            emo_ping = ":bell:"
+            emo_sile = ":no_bell:"
+            color = 0x807ba6
+            if database:
+                
+                embed = disnake.Embed(
+                    title="**Settings**", color=color, description="Here you can see your current toggle settings. \nChangeable via ``/toggle`` \n\nThe current settings are:"
+                )
+                embed.set_author(icon_url=author_url,name=author_name)
+                embed.set_footer(icon_url=footer_icon,text=footer_name)
+                
+                embed.set_thumbnail(footer_icon)
+                await ctx.send(embed=embed,view=ToggleView(user_id=ctx.author.id))
+        except Exception as e:
+            print(f"{e}")
+        
+
 
 def setup(client):
     client.add_cog(Toggle_Cmd(client))
