@@ -163,7 +163,7 @@ class FuncButton(disnake.ui.Button):
 
 class BackButton(disnake.ui.Button):
     def __init__(self,user_id):
-        super().__init__(label="Back", style=disnake.ButtonStyle.primary,custom_id=f"back_button_{user_id}")
+        super().__init__(label="Back", style=disnake.ButtonStyle.primary,custom_id=f"back_button_{user_id}",row=1)
         self.user_id = user_id
 
     async def callback(self, interaction: disnake.MessageInteraction):
@@ -180,13 +180,14 @@ class ReminderView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
         self.add_item(BackButton(user_id))
-        rowed = 1
+        row = 1
         i = 2
         for entry in reminders:
             if i > 3:
                 rowed +=1
                 i = 1
-            self.add_item(RemButton(user_id,entry,rowed))
+            self.add_item(RemButton(user_id,entry,row))
+            i+=1
 
 class FunctionView(disnake.ui.View):
     def __init__(self, user_id):
@@ -199,6 +200,7 @@ class FunctionView(disnake.ui.View):
                 rowed +=1
                 i = 1
             self.add_item(FuncButton(user_id,entry,rowed))
+            i+=1
 
 class ToggleView(disnake.ui.View):
     def __init__(self, user_id):
