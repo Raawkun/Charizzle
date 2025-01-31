@@ -36,8 +36,8 @@ class Remd_Buttons(disnake.ui.Button):
             print(e)
 
 class RemButton(disnake.ui.Button):
-    def __init__(self, user_id,entry):
-        super().__init__(label=f"{entry}", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}")
+    def __init__(self, user_id,entry,rowed):
+        super().__init__(label=f"{entry}", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}",row=rowed)
         self.user_id = user_id
         self.entry = entry
         self.db = connect("database.db")
@@ -113,8 +113,8 @@ class Fnct_Buttons(disnake.ui.Button):
             print(e)
             
 class FuncButton(disnake.ui.Button):
-    def __init__(self, user_id,entry):
-        super().__init__(label=f"{entry}", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}")
+    def __init__(self, user_id,entry,rowed):
+        super().__init__(label=f"{entry}", style=disnake.ButtonStyle.primary,custom_id=f"toggle_button_{user_id}_{entry}",row=rowed)
         self.user_id = user_id
         self.entry = entry
         self.db = connect("database.db")
@@ -180,15 +180,25 @@ class ReminderView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
         self.add_item(BackButton(user_id))
+        rowed = 1
+        i = 2
         for entry in reminders:
-            self.add_item(RemButton(user_id,entry))
+            if i > 3:
+                rowed +=1
+                i = 1
+            self.add_item(RemButton(user_id,entry,rowed))
 
 class FunctionView(disnake.ui.View):
     def __init__(self, user_id):
         super().__init__()
         self.add_item(BackButton(user_id))
+        rowed = 1
+        i = 2
         for entry in functions:
-            self.add_item(FuncButton(user_id,entry))
+            if i > 3 :
+                rowed +=1
+                i = 1
+            self.add_item(FuncButton(user_id,entry,rowed))
 
 class ToggleView(disnake.ui.View):
     def __init__(self, user_id):
