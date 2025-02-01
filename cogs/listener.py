@@ -46,7 +46,7 @@ class Listener(commands.Cog):
         return await aiomysql.connect(self.DB_config)
     
     async def load_promo(self):
-        conn = await self.get_db_connection(self)
+        conn = await self.get_db_connection()
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT Current_Item FROM Stuff")
             result = await cursor.fetchone()
