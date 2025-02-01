@@ -43,7 +43,7 @@ class Listener(commands.Cog):
         "db" : "s112234_Random"
     }
     async def get_db_connection(self):
-        return await aiomysql.connect(self.DB_config)
+        return await aiomysql.connect(self.DB_CONIFG)
     
     async def load_promo(self):
         conn = await self.get_db_connection()
