@@ -487,8 +487,8 @@ class Listener(commands.Cog):
                                 conn = await self.get_db_connection()
                                 async with conn.cursor() as cursor:
                                     await cursor.execute(f"UPDATE Stuff SET Current_Item = '{item}'")
-                                    await cursor.commit()
-                                    await cursor.ensure_closed()
+                                    await conn.commit()
+                                    await conn.ensure_closed()
                         except Exception as e:
                             print(f";Promo Error: {e}")
                             print(Exception.args)
