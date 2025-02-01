@@ -326,16 +326,21 @@ class Listener(commands.Cog):
         if message.author.id == meow:
             announce_channel = self.client.get_channel(receiver_channel)
             log_chn = self.client.get_channel(log_channel)
+            if message.reference:
+                ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                sender = ref_msg.author
+            elif message.interaction:
+                sender = message.interaction.author
             if ", your egg is ready to hatch" in message.content.lower():
                 await message.reply(f"</egg hatch:1015311084594405485>")
             if "oh? you found a" in message.content.lower():
                 item = message.content.split("found a <:")[1]
                 item = item.split(":")[0]
                 if item == self.promo_item:
-                    await message.reply(f"{sender.mention} - looks like you've found a promo item! Congratulations!",allowed_mentions = disnake.AllowedMentions(users = False))
+                    await message.reply(f"Oh wow - looks like you've found a promo item! Congratulations!")
             if "won the battle!" in message.content.lower():
                 if self.promo_item in message.content.lower():
-                    await message.reply(f"{sender.mention} - looks like you've found a promo item! Congratulations!",allowed_mentions = disnake.AllowedMentions(users = False))
+                    await message.reply(f"Oh wow - looks like you've found a promo item! Congratulations!")
             if "used a code to claim" in message.content:
                 if message.reference:
                     ref_msg = await message.channel.fetch_message(message.reference.message_id)
