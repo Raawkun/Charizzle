@@ -43,13 +43,14 @@ class Listener(commands.Cog):
         "db" : "s112234_Random"
     }
     async def get_db_connection(self):
-        return await aiomysql.connect(self.DB_CONIFG)
+        return await aiomysql.connect(host=self.DB_CONIFG["host"],user=self.DB_CONIFG["user"],password=self.DB_CONIFG["password"],db=self.DB_CONIFG["db"])
     
     async def load_promo(self):
         conn = await self.get_db_connection()
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT Current_Item FROM Stuff")
             result = await cursor.fetchone()
+            await conn.ensure_closed()
             print(result)
         self.promo_item = result[0]
     
