@@ -484,7 +484,7 @@ class Listener(commands.Cog):
                             if item != self.promo_item:
                                 print(f"New Promo Item: {item}")
                                 self.promo_item = item
-                                conn = await self.get_db_connection(self)
+                                conn = await self.get_db_connection()
                                 async with conn.cursor() as cursor:
                                     await cursor.execute(f"UPDATE Stuff SET Current_Item = {item}")
                                     await cursor.commit()
