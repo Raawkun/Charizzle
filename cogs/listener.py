@@ -479,7 +479,7 @@ class Listener(commands.Cog):
                 if _embed.author:
                     if "Special Golden" in _embed.author.name:
                         try:
-                            item = _embed.description.split("3x :")[1]
+                            item = _embed.description.split("3x <:")[1]
                             item = item.split(":")[0]
                             if item != self.promo_item:
                                 print(f"New Promo Item: {item}")
@@ -491,6 +491,7 @@ class Listener(commands.Cog):
                                     await cursor.ensure_closed()
                         except Exception as e:
                             print(f";Promo Error: {e}")
+                            print(Exception.args)
                     if "Research Lab" in _embed.author.name:
                         try:
                             desc = _embed.description
