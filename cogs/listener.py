@@ -11,6 +11,7 @@ from utility.rarity_db import poke_rarity, chambers
 from utility.egglist import eggexcl
 from utility.drop_chance import drop_pos, buyin
 from utility.info_dict import rem_emotes, emote_list, embed_color
+import aiomysql
 import datetime
 from utility.embed import Custom_embed, Auction_embed
 from cogs.module import Modules
@@ -32,6 +33,25 @@ class Listener(commands.Cog):
         _emb.add_field(name="Error:",value=error)
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
+
+    promo_item = "none"
+
+    DB_CONIFG = {
+        "host" : "db-buf-05.sparkedhost.us",
+        "user" : "u112234_3Uzzg1Jv6R",
+        "password" : "0E9c1yXW@mE+^8Xv9@EIG9!V",
+        "db" : "s112234_Random"
+    }
+    async def get_db_connection(self):
+        return await aiomysql.connect(self.DB_config)
+    
+    async def load_promo(self):
+        conn = await self.get_db_connection(self)
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT Current_Item FROM Stuff")
+            result = await cursor.fetchone()
+            print(result)
+        self.promo_item = result[0]
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
@@ -100,7 +120,7 @@ class Listener(commands.Cog):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
         print(datetime.datetime.now())
-        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="some wild Pidgey"))
+        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="the sun rise."))
         asyncio.create_task(self._changelog())
         asyncio.create_task(Modules.averagetimer(self))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
@@ -455,6 +475,18 @@ class Listener(commands.Cog):
                 #print(_embed.author.name)
                 Rare_Spawned = ["Event", "Legendary", "Shiny", "Golden"]
                 if _embed.author:
+                    if "Special Golden" in _embed.author.name:
+                        try:
+                            item = _embed.description.split("3x :")[1]
+                            item = item.split(":")[0]
+                            if item != self.promo_item:
+                                self.promo_item = item
+                                conn = await self.get_db_connection(self)
+                                async with conn.cursor() as cursor:
+                                    await cursor.execute(f"UPDATE Stuff SET Current_Item = {item}")
+                                    await cursor.commit()
+                        except Exception as e:
+                            print(f";Promo Error: {e}")
                     if "Research Lab" in _embed.author.name:
                         try:
                             desc = _embed.description
