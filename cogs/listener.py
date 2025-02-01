@@ -482,6 +482,7 @@ class Listener(commands.Cog):
                             item = _embed.description.split("3x :")[1]
                             item = item.split(":")[0]
                             if item != self.promo_item:
+                                print(f"New Promo Item: {item}")
                                 self.promo_item = item
                                 conn = await self.get_db_connection(self)
                                 async with conn.cursor() as cursor:
