@@ -51,8 +51,8 @@ class Listener(commands.Cog):
             await cursor.execute("SELECT Current_Item FROM Stuff")
             result = await cursor.fetchone()
             await conn.ensure_closed()
-            print(result)
         self.promo_item = result[0]
+        print(f"Loaded promo item: {self.promo_item}")
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
