@@ -614,7 +614,7 @@ class Coms(commands.Cog):
             ref_msg = await ctx.channel.fetch_message(mid)
             desc = f"Name:{ref_msg.author.display_name}\nID: {ref_msg.author.id}\n"
             if ref_msg.content != None:
-                desc +=("Content: \n```{ref_msg.content}\n```")
+                desc +=(f"Content: \n```{ref_msg.content}\n```")
             if mode == "embed":
                 if (len(ref_msg.embeds) > 0):
                     _embed = ref_msg.embeds[0]
