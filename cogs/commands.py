@@ -339,11 +339,11 @@ class Coms(commands.Cog):
             if len(overseen.embeds) > 0:
                 _embed = overseen.embeds[0]
                 if overseen.reference:
-                        ref_msg = await overseen.channel.fetch_message(overseen.reference.message_id)
-                        sender = ref_msg.author
-                    elif overseen.interaction:
-                        sender = overseen.interaction.author
-                    user = sender
+                    ref_msg = await overseen.channel.fetch_message(overseen.reference.message_id)
+                    sender = ref_msg.author
+                elif overseen.interaction:
+                    sender = overseen.interaction.author
+                user = sender
                 if "broke out" or "caught a " in _embed.description:
                     data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                     data = data.fetchall()
