@@ -93,7 +93,7 @@ class On_Edit(commands.Cog):
                             elif before.interaction:
                                 ref_msg = before.interaction.user
                                 sender = ref_msg
-                            if raremon in Rare_Spawns or _embed.color == 0xe9270b:
+                            if raremon in Rare_Spawns or _embed.color == 0xe9270b or _embed.color == 0xea260b:
                                 #print("Theres a rare spawn.")
                                 description_text = " "
                                 if "caught a" in _embed.description:
