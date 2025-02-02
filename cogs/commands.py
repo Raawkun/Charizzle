@@ -357,7 +357,7 @@ class Coms(commands.Cog):
                     #print(_embed.color)
                     color = str(_embed.color)
                     #print(color)
-                    if raremon in Rare_Spawns or _embed.color == 0xea260b:
+                    if raremon in Rare_Spawns or color == "#ea260b":
                         raremon = poke_rarity[(data[0][14])]
                         current_time = overseen.created_at
                         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
