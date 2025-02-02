@@ -356,7 +356,7 @@ class Coms(commands.Cog):
                     print(ball)
                     #print(_embed.color)
                     color = str(_embed.color)
-                    #print(color)
+                    print(color)
                     if raremon in Rare_Spawns or color == "#ea260b":
                         raremon = poke_rarity[(data[0][14])]
                         current_time = overseen.created_at
@@ -364,11 +364,11 @@ class Coms(commands.Cog):
                         print(timestamp)
                         description_text = f"Original message: [Click here]({overseen.jump_url})\n"
                         embed = await Custom_embed(self.client, title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]),description=description_text,colour=_embed.color).setup_embed()
-                        embed.set_author(name=(user.display_name+" just caught a:"), icon_url=_embed.author.icon_url)
+                        embed.set_author(name=f"{user.display_name} just caught a:", icon_url=_embed.author.icon_url)
                         embed.set_image(_embed.image.url)
                         embed.set_thumbnail(url=None)
 
-                        embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
+                        embed.set_footer(text=f'{self.client.user.display_name} | at UTC {timestamp}', icon_url=f'{self.client.user.avatar}')
                         await announce.send(embed=embed)
                         await ctx.send("Check <#825950637958234133>",embed=embed)
                     else:
