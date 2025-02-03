@@ -35,7 +35,7 @@ class Listener(commands.Cog):
         await errcha.send(embed=_emb)
 
     promo_item = "none"
-    exclusives = {}
+    exclusives = []
 
     DB_CONIFG = {
         "host" : "db-buf-05.sparkedhost.us",
