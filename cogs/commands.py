@@ -19,7 +19,7 @@ from googlesearch import search
 from PIL import Image, ImageDraw, ImageSequence
 from io import BytesIO
 import imageio
-import aiohttp
+import aiohttp, listener
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -350,8 +350,8 @@ class Coms(commands.Cog):
                 user = sender
                 if "broke out" or "caught a " in _embed.description:
                     data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
-                    data = data.fetchall()
-                    raremon = data[0][14]
+                    data = data.fetchone()
+                    raremon = data[14]
                     print(raremon)
                     ball = _embed.description.split(" with a")[1]
                     ball = ball.split("!")[0]
@@ -360,14 +360,14 @@ class Coms(commands.Cog):
                     #print(_embed.color)
                     color = str(_embed.color)
                     print(color)
-                    if raremon in Rare_Spawns or color == "#ea260b":
+                    if raremon in Rare_Spawns or data[0] in listener.exclusives:
                         try:
-                            raremon = poke_rarity[(data[0][14])]
+                            raremon = poke_rarity[(data[14])]
                             current_time = overseen.created_at
                             timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
                             print(timestamp)
                             description_text = f"Original message: [Click here]({overseen.jump_url})\n"
-                            embed = await Custom_embed(self.client, title=raremon+" **"+data[0][1]+"** \nDex: #"+str(data[0][0]),description=description_text,colour=_embed.color).setup_embed()
+                            embed = await Custom_embed(self.client, title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0][0]),description=description_text,colour=_embed.color).setup_embed()
                             embed.set_author(name=f"{user.display_name} just caught a:", icon_url=_embed.author.icon_url)
                             embed.set_image(_embed.image.url)
                             embed.set_thumbnail(url=None)
