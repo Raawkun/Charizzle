@@ -371,7 +371,7 @@ class Coms(commands.Cog):
                         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
                         print(timestamp)
                         description_text = f"Original message: [Click here]({overseen.jump_url})\n"
-                        embed = await Custom_embed(self.client, title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0][0]),description=description_text,colour=_embed.color).setup_embed()
+                        embed = await Custom_embed(self.client, title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]),description=description_text,colour=_embed.color).setup_embed()
                         if "broke out" in _embed.description:
                             embed.set_author(name=f"{user.display_name} almost caught a:", icon_url=_embed.author.icon_url)
                         elif "ran away" in _embed.description:
