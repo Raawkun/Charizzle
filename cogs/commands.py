@@ -20,7 +20,7 @@ from PIL import Image, ImageDraw, ImageSequence
 from io import BytesIO
 import imageio
 import aiohttp
-from listener import Listener
+from cogs.listener import Listener
 
 # Zeichen zum Kopieren: [ ] { }
 
