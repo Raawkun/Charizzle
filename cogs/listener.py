@@ -17,8 +17,7 @@ from utility.embed import Custom_embed, Auction_embed
 from cogs.module import Modules
 
 # Zeichen zum Kopieren: [ ] { }
-promo_item = "none"
-exclusives = []
+
 
 class Listener(commands.Cog):
 
@@ -34,7 +33,8 @@ class Listener(commands.Cog):
         _emb.add_field(name="Error:",value=error)
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
-
+    promo_item = "none"
+    exclusives = []
 
     DB_CONIFG = {
         "host" : "db-buf-05.sparkedhost.us",
