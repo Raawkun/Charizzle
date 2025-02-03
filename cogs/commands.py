@@ -352,16 +352,16 @@ class Coms(commands.Cog):
                 try:
                     data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                     data = data.fetchone()
-                    print(data)
+                    #print(data)
                     raremon = data[14]
-                    print(raremon)
+                    #print(raremon)
                     ball = _embed.description.split(" with a")[1]
                     ball = ball.split("!")[0]
                     ball = ball.split(" ")[1]
-                    print(ball)
+                    #print(ball)
                     #print(_embed.color)
                     color = str(_embed.color)
-                    print(color)
+                    #print(color)
                 except Exception as e:
                     print(f"Rare Cmd_1: {e}")
                 if raremon in Rare_Spawns or data[0] in Listener.exclusives:
@@ -369,7 +369,7 @@ class Coms(commands.Cog):
                         raremon = poke_rarity[(data[14])]
                         current_time = overseen.created_at
                         timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                        print(timestamp)
+                        #print(timestamp)
                         description_text = f"Original message: [Click here]({overseen.jump_url})\n"
                         embed = await Custom_embed(self.client, title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0]),description=description_text,colour=_embed.color).setup_embed()
                         if "broke out" in _embed.description:
