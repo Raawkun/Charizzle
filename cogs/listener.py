@@ -133,7 +133,7 @@ class Listener(commands.Cog):
         print(datetime.datetime.now())
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="the sun rise."))
         await asyncio.create_task(self.load_promo())
-        await asyncio.create_task(self.load_exclusives())
+        await asyncio.create_task(self.load_excl())
         asyncio.create_task(self._changelog())
         asyncio.create_task(Modules.averagetimer(self))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
