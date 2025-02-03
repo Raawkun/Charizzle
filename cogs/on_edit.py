@@ -10,7 +10,7 @@ from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, rare_calc, ball_used_low, ball_used_high
 import random
 from utility.all_checks import Basic_checker
-import listener
+from listener import exclusives
 
 class On_Edit(commands.Cog):
 
@@ -94,7 +94,7 @@ class On_Edit(commands.Cog):
                             elif before.interaction:
                                 ref_msg = before.interaction.user
                                 sender = ref_msg
-                            if raremon in Rare_Spawns or data[0] in listener.exclusives:
+                            if raremon in Rare_Spawns or data[0] in exclusives:
                                 #print("Theres a rare spawn.")
                                 description_text = " "
                                 if "caught a" in _embed.description:
