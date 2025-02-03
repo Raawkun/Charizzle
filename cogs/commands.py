@@ -20,7 +20,7 @@ from PIL import Image, ImageDraw, ImageSequence
 from io import BytesIO
 import imageio
 import aiohttp
-import listener
+from listener import exclusives
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -361,7 +361,7 @@ class Coms(commands.Cog):
                     #print(_embed.color)
                     color = str(_embed.color)
                     print(color)
-                    if raremon in Rare_Spawns or data[0] in listener.exclusives:
+                    if raremon in Rare_Spawns or data[0] in exclusives:
                         try:
                             raremon = poke_rarity[(data[14])]
                             current_time = overseen.created_at
