@@ -919,6 +919,7 @@ class Listener(commands.Cog):
                     if "current event ends: " in _embed.footer.text.lower():
                         for field in _embed.fields:
                             if "event-exclusives" in field.name.lower():
+                                print(field)
                                 mons = field.text.split("\n")
                                 names = {}
                                 for entry in mons:
