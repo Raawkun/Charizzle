@@ -334,14 +334,14 @@ class Listener(commands.Cog):
         #print(receiver_channel)
         receiver_channel = int(receiver_channel[4])
         log_channel = 1164544776985653319
+        if message.reference:
+            ref_msg = await message.channel.fetch_message(message.reference.message_id)
+            sender = ref_msg.author
+        elif message.interaction:
+            sender = message.interaction.author
         if message.author.id == meow:
             announce_channel = self.client.get_channel(receiver_channel)
             log_chn = self.client.get_channel(log_channel)
-            if message.reference:
-                ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                sender = ref_msg.author
-            elif message.interaction:
-                sender = message.interaction.author
             if ", your egg is ready to hatch" in message.content.lower():
                 await message.reply(f"</egg hatch:1015311084594405485>")
             if "oh? you found a" in message.content.lower():
@@ -353,11 +353,6 @@ class Listener(commands.Cog):
                 if self.promo_item in message.content.lower():
                     await message.reply(f"Oh wow - looks like you've found a promo item! Congratulations!")
             if "used a code to claim" in message.content:
-                if message.reference:
-                    ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                    sender = ref_msg.author
-                elif message.interaction:
-                    sender = message.interaction.author
                 monname = message.content.split("**")[1]
                 print(monname)
                 data = self.db.execute(f'SELECT * FROM Dex WHERE Name = "{monname}"')
@@ -375,11 +370,6 @@ class Listener(commands.Cog):
                 embed.set_author(name=f'{sender.display_name}'" just redeemed a code!", icon_url="https://cdn.discordapp.com/emojis/671852541729832964.webp?size=240&quality=lossless")
                 await announce_channel.send(embed=embed)
             if "You ate a" in message.content:
-                if message.reference:
-                    ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                    sender = ref_msg.author
-                elif message.interaction:
-                    sender = message.interaction.author
                 await asyncio.sleep(3)
                 datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                 datarem = datarem.fetchone()
@@ -423,11 +413,6 @@ class Listener(commands.Cog):
                 await log_chn.send(user.name+" found an icon")
                 await log_chn.send("Its "+iconname)
             if "from completing challenge" in message.content:
-                if message.reference:
-                    ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                    sender = ref_msg.author
-                elif message.interaction:
-                    sender = message.interaction.author
                 print(f'{sender.display_name} won a chamber.')
                 nite = message.content.split("<:")[1]
                 item = nite.split(":")[0]
@@ -449,13 +434,6 @@ class Listener(commands.Cog):
                         await announce_channel.send(embed=embed)
                 except Exception as e:
                     print(f"No valid Chamber, its too easy: {e}")
-            if message.reference:
-                ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                sender = ref_msg.author
-                # print(interaction_message)
-            if message.interaction:
-                ref_msg = message.interaction
-                sender = ref_msg.author
             if message.content:
                 #print("Aha, some content")
                 if "your catch bot" in message.content.lower():
@@ -938,6 +916,24 @@ class Listener(commands.Cog):
                 
                 
                 if _embed.footer.text:
+                    if "current event ends: " in _embed.footer.text.lower():
+                        for field in _embed.fields:
+                            if "event-exclusives" in field.name.lower():
+                                mons = field.text.split("\n")
+                                names = {}
+                                for entry in mons:
+                                    name = entry.split(" ")[1]
+                                    id = entry.split(":")[1]
+                                    names.update({id:name})
+                                conn = await self.get_db_connection()
+                                async with conn.cursor() as cursor:
+                                    await cursor.execute("DELETE FROM Exclusives")
+                                    await conn.commit()
+                                    for entry in names:
+                                        await cursor.execute(f"INSERT INTO Exclusives VALUES ({entry},'{names[entry]}')")
+                                    await conn.commit()
+                                    await conn.ensure_closed()
+                                await self.load_excl()
                     if "battle starts in" in _embed.footer.text.lower():
                         #print("Aha, battling.")
                         if "xmas steven** to a battle" in _embed.description.lower():
