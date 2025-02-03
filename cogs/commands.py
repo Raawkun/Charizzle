@@ -19,7 +19,8 @@ from googlesearch import search
 from PIL import Image, ImageDraw, ImageSequence
 from io import BytesIO
 import imageio
-import aiohttp, listener
+import aiohttp
+import listener
 
 # Zeichen zum Kopieren: [ ] { }
 
