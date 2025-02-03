@@ -10,6 +10,7 @@ from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, rare_calc, ball_used_low, ball_used_high
 import random
 from utility.all_checks import Basic_checker
+import listener
 
 class On_Edit(commands.Cog):
 
@@ -22,7 +23,7 @@ class On_Edit(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-
+        
         # 825950637958234133
         receiver_channel = self.db.execute(f'SELECT * FROM Admin WHERE Server_ID = {before.guild.id}')
         receiver_channel = receiver_channel.fetchone()
@@ -93,7 +94,7 @@ class On_Edit(commands.Cog):
                             elif before.interaction:
                                 ref_msg = before.interaction.user
                                 sender = ref_msg
-                            if raremon in Rare_Spawns or _embed.color == 0xe9270b or _embed.color == 0xea260b:
+                            if raremon in Rare_Spawns or data[0] in listener.exclusives:
                                 #print("Theres a rare spawn.")
                                 description_text = " "
                                 if "caught a" in _embed.description:
