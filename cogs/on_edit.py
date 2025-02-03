@@ -10,7 +10,7 @@ from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, rare_calc, ball_used_low, ball_used_high
 import random
 from utility.all_checks import Basic_checker
-from listener import Listener
+from cogs.listener import Listener
 
 class On_Edit(commands.Cog):
 
