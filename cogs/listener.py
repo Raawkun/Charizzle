@@ -61,7 +61,8 @@ class Listener(commands.Cog):
             await cursor.execute("SELECT ID FROM Exclusives")
             result = await cursor.fetchall()
             await conn.ensure_closed()
-        self.exclusives = result
+        for entry in result:
+            self.exclusives.append(entry[0])
         print(f"Loaded exclusives: {self.exclusives}")
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
