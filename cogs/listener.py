@@ -35,6 +35,7 @@ class Listener(commands.Cog):
         await errcha.send(embed=_emb)
 
     promo_item = "none"
+    exclusives = {}
 
     DB_CONIFG = {
         "host" : "db-buf-05.sparkedhost.us",
@@ -53,6 +54,15 @@ class Listener(commands.Cog):
             await conn.ensure_closed()
         self.promo_item = result[0]
         print(f"Loaded promo item: {self.promo_item}")
+        
+    async def load_excl(self):
+        conn = await self.get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT ID FROM Exclusives")
+            result = await cursor.fetchone()
+            await conn.ensure_closed()
+        self.exclusives = result
+        print(f"Loaded exclusives: {self.exclusives}")
     
     async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
@@ -123,6 +133,7 @@ class Listener(commands.Cog):
         print(datetime.datetime.now())
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="the sun rise."))
         await asyncio.create_task(self.load_promo())
+        await asyncio.create_task(self.load_exclusives())
         asyncio.create_task(self._changelog())
         asyncio.create_task(Modules.averagetimer(self))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
