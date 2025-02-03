@@ -131,30 +131,29 @@ class Listener(commands.Cog):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
         print(datetime.datetime.now())
-        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="the sun rise."))
+        await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="the changelog."))
         await asyncio.create_task(self.load_promo())
         await asyncio.create_task(self.load_excl())
         asyncio.create_task(self._changelog())
         asyncio.create_task(Modules.averagetimer(self))
         reminders = self.db.execute(f'SELECT * FROM Toggle WHERE QuestTime >= 1 ORDER BY QuestTime ASC')
         reminders = reminders.fetchall()
-        print(reminders)
+        #print(reminders)
         for row in reminders:
             channelid = row[8]
             self.db.execute(f'UPDATE Toggle SET Timer = 0 WHERE Channel = {channelid}')
             self.db.commit()
-            print(row[9])
-            print("theres at least one row")
-            print(channelid)
+            #print(row[9])
+            #print("theres at least one row")
+            #print(channelid)
             current_time = datetime.datetime.timestamp(datetime.datetime.now())
-            print(current_time)
+            #print(current_time)
             waiter = row[7]
-            print(waiter)
+            #print(waiter)
             userid = row[1]
             if waiter > current_time:
                 waiter = waiter-current_time
-                print(waiter)
-                print(waiter)
+                #print(waiter)
                 if row[14] == 1:
                     reminder = 1
                 elif row[14] == 2:
