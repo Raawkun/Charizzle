@@ -920,7 +920,7 @@ class Listener(commands.Cog):
                         for field in _embed.fields:
                             if "event-exclusives" in field.name.lower():
                                 print(field)
-                                mons = field.text.split("\n")
+                                mons = field.value.split("\n")
                                 names = {}
                                 for entry in mons:
                                     name = entry.split(" ")[1]
