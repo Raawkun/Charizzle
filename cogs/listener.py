@@ -59,7 +59,7 @@ class Listener(commands.Cog):
         conn = await self.get_db_connection()
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT ID FROM Exclusives")
-            result = await cursor.fetchone()
+            result = await cursor.fetchall()
             await conn.ensure_closed()
         self.exclusives = result
         print(f"Loaded exclusives: {self.exclusives}")
