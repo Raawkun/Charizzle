@@ -349,7 +349,7 @@ class Coms(commands.Cog):
                 elif overseen.interaction:
                     sender = overseen.interaction.author
                 user = sender
-                if "broke out" or "caught a " in _embed.description:
+                try:
                     data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                     data = data.fetchone()
                     raremon = data[14]
@@ -361,24 +361,31 @@ class Coms(commands.Cog):
                     #print(_embed.color)
                     color = str(_embed.color)
                     print(color)
-                    if raremon in Rare_Spawns or data[0] in Listener.exclusives:
-                        try:
-                            raremon = poke_rarity[(data[14])]
-                            current_time = overseen.created_at
-                            timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                            print(timestamp)
-                            description_text = f"Original message: [Click here]({overseen.jump_url})\n"
-                            embed = await Custom_embed(self.client, title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0][0]),description=description_text,colour=_embed.color).setup_embed()
+                except Exception as e:
+                    print(f"Rare Cmd_1: {e}")
+                if raremon in Rare_Spawns or data[0] in Listener.exclusives:
+                    try:
+                        raremon = poke_rarity[(data[14])]
+                        current_time = overseen.created_at
+                        timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
+                        print(timestamp)
+                        description_text = f"Original message: [Click here]({overseen.jump_url})\n"
+                        embed = await Custom_embed(self.client, title=raremon+" **"+data[1]+"** \nDex: #"+str(data[0][0]),description=description_text,colour=_embed.color).setup_embed()
+                        if "broke out" in _embed.description:
+                            embed.set_author(name=f"{user.display_name} almost caught a:", icon_url=_embed.author.icon_url)
+                        elif "ran away" in _embed.description:
+                            embed.set_author(name=f"{user.display_name} was too slow for a:", icon_url=_embed.author.icon_url)
+                        elif "caught a" in _embed.description:
                             embed.set_author(name=f"{user.display_name} just caught a:", icon_url=_embed.author.icon_url)
-                            embed.set_image(_embed.image.url)
-                            embed.set_thumbnail(url=None)
-                            embed.set_footer(text=f'{self.client.user.display_name} | at UTC {timestamp}', icon_url=f'{self.client.user.avatar}')
-                            await announce.send(embed=embed)
-                            await ctx.send("Check <#825950637958234133>",embed=embed)
-                        except Exception as e:
-                            print(f"Rare Cmd: {e}")
-                    else:
-                        await ctx.send(f'{data[0][1]} is not rare enough to be posted. If you think this is wrong, ping Blue Flame.')
+                        embed.set_image(_embed.image.url)
+                        embed.set_thumbnail(url=None)
+                        embed.set_footer(text=f'{self.client.user.display_name} | at UTC {timestamp}', icon_url=f'{self.client.user.avatar}')
+                        await announce.send(embed=embed)
+                        await ctx.send("Check <#825950637958234133>",embed=embed)
+                    except Exception as e:
+                        print(f"Rare Cmd_2: {e}")
+                else:
+                    await ctx.send(f'{data[0][1]} is not rare enough to be posted. If you think this is wrong, ping Blue Flame.')
 
             elif "'s trainer icon!" in overseen.content:
                 print(overseen.content)
