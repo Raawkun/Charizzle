@@ -352,6 +352,7 @@ class Coms(commands.Cog):
                 try:
                     data = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                     data = data.fetchone()
+                    print(data)
                     raremon = data[14]
                     print(raremon)
                     ball = _embed.description.split(" with a")[1]
