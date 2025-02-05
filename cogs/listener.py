@@ -333,12 +333,12 @@ class Listener(commands.Cog):
         #print(receiver_channel)
         receiver_channel = int(receiver_channel[4])
         log_channel = 1164544776985653319
-        if message.reference:
-            ref_msg = await message.channel.fetch_message(message.reference.message_id)
-            sender = ref_msg.author
-        elif message.interaction:
-            sender = message.interaction.author
         if message.author.id == meow:
+            if message.reference:
+                ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                sender = ref_msg.author
+            elif message.interaction:
+                sender = message.interaction.author
             announce_channel = self.client.get_channel(receiver_channel)
             log_chn = self.client.get_channel(log_channel)
             if ", your egg is ready to hatch" in message.content.lower():
