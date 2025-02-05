@@ -342,7 +342,10 @@ class Listener(commands.Cog):
             announce_channel = self.client.get_channel(receiver_channel)
             log_chn = self.client.get_channel(log_channel)
             if ", your egg is ready to hatch" in message.content.lower():
-                await message.reply(f"</egg hatch:1015311084594405485>")
+                if "incubator" in message.content.lower():
+                    await message.reply(f"</egg hatch-incubator:1015311084594405485>")
+                else:
+                    await message.reply(f"</egg hatch:1015311084594405485>")
             if "oh? you found a" in message.content.lower():
                 item = message.content.split("found a <:")[1]
                 item = item.split(":")[0]
@@ -1008,7 +1011,11 @@ class Listener(commands.Cog):
                             else:
                                 await message.channel.send(desc)
                     if "hatched" in _embed.author.name:
-                        await message.reply(f"</egg hold:1015311084594405485>")
+                        print(ref_msg)
+                        if "incubator" in ref_msg.content:
+                            await message.reply(f"</egg use-incubator:1015311084594405485>")
+                        else:
+                            await message.reply(f"</egg hold:1015311084594405485>")
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_egg = data_egg.fetchone()
                         sender = ref_msg.author
