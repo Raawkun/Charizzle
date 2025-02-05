@@ -1013,13 +1013,16 @@ class Listener(commands.Cog):
                     if "hatched" in _embed.author.name:
                         if message.reference:
                             ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                            if "incubator" in ref_msg.content:
+                                await message.reply(f"</egg use-incubator:1015311084594405485>")
+                            else:
+                                await message.reply(f"</egg hold:1015311084594405485>")
                         elif message.interaction:
                             ref_msg = message.interaction
-                        print(ref_msg)
-                        if "incubator" in ref_msg.content:
-                            await message.reply(f"</egg use-incubator:1015311084594405485>")
-                        else:
-                            await message.reply(f"</egg hold:1015311084594405485>")
+                            if "incubator" in ref_msg.name:
+                                await message.reply(f"</egg use-incubator:1015311084594405485>")
+                            else:
+                                await message.reply(f"</egg hold:1015311084594405485>")
                         data_egg = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_egg = data_egg.fetchone()
                         sender = ref_msg.author
