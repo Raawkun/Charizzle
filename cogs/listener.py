@@ -1011,6 +1011,10 @@ class Listener(commands.Cog):
                             else:
                                 await message.channel.send(desc)
                     if "hatched" in _embed.author.name:
+                        if message.reference:
+                            ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                        elif message.interaction:
+                            ref_msg = message.interaction
                         print(ref_msg)
                         if "incubator" in ref_msg.content:
                             await message.reply(f"</egg use-incubator:1015311084594405485>")
