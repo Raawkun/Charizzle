@@ -15,7 +15,7 @@ import aiomysql
 import datetime
 from utility.embed import Custom_embed, Auction_embed
 from cogs.module import Modules
-from cogs.db_config import db_config
+from utility.db_config import db_config
 
 # Zeichen zum Kopieren: [ ] { }
 

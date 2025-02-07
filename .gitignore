@@ -155,3 +155,4 @@ database.db
 *.db
 springclean.txt
 cogs/db_config.py
+utility/db_config.py
