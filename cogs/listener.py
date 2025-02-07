@@ -15,6 +15,7 @@ import aiomysql
 import datetime
 from utility.embed import Custom_embed, Auction_embed
 from cogs.module import Modules
+from cogs.db_config import DB_CONIFG
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -36,14 +37,9 @@ class Listener(commands.Cog):
     promo_item = "none"
     exclusives = []
 
-    DB_CONIFG = {
-        "host" : "db-buf-05.sparkedhost.us",
-        "user" : "u112234_3Uzzg1Jv6R",
-        "password" : "0E9c1yXW@mE+^8Xv9@EIG9!V",
-        "db" : "s112234_Random"
-    }
+    
     async def get_db_connection(self):
-        return await aiomysql.connect(host=self.DB_CONIFG["host"],user=self.DB_CONIFG["user"],password=self.DB_CONIFG["password"],db=self.DB_CONIFG["db"])
+        return await aiomysql.connect(host=DB_CONIFG["host"],user=DB_CONIFG["user"],password=DB_CONIFG["password"],db=DB_CONIFG["db"])
     
     async def load_promo(self):
         conn = await self.get_db_connection()
@@ -70,7 +66,7 @@ class Listener(commands.Cog):
         self.db.execute(f'UPDATE Toggle SET Timer = 1 WHERE User_ID = {user_id}')
         self.db.commit()
         await asyncio.sleep(waiter)
-        print("slept enough.")
+        #print("slept enough.")
         if link == 0:
             link = ";quest"
         else:
@@ -107,9 +103,9 @@ class Listener(commands.Cog):
                 # If the file contains words, send the content in a message
                 channels = self.db.execute(f'SELECT Changelog FROM Admin WHERE Changelog != 0')
                 channels = channels.fetchall()
-                print(channels)
+                #print(channels)
                 for entry in channels:
-                    print(entry)
+                    #print(entry)
                     entry = int(entry[0])
                     channel = self.client.get_channel(entry)
                     await channel.send(f"Time for a new changelog! Get ready:\n```\n{file_content}\n```\nAnd that's all for today!")
@@ -961,7 +957,7 @@ class Listener(commands.Cog):
                             else:
                                 await message.channel.send(desc)
                     if "buddy help" in _embed.footer.text.lower() or "move help" in _embed.footer.text.lower():
-                        print("Buddy Window")
+                        #print("Buddy Window")
                         await asyncio.sleep(5)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchone()
@@ -976,7 +972,7 @@ class Listener(commands.Cog):
                                     link = "</moves view:1015311085441654817>"
                                 else:
                                     link = "</buddy current-buddy:1015311084422434823>"
-                            print(link)
+                            #print(link)
                             if datarem[6]==0:
                                 desc = f'{rem_emotes["remind"]} - <@{sender.id}>, you can now use {link} again.'
                             else:
@@ -1072,14 +1068,14 @@ class Listener(commands.Cog):
                                 description_text = " "
                                 if "Pokemon received" in _embed.description:
                                     mons = _embed.description.split("total):\n")[1]
-                                    print(mons)
+                                    #print(mons)
                                     mons = mons.split(">")
                                     unused = mons.pop()
-                                    print(mons)
+                                    #print(mons)
                                     description_text = "Pokemon received:\n"
                                     for entry in mons:
                                         monid = entry.split(":")[1]
-                                        print(monid)
+                                        #print(monid)
                                         monid = int(monid)
                                         dex = self.dv.execute(f'SELECT * FROM SpawnEmotes WHERE DexID = {monid}')
                                         dex = dex.fetchone()
@@ -1111,14 +1107,14 @@ class Listener(commands.Cog):
                         logging = 1083131761451606096
                         logging = self.client.get_channel(logging)
                         try:
-                            await logging.send(message)
+                            await logging.send(embed=message.embed)
                         except:
                             logging.send("NO message to log")
                         try:
                             await logging.send(_embed.description)
                         except:
                             logging.send("How's there no description???")
-                        print(data_pr[0][14])
+                        #print(data_pr[0][14])
                         raremon = poke_rarity[(data_pr[0][14])]
                         description_text = f"Original message: [Click here]({message.jump_url})\n"
                         embed = disnake.Embed(title=raremon+" **"+data_pr[0][1]+"** \nDex: #"+str(data_pr[0][0]), color=color,description=description_text)
@@ -1205,7 +1201,7 @@ class Listener(commands.Cog):
                 if _embed.description:
                     try:
                         if "version" in _embed.description:
-                            print("Version in it")
+                            #print("Version in it")
                             dex=_embed.author.name.split(" #")[1]
                             #print(dex)
                             name=_embed.author.name.split(" #")[0]

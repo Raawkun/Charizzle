@@ -154,3 +154,4 @@ key.txt
 database.db
 *.db
 springclean.txt
+cogs/db_config.py
