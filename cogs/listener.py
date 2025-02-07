@@ -15,7 +15,7 @@ import aiomysql
 import datetime
 from utility.embed import Custom_embed, Auction_embed
 from cogs.module import Modules
-from cogs.db_config import DB_CONIFG
+from cogs.db_config import db_config
 
 # Zeichen zum Kopieren: [ ] { }
 
@@ -39,7 +39,7 @@ class Listener(commands.Cog):
 
     
     async def get_db_connection(self):
-        return await aiomysql.connect(host=DB_CONIFG["host"],user=DB_CONIFG["user"],password=DB_CONIFG["password"],db=DB_CONIFG["db"])
+        return await aiomysql.connect(host=db_config["host"],user=db_config["user"],password=db_config["password"],db=db_config["db"])
     
     async def load_promo(self):
         conn = await self.get_db_connection()
