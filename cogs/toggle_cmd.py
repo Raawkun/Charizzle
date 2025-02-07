@@ -184,7 +184,7 @@ class ReminderView(disnake.ui.View):
         i = 2
         for entry in reminders:
             if i > 3:
-                rowed +=1
+                row +=1
                 i = 1
             self.add_item(RemButton(user_id,entry,row))
             i+=1
