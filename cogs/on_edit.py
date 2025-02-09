@@ -48,7 +48,7 @@ class On_Edit(commands.Cog):
                     #print("Edit with Embed")
                     befembed = before.embeds[0]
                     if "may continue playing" in after.content.lower():
-                        emoji = self.client.get_emoji(1338134716397916233)
+                        emoji = "<:GengarClap:1338134716397916233>"
                         await after.add_reaction(emoji)
                         return
                     if (len(after.embeds) > 0):
