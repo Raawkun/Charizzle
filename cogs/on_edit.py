@@ -8,6 +8,8 @@ from cogs.module import Modules
 from  utility.rarity_db import poke_rarity, embed_color
 from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, rare_calc, ball_used_low, ball_used_high
+from utility.id_lists import safari_id
+from safari_event import SafariEvent
 import random
 from utility.all_checks import Basic_checker
 from cogs.listener import Listener
@@ -46,6 +48,8 @@ class On_Edit(commands.Cog):
                     #print("Edit with Embed")
                     befembed = before.embeds[0]
                     if "may continue playing" in after.content.lower():
+                        emoji = self.client.get_emoji(1338134716397916233)
+                        await after.add_reaction(emoji)
                         return
                     if (len(after.embeds) > 0):
                         _embed = after.embeds[0]
