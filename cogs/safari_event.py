@@ -17,7 +17,7 @@ async def errorlog(self, error, message,author):
 
 class LureButton(disnake.ui.Button):
     def __init__(self, user_id,row,db):
-        super().__init__(label="Lure", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}"),row=row
+        super().__init__(label="Lure", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}",row=row)
         self.user_id = user_id
         self.db = connect("database.db")
 
