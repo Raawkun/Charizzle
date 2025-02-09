@@ -1101,6 +1101,10 @@ class Listener(commands.Cog):
                             embed.set_footer(text=(f'{self.client.user.display_name}'+" | at UTC "f'{timestamp}'), icon_url=f'{self.client.user.avatar}')
                             await announce_channel.send(embed=embed)
                 if _embed.description:
+                    if message.reference:
+                        ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                    elif message.interaction:
+                        ref_msg = message.interaction
                     if "claimed a <:Golden" in _embed.description:
                         data_pr = self.db.execute(f'SELECT * FROM Dex WHERE Img_url = "{_embed.image.url}"')
                         data_pr = data_pr.fetchall()
