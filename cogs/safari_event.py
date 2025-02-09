@@ -16,7 +16,7 @@ async def errorlog(self, error, message,author):
         await errcha.send(embed=_emb)
 
 class LureButton(disnake.ui.Button):
-    def __init__(self, user_id,row):
+    def __init__(self, user_id,row,db):
         super().__init__(label="Lure", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}"),row=row
         self.user_id = user_id
         self.db = connect("database.db")
@@ -30,7 +30,7 @@ class LureButton(disnake.ui.Button):
             await asyncio.create_task(errorlog(e,interaction.user.id))
 
 class BallButton(disnake.ui.Button):
-    def __init__(self, user_id,row):
+    def __init__(self, user_id,row,db):
         super().__init__(label="Lure", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}",row=row)
         self.user_id = user_id
         self.db = connect("database.db")
@@ -44,7 +44,7 @@ class BallButton(disnake.ui.Button):
             await asyncio.create_task(errorlog(e,interaction.user.id))
 
 class FleeButton(disnake.ui.Button):
-    def __init__(self, user_id,row):
+    def __init__(self, user_id,row,db):
         super().__init__(label="Lure", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}",row=row)
         self.user_id = user_id
         self.db = connect("database.db")
@@ -54,11 +54,14 @@ class FleeButton(disnake.ui.Button):
             await interaction.defer()
             if interaction.user.id != self.user_id:
                 exit
+            desc = f"You decided to run away from the wild **{self.db[1]}**\nYou got away safely."
+            emb = disnake.Embed(title=f"{self.user_id.display_name} ran away.",color=disnake.Color.dark_grey())
+            await interaction.edit_original_response(embed=emb)
         except Exception as e:
             await asyncio.create_task(errorlog(e,interaction.user.id))
 
 class StoneButton(disnake.ui.Button):
-    def __init__(self, user_id,row):
+    def __init__(self, user_id,row,db):
         super().__init__(label="Lure", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}",row=row)
         self.user_id = user_id
         self.db = connect("database.db")
@@ -72,26 +75,26 @@ class StoneButton(disnake.ui.Button):
             await asyncio.create_task(errorlog(e,interaction.user.id))
 
 class SafariView(disnake.ui.View):
-    def __init__(self, user_id):
+    def __init__(self, user_id,speed):
         super().__init__()
         row = 1
-        self.add_item(LureButton(user_id,row))
-        self.add_item(StoneButton(user_id,row))
+        self.add_item(LureButton(user_id,row,speed))
+        self.add_item(StoneButton(user_id,row,speed))
         row = 2
-        self.add_item(BallButton(user_id,row))
+        self.add_item(BallButton(user_id,row,speed))
         self.add_item(FleeButton(user_id,row))
 
 
 async def SafariEvent(self, message, db, user):
     try:
-        name,pic,speed = db[1],db[15],db[9]
+        name,pic = db[1],db[15]
         desc = f"You've encountered a wild **{name}** in the Safari Zone!"
         emb = disnake.Embed(description=desc,color=disnake.Colour.dark_green())
         backside = Image.open("pictures/trainerback.png","r")
         emb.set_thumbnail(file=backside)
         emb.set_author(name="Gengars Safari Event")
         emb.set_image(url=pic)
-        await message.channel.reply(embed=emb,view=SafariView)
+        await message.channel.reply(embed=emb,view=SafariView(user,db))
     except Exception as e:
         await asyncio.create_task(errorlog(e, user.id))
 
@@ -112,5 +115,5 @@ class SafariEvent(commands.Cog):
 
 
 
-    def setup(client):
-        client.add_cog(SafariEvent(client))
+def setup(client):
+    client.add_cog(SafariEvent(client))

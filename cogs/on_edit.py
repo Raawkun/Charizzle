@@ -9,7 +9,7 @@ from  utility.rarity_db import poke_rarity, embed_color
 from utility.embed import Custom_embed
 from utility.drop_chance import drop_pos, rare_calc, ball_used_low, ball_used_high
 from utility.id_lists import safari_id
-import safari_event
+from safari_event import SafariEvent
 import random
 from utility.all_checks import Basic_checker
 from cogs.listener import Listener
