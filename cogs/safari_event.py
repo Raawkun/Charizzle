@@ -44,7 +44,7 @@ class BallButton(disnake.ui.Button):
             await asyncio.create_task(errorlog(e,interaction.user.id))
 
 class FleeButton(disnake.ui.Button):
-    def __init__(self, user_id,row):
+    def __init__(self, user_id,row,data):
         super().__init__(label="Flee", style=disnake.ButtonStyle.primary,custom_id=f"fleelure_button_{user_id}",row=row)
         self.user_id = user_id
         self.db = connect("database.db")
@@ -54,8 +54,8 @@ class FleeButton(disnake.ui.Button):
             await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
-            desc = f"You decided to run away from the wild **{self.db[1]}**\nYou got away safely."
-            emb = disnake.Embed(title=f"{self.user_id.display_name} ran away.",color=disnake.Color.dark_grey())
+            desc = f"You decided to run away from the wild **{self.data[1]}**\nYou got away safely."
+            emb = disnake.Embed(title=f"{self.user_id.display_name} ran away.",color=disnake.Color.dark_grey(),description=desc)
             await interaction.edit_original_response(embed=emb)
         except Exception as e:
             await asyncio.create_task(errorlog(e,interaction.user.id))
@@ -75,14 +75,14 @@ class StoneButton(disnake.ui.Button):
             await asyncio.create_task(errorlog(e,interaction.user.id))
 
 class SafariView(disnake.ui.View):
-    def __init__(self, user_id,speed):
+    def __init__(self, user_id,db):
         super().__init__()
         row = 1
-        self.add_item(LureButton(user_id,row,speed))
-        self.add_item(StoneButton(user_id,row,speed))
+        self.add_item(LureButton(user_id,row,db))
+        self.add_item(StoneButton(user_id,row,db))
         row = 2
-        self.add_item(BallButton(user_id,row,speed))
-        self.add_item(FleeButton(user_id,row))
+        self.add_item(BallButton(user_id,row,db))
+        self.add_item(FleeButton(user_id,row,db))
 
 
 async def Safari(self, message, db, user):
