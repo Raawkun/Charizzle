@@ -1,5 +1,7 @@
 import asyncio
 import datetime
+import math
+import random
 from sqlite3 import connect
 import disnake
 from disnake.ext import commands
@@ -16,9 +18,10 @@ async def errorlog(self, error, message,author):
         await errcha.send(embed=_emb)
 
 class LureButton(disnake.ui.Button):
-    def __init__(self, user_id,row,db):
-        super().__init__(label="Lure", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}",row=row)
-        self.user_id = user_id
+    def __init__(self, user_id,row,data,angry,eating,cr,run,moves):
+        super().__init__(label="Bait", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}",row=row)
+        self.user_id,self.data, self.eating, self.moves= user_id, data, eating, moves
+        self.run, self.angry, self.cr= run, angry, cr
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
@@ -26,13 +29,49 @@ class LureButton(disnake.ui.Button):
             await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
+            self.eating += random.randint(1,5)
+            if self.eating > 255:
+                self.eating = 255
+            self.cr = math.floor(self.cr/2)
+            self.angry = 0
+            desc = f"Wild {self.data[1]} is eating."
+            self.run = int(self.run/2)
+            self.moves +=1
+            footer = f"Moves taken: {self.moves}"
         except Exception as e:
-            await asyncio.create_task(errorlog(e,interaction.user.id))
+            await errorlog(self, e, interaction, interaction.user)
+
+class StoneButton(disnake.ui.Button):
+    def __init__(self, user_id,row,data,angry,eating,cr,run ,moves):
+        super().__init__(label="Rock", style=disnake.ButtonStyle.primary,custom_id=f"stone_button_{user_id}",row=row)
+        self.user_id,self.data, self.eating, self.moves= user_id, data, eating, moves
+        self.run, self.angry, self.cr= run, angry, cr
+        self.db = connect("database.db")
+
+    async def callback(self, interaction: disnake.MessageInteraction):
+        try:
+            await interaction.response.defer()
+            if interaction.user.id != self.user_id:
+                exit
+            self.angry += random.randint(1,5)
+            if self.angry > 255:
+                self.angry = 255
+            self.cr *=2
+            if self.cr > 255:
+                self.cr = 255
+            self.eating = 0
+            desc = f"Wild {self.data[1]} is angry."
+            self.run = int(self.run*2)
+            self.moves +=1
+            footer = f"Moves taken: {self.moves}"
+        except Exception as e:
+            await errorlog(self, e, interaction, interaction.user)
 
 class BallButton(disnake.ui.Button):
-    def __init__(self, user_id,row,db):
+    def __init__(self, user_id,row,data,angry,eating,cr,run, moves):
         super().__init__(label="Ball", style=disnake.ButtonStyle.primary,custom_id=f"ball_button_{user_id}",row=row)
-        self.user_id = user_id
+        self.user_id,self.data, self.eating, self.moves= user_id, data, eating, moves
+        self.run, self.angry, self.cr= run, angry, cr
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
@@ -40,8 +79,16 @@ class BallButton(disnake.ui.Button):
             await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
+            if self.angry > 0:
+                self.angry -= 1
+            elif self.eating > 0:
+                self.eating -= 1
+            n = random.randint(1,150)
+            self.moves +=1
+            footer = f"Moves taken: {self.moves}"
+        
         except Exception as e:
-            await asyncio.create_task(errorlog(e,interaction.user.id))
+            await errorlog(self, e, interaction, interaction.user)
 
 class FleeButton(disnake.ui.Button):
     def __init__(self, user_id,row,data):
@@ -60,28 +107,15 @@ class FleeButton(disnake.ui.Button):
         except Exception as e:
             await errorlog(self, e, interaction, interaction.user)
 
-class StoneButton(disnake.ui.Button):
-    def __init__(self, user_id,row,db):
-        super().__init__(label="Stone", style=disnake.ButtonStyle.primary,custom_id=f"stone_button_{user_id}",row=row)
-        self.user_id = user_id
-        self.db = connect("database.db")
-
-    async def callback(self, interaction: disnake.MessageInteraction):
-        try:
-            await interaction.response.defer()
-            if interaction.user.id != self.user_id:
-                exit
-        except Exception as e:
-            await asyncio.create_task(errorlog(e,interaction.user.id))
 
 class SafariView(disnake.ui.View):
-    def __init__(self, user_id,db):
+    def __init__(self, user_id,db,angry,eating,cr,run,moves):
         super().__init__()
         row = 1
-        self.add_item(LureButton(user_id,row,db))
-        self.add_item(StoneButton(user_id,row,db))
+        self.add_item(LureButton(user_id,row,db,angry,eating,cr,run,moves))
+        self.add_item(StoneButton(user_id,row,db,angry,eating,cr,run,moves))
         row = 2
-        self.add_item(BallButton(user_id,row,db))
+        self.add_item(BallButton(user_id,row,db,angry,eating,cr,run,moves))
         self.add_item(FleeButton(user_id,row,db))
 
 
@@ -95,7 +129,9 @@ async def Safari(self, message, db, user):
         emb.set_image(file=disnake.File("pictures/trainerback.png"))
         emb.set_author(name="Gengars Safari Event")
         emb.set_thumbnail(url=pic)
-        await message.reply(embed=emb,view=SafariView(user,db))
+        angry, eating, cr, moves = 0, 0, 0, 0
+        run = 2*self.data[9]
+        await message.reply(embed=emb,view=SafariView(user,db,angry,eating,cr,run,moves))
     except Exception as e:
         print(e)
 
