@@ -98,7 +98,7 @@ async def Safari(self, message, db, user):
         emb.set_image(url=pic)
         await message.channel.reply(embed=emb,view=SafariView(user,db))
     except Exception as e:
-        await asyncio.create_task(errorlog(e, user.id))
+        await errorlog(self,e,message,user)
 
 
 
