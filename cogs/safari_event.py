@@ -87,10 +87,10 @@ class SafariView(disnake.ui.View):
 
 
 async def Safari(self, message, db, user):
-    print("Safari running")
+    #print("Safari running")
     try:
         name,pic = db[1],db[15]
-        print(name)
+        p#rint(name)
         desc = f"You've encountered a wild **{name}** in the Safari Zone!"
         emb = disnake.Embed(description=desc,color=disnake.Colour.dark_green())
         emb.set_image(file=disnake.File("pictures/trainerback.png"))
@@ -114,10 +114,10 @@ class SafariEvent(commands.Cog):
     @commands.command()
     async def testsafari(self, ctx, id: int):
         try:
-            print(id)
+            #print(id)
             data = self.db.execute(f"SELECT * FROM Dex WHERE DexID = {id}")
             data = data.fetchone()
-            print(data)
+            #print(data)
             await Safari(self,ctx,data,ctx.author)
         except Exception as e:
             await asyncio.create_task(errorlog(e, ctx.author.id))
