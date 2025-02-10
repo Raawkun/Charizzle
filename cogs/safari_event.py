@@ -8,7 +8,7 @@ from PIL import Image
 
 
 async def errorlog(self, error, message,author):
-        footer = f"{datetime.datetime.utcnow()}"
+        footer = f"{datetime.datetime.now(datetime.timezone.utc)}"
         desc = f"{message.guild.name}, <#{message.channel}>, <@{author.id}>\n[Original Message.]({message.jump_url})"
         _emb = disnake.Embed(footer=footer, description=desc)
         _emb.add_field(name="Error:",value=error)
@@ -98,7 +98,7 @@ async def Safari(self, message, db, user):
         emb.set_image(url=pic)
         await message.channel.reply(embed=emb,view=SafariView(user,db))
     except Exception as e:
-        await errorlog(self,e,message,user)
+        print(e)
 
 
 
