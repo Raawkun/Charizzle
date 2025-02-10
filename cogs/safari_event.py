@@ -112,7 +112,7 @@ class SafariEvent(commands.Cog):
 
 
     @commands.command()
-    async def testsafari(self, ctx, id):
+    async def testsafari(self, ctx, id: int):
         try:
             print(id)
             data = self.db.execute(f"SELECT * FROM Dex WHERE DexID = {id}")
