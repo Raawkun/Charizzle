@@ -96,7 +96,7 @@ async def Safari(self, message, db, user):
         emb.set_thumbnail(file=backside)
         emb.set_author(name="Gengars Safari Event")
         emb.set_image(url=pic)
-        await message.channel.reply(embed=emb,view=SafariView(user,db))
+        await message.reply(embed=emb,view=SafariView(user,db))
     except Exception as e:
         print(e)
 
