@@ -85,7 +85,7 @@ class SafariView(disnake.ui.View):
         self.add_item(FleeButton(user_id,row))
 
 
-async def SafariEvent(self, message, db, user):
+async def Safari(self, message, db, user):
     try:
         name,pic = db[1],db[15]
         desc = f"You've encountered a wild **{name}** in the Safari Zone!"
@@ -110,10 +110,10 @@ class SafariEvent(commands.Cog):
 
 
     @commands.command()
-    async def testsafari(self,id):
+    async def testsafari(self, ctx, id):
         data = self.db.execute(f"SELECT * FROM Dex WHERE DexID = {id}")
         data = data.fetchone()
-        await 
+        await asyncio.create_task(self.SafariEvent(ctx, data, ctx.author.id))
 
 
 
