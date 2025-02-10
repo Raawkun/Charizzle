@@ -47,7 +47,7 @@ class FleeButton(disnake.ui.Button):
     def __init__(self, user_id,row,data):
         super().__init__(label="Flee", style=disnake.ButtonStyle.primary,custom_id=f"fleelure_button_{user_id}",row=row)
         self.user_id = user_id
-        self.db = connect("database.db")
+        self.data = data
 
     async def callback(self, interaction: disnake.MessageInteraction):
         try:
