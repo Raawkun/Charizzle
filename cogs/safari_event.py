@@ -114,7 +114,7 @@ class SafariEvent(commands.Cog):
         try:
             data = self.db.execute(f"SELECT * FROM Dex WHERE DexID = {id}")
             data = data.fetchone()
-            await asyncio.create_task(self.SafariEvent(ctx, data, ctx.author.id))
+            await asyncio.create_task(Safari(ctx, data, ctx.author.id))
         except Exception as e:
             await asyncio.create_task(errorlog(e, ctx.author.id))
 
