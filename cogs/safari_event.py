@@ -23,7 +23,7 @@ class LureButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction):
         try:
-            await interaction.defer()
+            await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
         except Exception as e:
@@ -37,7 +37,7 @@ class BallButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction):
         try:
-            await interaction.defer()
+            await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
         except Exception as e:
@@ -51,7 +51,7 @@ class FleeButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction):
         try:
-            await interaction.defer()
+            await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
             desc = f"You decided to run away from the wild **{self.db[1]}**\nYou got away safely."
@@ -68,7 +68,7 @@ class StoneButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction):
         try:
-            await interaction.defer()
+            await interaction.response.defer()
             if interaction.user.id != self.user_id:
                 exit
         except Exception as e:
@@ -92,10 +92,9 @@ async def Safari(self, message, db, user):
         print(name)
         desc = f"You've encountered a wild **{name}** in the Safari Zone!"
         emb = disnake.Embed(description=desc,color=disnake.Colour.dark_green())
-        backside = Image.open("pictures/trainerback.png","r")
-        emb.set_thumbnail(file=disnake.File("pictures/trainerback.png"))
+        emb.set_image(file=disnake.File("pictures/trainerback.png"))
         emb.set_author(name="Gengars Safari Event")
-        emb.set_image(url=pic)
+        emb.set_thumbnail(url=pic)
         await message.reply(embed=emb,view=SafariView(user,db))
     except Exception as e:
         print(e)
