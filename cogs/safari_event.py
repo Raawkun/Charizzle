@@ -110,8 +110,10 @@ class SafariEvent(commands.Cog):
 
 
     @commands.command()
-    async def safari(self,id):
-        return
+    async def testsafari(self,id):
+        data = self.db.execute(f"SELECT * FROM Dex WHERE DexID = {id}")
+        data = data.fetchone()
+        await 
 
 
 
