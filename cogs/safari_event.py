@@ -93,7 +93,7 @@ async def Safari(self, message, db, user):
         desc = f"You've encountered a wild **{name}** in the Safari Zone!"
         emb = disnake.Embed(description=desc,color=disnake.Colour.dark_green())
         backside = Image.open("pictures/trainerback.png","r")
-        emb.set_thumbnail(file=backside)
+        emb.set_thumbnail(file=disnake.File(backside))
         emb.set_author(name="Gengars Safari Event")
         emb.set_image(url=pic)
         await message.reply(embed=emb,view=SafariView(user,db))
