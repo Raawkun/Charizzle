@@ -90,7 +90,7 @@ async def Safari(self, message, db, user):
     #print("Safari running")
     try:
         name,pic = db[1],db[15]
-        p#rint(name)
+        #print(name)
         desc = f"You've encountered a wild **{name}** in the Safari Zone!"
         emb = disnake.Embed(description=desc,color=disnake.Colour.dark_green())
         emb.set_image(file=disnake.File("pictures/trainerback.png"))
