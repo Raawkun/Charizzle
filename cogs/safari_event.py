@@ -56,7 +56,6 @@ class FleeButton(disnake.ui.Button):
                 exit
             desc = f"You decided to run away from the wild **{self.data[1]}**\nYou got away safely."
             emb = disnake.Embed(title=f"{self.user_id.display_name} ran away.",color=disnake.Color.dark_grey(),description=desc)
-            emb.set_image(url=None)
             await interaction.edit_original_response(content="",embed=emb,view=None)
         except Exception as e:
             await errorlog(self, e, interaction, interaction.user)
