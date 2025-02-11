@@ -4,6 +4,7 @@ import disnake
 from disnake.ext import commands
 import asyncio
 import re
+import pytz
 import main
 from sqlite3 import connect
 from main import client
@@ -60,6 +61,18 @@ class Listener(commands.Cog):
             self.exclusives.append(entry[0])
         print(f"Loaded exclusives: {self.exclusives}")
     
+    async def dawndusk(self):
+        rem_channel = self.client.get_channel(827306503866155008)
+        east = pytz.timezone("America/New_York")
+        now = datetime.now(east)
+        
+        6am = now.replace(hour=6, minute=0,second=0))
+        6pm = now.replace(hour=18, minute=0, second=0)
+        if now.hour == 6pm.hour or now.hour == 6am.hour:
+            await rem_channel.send(f"<@&1338742032809590786>\nIts time! Go get your stones!")
+            
+            
+        
     async def _quest_reminder(self,channelid, user_id, waiter,reminder, link, emote):
         print(f"quest_reminder started for {user_id} waiting for {waiter} seconds.")
         channel = self.client.get_channel(channelid)
