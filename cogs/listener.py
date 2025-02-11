@@ -64,12 +64,18 @@ class Listener(commands.Cog):
     async def dawndusk(self):
         rem_channel = self.client.get_channel(827306503866155008)
         east = pytz.timezone("America/New_York")
-        now = datetime.now(east)
+        while True:
+            now = datetime.now(east)
         
-        6am = now.replace(hour=6, minute=0,second=0))
-        6pm = now.replace(hour=18, minute=0, second=0)
-        if now.hour == 6pm.hour or now.hour == 6am.hour:
-            await rem_channel.send(f"<@&1338742032809590786>\nIts time! Go get your stones!")
+            6am = now.replace(hour=6, minute=0))
+            6pm = now.replace(hour=18, minute=0)
+            if now == 6am or now == 6pm:
+                desc = f"<@&1338742032809590786>\nIts time! Go get your stones!"
+                if now == 6am:
+                    desc += "Current Stone: Dawn Stone"
+                else:
+                    desc += "Current Stone: Dusk Stone"
+                await rem_channel.send(desc)
             
             
         
