@@ -67,15 +67,28 @@ class Listener(commands.Cog):
         while True:
             now = datetime.now(east)
         
-            6am = now.replace(hour=6, minute=0))
+            6am = now.replace(hour=6, minute=0)
             6pm = now.replace(hour=18, minute=0)
             if now == 6am or now == 6pm:
                 desc = f"<@&1338742032809590786>\nIts time! Go get your stones!"
                 if now == 6am:
-                    desc += "Current Stone: Dawn Stone"
+                    desc += "Current Stone: <:dawn_stone:1339193944575053865> Dawn Stone"
                 else:
-                    desc += "Current Stone: Dusk Stone"
+                    desc += "Current Stone: <:dusk_stone:1339193992176472267> Dusk Stone"
                 await rem_channel.send(desc)
+                wait_sec = 12*60*60
+            else:
+                6am = now.replace(hour=6, minute=0,seconds=0)
+                6pm = now.replace(hour=18, minute=0,seconds=0)
+                if now < 6am:
+                    next = 6am
+                elif now < 6pm:
+                    next = 6pm
+                else:
+                    next = 6am + timedelta(days=1)
+                wait_sec = (next-now).total_seconds()
+            print(f"Next stone coming in {wait_sec} seconds.")
+            await asyncio.sleep(wait_sec)
             
             
         
