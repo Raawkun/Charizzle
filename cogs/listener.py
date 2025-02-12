@@ -78,8 +78,8 @@ class Listener(commands.Cog):
                 await rem_channel.send(desc)
                 wait_sec = 12*60*60
             else:
-                c_6am = now.replace(hour=6, minute=0,seconds=0)
-                c_6pm = now.replace(hour=18, minute=0,seconds=0)
+                c_6am = now.replace(hour=6, minute=0,second=0)
+                c_6pm = now.replace(hour=18, minute=0,second=0)
                 if now < c_6am:
                     next = c_6am
                 elif now < c_6pm:
