@@ -72,9 +72,9 @@ class Listener(commands.Cog):
             if now == c_6am or now == c_6pm:
                 desc = f"<@&1338742032809590786>\nIts time! Go get your stones!"
                 if now == c_6am:
-                    desc += "Current Stone: <:dawn_stone:1339193944575053865> Dawn Stone"
+                    desc += "/nCurrent Stone: <:dawn_stone:1339193944575053865> Dawn Stone"
                 else:
-                    desc += "Current Stone: <:dusk_stone:1339193992176472267> Dusk Stone"
+                    desc += "/nCurrent Stone: <:dusk_stone:1339193992176472267> Dusk Stone"
                 await rem_channel.send(desc)
                 wait_sec = 12*60*60
             else:
