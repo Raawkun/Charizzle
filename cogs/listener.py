@@ -87,7 +87,7 @@ class Listener(commands.Cog):
                 else:
                     next = c_6am + datetime.timedelta(days=1)
                 wait_sec = (next-now).total_seconds()
-            print(f"Next stone coming in {wait_sec*60} minutes.")
+            print(f"Next stone coming in {wait_sec/60} minutes.")
             await asyncio.sleep(wait_sec)
             
             
