@@ -65,7 +65,7 @@ class Listener(commands.Cog):
         rem_channel = self.client.get_channel(827306503866155008)
         east = pytz.timezone("America/New_York")
         while True:
-            now = datetime.now(east)
+            now = datetime.datetime.now(east)
         
             c_6am = now.replace(hour=6, minute=0)
             c_6pm = now.replace(hour=18, minute=0)
@@ -85,7 +85,7 @@ class Listener(commands.Cog):
                 elif now < c_6pm:
                     next = c_6pm
                 else:
-                    next = c_6am + timedelta(days=1)
+                    next = c_6am + datetime.timedelta(days=1)
                 wait_sec = (next-now).total_seconds()
             print(f"Next stone coming in {wait_sec} seconds.")
             await asyncio.sleep(wait_sec)
