@@ -39,6 +39,9 @@ class LureButton(disnake.ui.Button):
             self.run = int(self.run/2)
             self.moves +=1
             footer = f"Moves taken: {self.moves}"
+            self.emb.set_footer(text=footer)
+            self.emb.set_description(desc)
+            await interaction.edit_original_response(embed=self.emb)
         except Exception as e:
             await errorlog(self, e, interaction, interaction.user)
 
@@ -90,9 +93,18 @@ class BallButton(disnake.ui.Button):
             elif self.eating > 0:
                 self.eating -= 1
             n = random.randint(1,150)
+            desc = f"You've caught the wild **{self.data[1]}**! Congratulations!"
+            try:
+                self.db.execute(f"UPDATE Safari SET Caught = Caught+1 WHERE User_ID = {self.user_id.id}")
+                self.db.commit()
+            except:
+                self.db.execute(f"INSERT INTO Safari (USer_ID) VALUES ({self.user_id.id})")
+                self.db.commit()
             self.moves +=1
             footer = f"Moves taken: {self.moves}"
-        
+            self.emb.set_footer(text=footer)
+            self.emb.set_description(desc)
+            await interaction.edit_original_response(embed=self.emb)
         except Exception as e:
             await errorlog(self, e, interaction, interaction.user)
 
