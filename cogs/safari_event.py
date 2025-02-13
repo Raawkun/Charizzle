@@ -148,7 +148,7 @@ async def Safari(self, message, db, user):
         emb.set_author(name="Gengars Safari Event")
         emb.set_thumbnail(url=pic)
         angry, eating, cr, moves = 0, 0, 0, 0
-        run = 2*self.data[9]
+        run = 2*db[9]
         await message.reply(embed=emb,view=SafariView(user,db,angry,eating,cr,run,moves,emb))
     except Exception as e:
         print(e)
