@@ -11,18 +11,17 @@ from PIL import Image
 
 async def errorlog(self, error, message,author):
         footer = f"{datetime.datetime.now(datetime.timezone.utc)}"
-        desc = f"{message.guild.name}, <#{message.channel}>, <@{author.id}>\n[Original Message.]({message.jump_url})"
+        desc = f"{message.guild.name}, <#{message.channel}>, <@{author.id}>\n[Original Message.]({message.jump_url()})"
         _emb = disnake.Embed(footer=footer, description=desc)
         _emb.add_field(name="Error:",value=error)
         errcha = self.client.get_channel(1210143608355823647)
         await errcha.send(embed=_emb)
 
 class LureButton(disnake.ui.Button):
-    def __init__(self, user_id,row,data,angry,eating,cr,run,moves,emb):
+    def __init__(self, user_id,row,data,angry,eating,cr,run,moves):
         super().__init__(label="Bait", style=disnake.ButtonStyle.primary,custom_id=f"lure_button_{user_id}",row=row)
         self.user_id,self.data, self.eating, self.moves= user_id, data, eating, moves
         self.run, self.angry, self.cr= run, angry, cr
-        self.emb = emb
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
@@ -39,18 +38,15 @@ class LureButton(disnake.ui.Button):
             self.run = int(self.run/2)
             self.moves +=1
             footer = f"Moves taken: {self.moves}"
-            self.emb.set_footer(text=footer)
-            self.emb.set_description(desc)
-            await interaction.edit_original_response(embed=self.emb)
+            await interaction.edit_original_response(desc,attachments=[])
         except Exception as e:
             await errorlog(self, e, interaction, interaction.user)
 
 class StoneButton(disnake.ui.Button):
-    def __init__(self, user_id,row,data,angry,eating,cr,run ,moves,emb):
+    def __init__(self, user_id,row,data,angry,eating,cr,run ,moves):
         super().__init__(label="Rock", style=disnake.ButtonStyle.primary,custom_id=f"stone_button_{user_id}",row=row)
         self.user_id,self.data, self.eating, self.moves= user_id, data, eating, moves
         self.run, self.angry, self.cr= run, angry, cr
-        self.emb = emb
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
@@ -69,18 +65,15 @@ class StoneButton(disnake.ui.Button):
             self.run = int(self.run*2)
             self.moves +=1
             footer = f"Moves taken: {self.moves}"
-            self.emb.set_footer(text=footer)
-            self.emb.set_description(desc)
-            await interaction.edit_original_response(embed=self.emb)
+            await interaction.edit_original_response(desc,attachments=[])
         except Exception as e:
             await errorlog(self, e, interaction, interaction.user)
 
 class BallButton(disnake.ui.Button):
-    def __init__(self, user_id,row,data,angry,eating,cr,run, moves,emb):
+    def __init__(self, user_id,row,data,angry,eating,cr,run, moves):
         super().__init__(label="Ball", style=disnake.ButtonStyle.primary,custom_id=f"ball_button_{user_id}",row=row)
         self.user_id,self.data, self.eating, self.moves= user_id, data, eating, moves
         self.run, self.angry, self.cr= run, angry, cr
-        self.emb = emb
         self.db = connect("database.db")
 
     async def callback(self, interaction: disnake.MessageInteraction):
@@ -102,9 +95,7 @@ class BallButton(disnake.ui.Button):
                 self.db.commit()
             self.moves +=1
             footer = f"Moves taken: {self.moves}"
-            self.emb.set_footer(text=footer)
-            self.emb.set_description(desc)
-            await interaction.edit_original_response(embed=self.emb)
+            await interaction.edit_original_response(desc,attachments=[])
         except Exception as e:
             await errorlog(self, e, interaction, interaction.user)
 
@@ -127,13 +118,13 @@ class FleeButton(disnake.ui.Button):
 
 
 class SafariView(disnake.ui.View):
-    def __init__(self, user_id,db,angry,eating,cr,run,moves,emb):
+    def __init__(self, user_id,db,angry,eating,cr,run,moves):
         super().__init__()
         row = 1
-        self.add_item(LureButton(user_id,row,db,angry,eating,cr,run,moves,emb))
-        self.add_item(StoneButton(user_id,row,db,angry,eating,cr,run,moves,emb))
+        self.add_item(LureButton(user_id,row,db,angry,eating,cr,run,moves))
+        self.add_item(StoneButton(user_id,row,db,angry,eating,cr,run,moves))
         row = 2
-        self.add_item(BallButton(user_id,row,db,angry,eating,cr,run,moves,emb))
+        self.add_item(BallButton(user_id,row,db,angry,eating,cr,run,moves))
         self.add_item(FleeButton(user_id,row,db))
 
 
@@ -149,7 +140,7 @@ async def Safari(self, message, db, user):
         emb.set_thumbnail(url=pic)
         angry, eating, cr, moves = 0, 0, 0, 0
         run = 2*db[9]
-        await message.reply(embed=emb,view=SafariView(user,db,angry,eating,cr,run,moves,emb))
+        await message.reply(embed=emb,view=SafariView(user,db,angry,eating,cr,run,moves))
     except Exception as e:
         print(e)
 
