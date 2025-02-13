@@ -898,6 +898,7 @@ class Listener(commands.Cog):
                                 if datarem[14] != 0:
                                     if datarem[7] != 0:
                                         #print("Already a timer running")
+                                        return
                                     else:
                                         #print("Oh, a new timer")
                                         q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))-8
