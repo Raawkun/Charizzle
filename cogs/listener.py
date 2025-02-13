@@ -110,8 +110,6 @@ class Listener(commands.Cog):
         else:
             desc = f'{rem_emotes["remind"]} - <@{user_id}>, your next {link} is ready!'
         if reminder == 1:
-            await channel.send(desc, allowed_mentions = disnake.AllowedMentions(users=False))
-        elif reminder == 2:
             await channel.send(desc)
         self.db.execute(f'UPDATE Toggle SET QuestTime = 0, Channel = 0, Timer = 0 WHERE User_ID = {user_id}')
         self.db.commit()
@@ -159,6 +157,17 @@ class Listener(commands.Cog):
         print(f'We have logged in {self.client.user}! ID: {self.client.user.id}')
         print("------")
         print(datetime.datetime.now())
+        print("⠀⠀⠀⠲⣦⣤⣀⣀⠀⠀⠀⣀⣀⣠⣤⣀⣀⠀⢀⣀⣠⣤⣶⣶⠟⠀⠀⠀
+⠀⠀⠀⠀⠙⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠈⢿⣿⣿⠻⣿⣿⣿⣿⣿⣿⣿⠟⢻⣿⣿⡿⠃⠀⠀⠀⠀⠀
+⠀⠀⠀⠲⣶⣶⣾⣿⣿⠀⢨⠙⢿⣿⣿⠏⣅⠀⢸⣿⣿⣷⣾⠟⠁⠀⠀⠀
+⠀⠀⠀⠀⠈⠻⢿⣿⣿⢷⣶⣶⣾⣿⣿⣶⣶⣾⠟⣿⣿⣿⣋⠀⠀⠀⠀⠀
+⠀⠀⢀⣀⣀⠐⢶⣿⣿⣧⠁⠀⠋⠁⠈⠋⠀⢀⣾⣿⣿⡿⣷⣶⠀⠀⠀⠀
+⠀⠀⣼⣿⣿⣷⣤⣙⣿⣿⣷⣶⣶⣴⣴⣴⣶⣿⣿⣿⠟⣡⣿⣿⣧⣄⣀⡀
+⢀⣤⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢿⣿⡿⠿⣿⣿⣿⣿
+⣿⡿⠛⠿⠟⠉⠉⠉⠸⠋⠀⠻⡿⣿⣿⣿⣿⠻⠇⠀⠀⠈⠀⠀⠈⠉⢸⠃
+⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠈⢿⢻⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
         await self.client.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="the changelog."))
         await asyncio.create_task(self.load_promo())
         await asyncio.create_task(self.load_excl())
@@ -185,8 +194,8 @@ class Listener(commands.Cog):
                 #print(waiter)
                 if row[14] == 1:
                     reminder = 1
-                elif row[14] == 2:
-                    reminder = 2
+                else:
+                    reminder = 0
                 if row[6] == 1:
                     emote = 0
                 else:
@@ -888,11 +897,11 @@ class Listener(commands.Cog):
                                 datarem = datarem.fetchone()
                                 if datarem[14] != 0:
                                     if datarem[7] != 0:
-                                        print("Already a timer running")
+                                        #print("Already a timer running")
                                     else:
-                                        print("Oh, a new timer")
+                                        #print("Oh, a new timer")
                                         q_time = int(datetime.datetime.timestamp(datetime.datetime.now()))-8
-                                        print(q_time)
+                                        #print(q_time)
                                         q_time = q_time+waiter
                                         channelid = message.channel.id
                                         self.db.execute(f'UPDATE Toggle SET QuestTime = {q_time}, Channel = {channelid} WHERE User_ID = {sender.id}')
@@ -900,8 +909,8 @@ class Listener(commands.Cog):
                                         q_time = str(q_time)
                                         if datarem[14] == 1:
                                             remind = 1
-                                        elif datarem[14] == 2:
-                                            remind = 2
+                                        else:
+                                            remind = 0
                                         if datarem[6] == 0:
                                             emote = 0
                                         else: 
