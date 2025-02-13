@@ -127,13 +127,13 @@ class FleeButton(disnake.ui.Button):
 
 
 class SafariView(disnake.ui.View):
-    def __init__(self, user_id,db,angry,eating,cr,run,moves):
+    def __init__(self, user_id,db,angry,eating,cr,run,moves,emb):
         super().__init__()
         row = 1
-        self.add_item(LureButton(user_id,row,db,angry,eating,cr,run,moves))
-        self.add_item(StoneButton(user_id,row,db,angry,eating,cr,run,moves))
+        self.add_item(LureButton(user_id,row,db,angry,eating,cr,run,moves,emb))
+        self.add_item(StoneButton(user_id,row,db,angry,eating,cr,run,moves,emb))
         row = 2
-        self.add_item(BallButton(user_id,row,db,angry,eating,cr,run,moves))
+        self.add_item(BallButton(user_id,row,db,angry,eating,cr,run,moves,emb))
         self.add_item(FleeButton(user_id,row,db))
 
 
