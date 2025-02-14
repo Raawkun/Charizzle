@@ -58,8 +58,7 @@ class Listener(commands.Cog):
             result = await cursor.fetchall()
             await conn.ensure_closed()
         if len(self.exclusives)>0:
-            if result[0] != self.exclusives[0]:
-                self.exclusives.clear()
+            self.exclusives.clear()
         for entry in result:
             self.exclusives.append(entry[0])
         print(f"Loaded exclusives: {self.exclusives}")
