@@ -969,7 +969,7 @@ class Listener(commands.Cog):
                                     names.update({id:name})
                                 conn = await self.get_db_connection()
                                 async with conn.cursor() as cursor:
-                                    await cursor.execute("DELETE * FROM Exclusives")
+                                    await cursor.execute("DELETE FROM Exclusives")
                                     await conn.commit()
                                     for entry in names:
                                         await cursor.execute(f"INSERT INTO Exclusives VALUES ({entry},'{names[entry]}')")
