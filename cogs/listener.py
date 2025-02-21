@@ -46,8 +46,10 @@ class Listener(commands.Cog):
         conn = await self.get_db_connection()
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT Current_Item FROM Stuff")
+            print("We're in")
             result = await cursor.fetchone()
             await conn.ensure_closed()
+        print(result)
         self.promo_item = result[0]
         print(f"Loaded promo item: {self.promo_item}")
         
