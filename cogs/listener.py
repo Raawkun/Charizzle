@@ -523,7 +523,7 @@ class Listener(commands.Cog):
                 #print(_embed.author.name)
                 Rare_Spawned = ["Event", "Legendary", "Shiny", "Golden"]
                 if _embed.author:
-                    if "Special Golden" in _embed.author.name:
+                    if "special golden" in _embed.author.name.lower():
                         try:
                             item = _embed.description.split("3x <:")[1]
                             item = item.split(":")[0]
