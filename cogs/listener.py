@@ -844,7 +844,7 @@ class Listener(commands.Cog):
                                 await message.channel.send(desc, allowed_mentions = disnake.AllowedMentions(users = False))
                     
                     if "from a swap" in _embed.description:
-                        await asyncio.sleep(5)
+                        await asyncio.sleep(4)
                         datarem = self.db.execute(f'SELECT * FROM Toggle WHERE User_ID = {sender.id}')
                         datarem = datarem.fetchall()
                         if datarem[0][15] == 1:
