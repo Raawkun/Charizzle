@@ -570,7 +570,7 @@ class Listener(commands.Cog):
                         except Exception as e:
                             print(f"Research Lab Error: {e}")
                     if "Global Market " in _embed.author.name:
-                        print("Market going on")
+                        #print("Market going on")
                         try:
                             if _embed.footer.text:
                                 if "#" in _embed.footer.text:
@@ -581,6 +581,9 @@ class Listener(commands.Cog):
                                     datdex = datdex.fetchone()
                                     #print(datdex[0][1])
                                     current_time = int(datetime.datetime.timestamp(datetime.datetime.now()))
+                                    if "there are currently 0 " in _embed.description.lower():
+                                        return
+                                        
                                     if "amount for sale" in _embed.description.lower():
                                         price = _embed.description.split("PokeCoin")[2]
                                         lowprice = price.split(" ")[1]
